@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <main id="root"></main>
+    <script>
+        const root = document.getElementById("root");
+        root.evaluate = () => {
+            root.querySelectorAll("script").forEach(el => eval(el.innerHTML));
+
+            let script = document.createElement("script");
+            script.src = "/tests/cypress/alpine.3.14.1.js";
+            document.body.append(script);
+        };
+
+        document.addEventListener("alpine:init", () => {
+            root.setAttribute("ready", "ready");
+        });
+    </script>
+    <script src="../../dist/main/alpinegear-main.js"></script>
+    <script src="../../dist/destroy/alpinegear-destroy.js"></script>
+</body>
+</html>
