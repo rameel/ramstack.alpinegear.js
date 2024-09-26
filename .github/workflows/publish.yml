@@ -1,0 +1,56 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+      - "[0-9]+.[0-9]+.[0-9]+-[a-z]+.[0-9]+"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: "Publish Packages"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build packages
+        run: npm run build
+
+      - name: Publish packages
+        run: |
+          for dir in dist/*; do
+            if [ -d "$dir" ]; then
+              cd "$dir"
+              npm publish --access public
+              cd - > /dev/null
+            fi
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Archive packages (.zip)
+        run: zip -r ramstack.alpinegear-${{ github.ref_name }}.zip ./dist/*
+
+      - name: Archive packages (.tar.gz)
+        run: tar -czvf ramstack.alpinegear-${{ github.ref_name }}.tar.gz ./dist
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: |
+            ramstack.alpinegear-${{ github.ref_name }}.zip
+            ramstack.alpinegear-${{ github.ref_name }}.tar.gz
