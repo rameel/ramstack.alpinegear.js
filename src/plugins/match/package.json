@@ -1,0 +1,18 @@
+{
+    "name": "@ramstack/alpinegear-match",
+    "version": "0.0.0",
+    "description": "@ramstack/alpinegear-match provides the 'x-match' Alpine.js directive, which functions similarly to the 'switch' statement in many programming languages, allowing to conditionally render elements based on matching cases.",
+    "author": "Rameel Burhan",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
+      "directory": "src/plugins/match"
+    },
+    "keywords": [
+      "alpine.js",
+      "alpinejs"
+    ],
+    "main": "alpinegear-match.js",
+    "module": "alpinegear-match.esm.js"
+  }

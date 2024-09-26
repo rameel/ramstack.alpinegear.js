@@ -1,0 +1,18 @@
+{
+    "name": "@ramstack/alpinegear-template",
+    "version": "0.0.0",
+    "description": "@ramstack/alpinegear-template provides 'x-template' Alpine.js directive, that enhances template management, providing better control over reusable template blocks, dynamic and recursive component rendering.",
+    "author": "Rameel Burhan",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
+      "directory": "src/plugins/template"
+    },
+    "keywords": [
+      "alpine.js",
+      "alpinejs"
+    ],
+    "main": "alpinegear-template.js",
+    "module": "alpinegear-template.esm.js"
+  }

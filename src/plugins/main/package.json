@@ -1,0 +1,18 @@
+{
+    "name": "@ramstack/alpinegear-main",
+    "version": "0.0.0",
+    "description": "@ramstack/alpinegear-main is a combined plugin that includes several Alpine.js directives, providing a convenient all-in-one package.",
+    "author": "Rameel Burhan",
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
+      "directory": "src/plugins/main"
+    },
+    "keywords": [
+      "alpine.js",
+      "alpinejs"
+    ],
+    "main": "alpinegear-main.js",
+    "module": "alpinegear-main.esm.js"
+  }
