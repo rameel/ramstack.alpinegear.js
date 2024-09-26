@@ -39,7 +39,7 @@ jobs:
             fi
           done
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Archive packages (.zip)
         run: zip -r ramstack.alpinegear-${{ github.ref_name }}.zip ./dist/*
