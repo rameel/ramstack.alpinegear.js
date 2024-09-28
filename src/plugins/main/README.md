@@ -2,6 +2,36 @@
 
 `@ramstack/alpinegear-main` is a combined plugin for [Alpine.js](https://alpinejs.dev/) that includes several useful directives. This plugin aggregates multiple individual plugins, providing a convenient all-in-one package.
 
+## Installation
+
+### Using CDN
+To include the CDN version of this plugin, add the following `<script>` tag before the core `alpine.js` file:
+
+```html
+<!-- alpine.js plugin -->
+<script src="https://cdn.jsdelivr.net/npm/@ramstack/alpinegear-main@1/dist/alpinegear-main.min.js" defer></script>
+
+<!-- alpine.js -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+```
+
+### Using NPM
+Alternatively, you can install the plugin via `npm`:
+
+```bash
+npm install --save @ramstack/alpinegear-main
+```
+
+Then initialize it in your bundle:
+
+```js
+import Alpine from "alpinejs";
+import main from "@ramstack/alpinegear-main";
+
+Alpine.plugin(main);
+Alpine.start();
+```
+
 ## Included Plugins
 
 **[@ramstack/alpinegear-bound](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/bound)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/bound))<br>
@@ -100,36 +130,6 @@ Provides the `x-when` directive, which allows for conditional rendering of eleme
         <dd x-text="item.description"></dd>
     </template>
 </template>
-```
-
-## Installation
-
-### Using CDN
-To include the CDN version of this plugin, add the following `<script>` tag before the core `alpine.js` file:
-
-```html
-<!-- alpine.js plugin -->
-<script src="https://cdn.jsdelivr.net/npm/@ramstack/alpinegear-main@1/dist/alpinegear-main.min.js" defer></script>
-
-<!-- alpine.js -->
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-```
-
-### Using NPM
-Alternatively, you can install the plugin via `npm`:
-
-```bash
-npm install --save @ramstack/alpinegear-main
-```
-
-Then initialize it in your bundle:
-
-```js
-import Alpine from "alpinejs";
-import main from "@ramstack/alpinegear-main";
-
-Alpine.plugin(main);
-Alpine.start();
 ```
 
 ## Source Code
