@@ -1,6 +1,6 @@
 import gulp from "gulp";
 import json_transform from "gulp-json-transform";
-import { loadConfigFile } from "rollup/loadConfigFile";
+import { loadConfigFile as load_config_file } from "rollup/loadConfigFile";
 import { rollup } from "rollup";
 import { rimraf } from "rimraf";
 import { ConventionalGitClient } from "@conventional-changelog/git-client";
@@ -33,7 +33,7 @@ const task_copy_readme = create_task("update -> copy README.md", () => {
 });
 
 const task_bundle_scripts = create_task("bundle -> compile package scripts", async done => {
-    const { options: options_list } = await loadConfigFile("rollup.config.js");
+    const { options: options_list } = await load_config_file("rollup.config.js", {});
 
     for (let options of options_list) {
         const bundle = await rollup({ ...options,
@@ -58,7 +58,7 @@ gulp.task("build", done => {
 });
 
 async function obtain_version_from_tag() {
-    return (await new ConventionalGitClient().getVersionFromTags()) || error();
+    return (await new ConventionalGitClient(process.cwd()).getVersionFromTags()) || error();
 
     function error() {
         throw new Error("Failed to obtain version from 'git' tags.");
