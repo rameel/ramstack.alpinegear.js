@@ -96,7 +96,7 @@ function remove_comments() {
         name: "remove_comments",
         transform(source) {
             return {
-                code: strip_comments(source)
+                code: strip_comments(source, {})
             };
         }
     };
