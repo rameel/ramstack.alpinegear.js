@@ -12,8 +12,8 @@ export const loose_index_of = (array, value) => array.findIndex(v => v == value)
 export const has_modifier = (modifiers, modifier) => modifiers.includes(modifier);
 
 export function assert(value, message) {
-    if (__DEV && !value) {
-        throw new Error(message || "Assertion failed.");
+    if (__DEV__ && !value) {
+        throw new Error(message || "Assertion failed");
     }
 }
 

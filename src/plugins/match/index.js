@@ -5,7 +5,7 @@ import { is_template, warn } from "@/utilities/utils";
 function plugin({ addScopeToNode, directive, initTree, mutateDom }) {
     directive("match", (el, { }, { cleanup, effect, evaluateLater }) => {
         if (!is_template(el)) {
-            warn("x-match can only be used on a 'template' tag.");
+            warn("x-match can only be used on a 'template' tag");
             return;
         }
 
@@ -15,15 +15,15 @@ function plugin({ addScopeToNode, directive, initTree, mutateDom }) {
         for (let node of el.content.children) {
             const expr = node.getAttribute("x-case");
             if (expr !== null) {
-                __DEV && has_default_case() && warn("The x-case directive cannot be appear after x-default.");
+                __DEV__ && has_default_case() && warn("The x-case directive cannot be appear after x-default");
                 branches.push({ el: node, get_value: create_getter(evaluateLater, expr) });
             }
             else if (node.hasAttribute("x-default")) {
-                __DEV && has_default_case() && warn("Only one x-default directive is allowed.");
+                __DEV__ && has_default_case() && warn("Only one x-default directive is allowed");
                 branches.push({ el: node, get_value: () => true, default: true });
             }
             else {
-                __DEV && warn("Element has no x-case or x-default directive and will be ignored.", node);
+                __DEV__ && warn("Element has no x-case or x-default directive and will be ignored", node);
             }
         }
 

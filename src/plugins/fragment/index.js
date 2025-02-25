@@ -4,7 +4,7 @@ import { is_template, warn } from "@/utilities/utils";
 function plugin({ addScopeToNode, directive, initTree, mutateDom }) {
     directive("fragment", (el, {}, { cleanup }) => {
         if (!is_template(el)) {
-            warn("x-fragment can only be used on a 'template' tag.");
+            warn("x-fragment can only be used on a 'template' tag");
             return;
         }
 

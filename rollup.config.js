@@ -15,10 +15,6 @@ import {
     fileURLToPath
 } from "url";
 
-const __SRC = path.join(
-    path.dirname(fileURLToPath(import.meta.url)),
-    "src");
-
 const is_production = process.env.NODE_ENV === "production";
 
 const global_plugins = [
@@ -28,7 +24,10 @@ const global_plugins = [
     bundle_size(),
     alias({
         entries: [
-            { find: "@", replacement: __SRC }
+            {
+                find: "@",
+                replacement: path.join(path.dirname(fileURLToPath(import.meta.url)), "src")
+            }
         ]
     })
 ];
@@ -78,7 +77,7 @@ function create_configuration({ plugin_name, input, format, optimize }) {
             replace({
                 preventAssignment: true,
                 values: {
-                    "__DEV": !optimize
+                    "__DEV__": !optimize
                 }
             }),
             virtual({
@@ -96,7 +95,7 @@ function remove_comments() {
         name: "remove_comments",
         transform(source) {
             return {
-                code: strip_comments(source)
+                code: strip_comments(source, {})
             };
         }
     };
