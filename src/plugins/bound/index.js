@@ -38,7 +38,7 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
 
     directive("bound", (el, { expression, value, modifiers }, { effect, cleanup }) => {
         if (!value) {
-            warn("x-bound directive expects the presence of a bound property name.");
+            warn("x-bound directive expects the presence of a bound property name");
             return;
         }
 
@@ -118,12 +118,12 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
                 : el;
 
             if (!el._x_dataStack) {
-                warn("x-bound directive requires the presence of the x-data directive to bind component properties.");
+                warn("x-bound directive requires the presence of the x-data directive to bind component properties");
                 return;
             }
 
             if (!source_el) {
-                warn(`x-bound directive cannot find the parent scope where the '${ value }' property is defined.`);
+                warn(`x-bound directive cannot find the parent scope where the '${ value }' property is defined`);
                 return;
             }
 

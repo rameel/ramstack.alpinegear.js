@@ -5,7 +5,7 @@ import { is_template, warn } from "@/utilities/utils";
 function plugin({ addScopeToNode, directive, initTree, mutateDom }) {
     directive("match", (el, { }, { cleanup, effect, evaluateLater }) => {
         if (!is_template(el)) {
-            warn("x-match can only be used on a 'template' tag.");
+            warn("x-match can only be used on a 'template' tag");
             return;
         }
 

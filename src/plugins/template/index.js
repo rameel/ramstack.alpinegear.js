@@ -3,14 +3,14 @@ import { is_template, warn } from "@/utilities/utils";
 function plugin(alpine) {
     alpine.directive("template", (el, { expression }) => {
         if (is_template(el)) {
-            warn("x-template cannot be used on a 'template' tag.");
+            warn("x-template cannot be used on a 'template' tag");
             return;
         }
 
         const tpl = document.getElementById(expression);
 
         if (!is_template(tpl)) {
-            warn("x-template directive can only reference the template tag.");
+            warn("x-template directive can only reference the template tag");
             return;
         }
 
