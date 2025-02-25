@@ -26,3 +26,6 @@ jobs:
 
       - name: "Test: Alpine.js plugins (cypress)"
         run: npm run test:cypress
+
+      - name: "Test: Alpine.js plugins (vitest)"
+        run: npm run test:vitest
