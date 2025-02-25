@@ -78,7 +78,7 @@ function create_configuration({ plugin_name, input, format, optimize }) {
             replace({
                 preventAssignment: true,
                 values: {
-                    "__DEV": !optimize
+                    "__DEV__": !optimize
                 }
             }),
             virtual({
