@@ -16,8 +16,9 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production gulp build",
     "build:debug": "gulp build",
-    "test": "npm run build:debug && cypress run",
-    "test:cypress": "cypress run"
+    "test": "gulp build && vitest run && cypress run",
+    "test:cypress": "cypress run",
+    "test:vitest": "vitest run"
   },
   "peerDependencies": {
     "alpinejs": "^3.13.0"
