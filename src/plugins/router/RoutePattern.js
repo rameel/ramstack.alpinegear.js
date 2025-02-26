@@ -259,7 +259,7 @@ function parse(pattern, factories) {
                 parameters.set(part.name, true);
 
                 for (let constraint of part.constraints) {
-                    const factory = factories?.[name] ?? default_constraints[constraint.name];
+                    const factory = factories?.[constraint.name] ?? default_constraints[constraint.name];
                     is_nullish(factory) && throw_error(`Unknown constraint '${ constraint.name }'`);
                     Object.assign(constraint, factory(constraint.argument));
                 }
