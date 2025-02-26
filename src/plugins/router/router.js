@@ -7,7 +7,7 @@ export default function({ directive, magic, reactive }) {
     directive("router", (el, { expression, value }, { cleanup, effect, evaluate, evaluateLater: evaluate_later }) => {
         value || (value = "html5");
 
-        const router = closest(el, node => node._b_router)?._b_router;
+        const router = closest(el, node => node._r_router)?._r_router;
 
         if (is_nullish(router) && (value === "outlet" || value === "link")) {
             warn(`no x-router directive found`);
@@ -67,7 +67,7 @@ export default function({ directive, magic, reactive }) {
                 }
             };
 
-            el._b_router = router;
+            el._r_router = router;
 
             function activate(route, path, params) {
                 if (route.nodes?.length && values.path === path) {
@@ -168,10 +168,10 @@ export default function({ directive, magic, reactive }) {
         }
     });
 
-    magic("router", el => closest(el, n => n._b_router)?._b_router);
+    magic("router", el => closest(el, n => n._r_router)?._r_router);
 
     magic("active", el => {
-        const router = closest(el, node => node._b_router)?._b_router;
+        const router = closest(el, node => node._r_router)?._r_router;
         if (is_nullish(router)) {
             warn("No x-router directive found");
             return;
