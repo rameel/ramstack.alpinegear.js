@@ -112,7 +112,7 @@ describe("RoutePattern", () => {
         });
     });
 
-    test("match: /{path*:=(10)", () => {
+    test("match: /{path*:=(10)}", () => {
         const route = new RoutePattern("/{path*:=(10)}");
 
         expect(route.match("/products/display/10")).toEqual({
@@ -132,7 +132,7 @@ describe("RoutePattern", () => {
         });
     });
 
-    test("match: /{path*:=(/controller/action/value)", () => {
+    test("match: /{path*:=(/controller/action/value)}", () => {
         const route = new RoutePattern("/{path*:=(/controller/action/value)}");
 
         expect(route.match("/products/display/10")).toEqual({
@@ -326,7 +326,7 @@ describe("RoutePattern", () => {
         expect(route.match("/")).toEqual({ id: "{default{}}" });
     });
 
-    test("constraint(bool): /{id:bool", () => {
+    test("constraint(bool): /{id:bool}", () => {
         const route = new RoutePattern("/{id:bool}");
         expect(route.match("/true")).toEqual({ id: true });
         expect(route.match("/True")).toEqual({ id: true });
@@ -336,7 +336,7 @@ describe("RoutePattern", () => {
         expect(route.match("/1")).toBeNull();
     });
 
-    test("constraint: /{id:number", () => {
+    test("constraint: /{id:number}", () => {
         const route = new RoutePattern("/{id:number}");
         expect(route.match("/156004")).toEqual({ id: 156004 });
         expect(route.match("/0.156")).toEqual({ id: 0.156 });
@@ -346,7 +346,7 @@ describe("RoutePattern", () => {
         expect(route.match("/3,14")).toBeNull();
     });
 
-    test("constraint: /{id:alpha", () => {
+    test("constraint: /{id:alpha}", () => {
         const route = new RoutePattern("/{id:alpha}");
         expect(route.match("/value")).toEqual({ id: "value" });
 
@@ -356,7 +356,7 @@ describe("RoutePattern", () => {
         expect(route.match("/a1")).toBeNull();
     });
 
-    test("constraint: /{id:length(3)", () => {
+    test("constraint: /{id:length(3)}", () => {
         const route = new RoutePattern("/{id:length(3)}");
         expect(route.match("/abc")).toEqual({ id: "abc" });
 
@@ -364,7 +364,7 @@ describe("RoutePattern", () => {
         expect(route.match("/abcd")).toBeNull();
     });
 
-    test("constraint: /{id:minlength(3)", () => {
+    test("constraint: /{id:minlength(3)}", () => {
         const route = new RoutePattern("/{id:minlength(3)}");
         expect(route.match("/abc")).toEqual({ id: "abc" });
         expect(route.match("/abcd")).toEqual({ id: "abcd" });
@@ -372,7 +372,7 @@ describe("RoutePattern", () => {
         expect(route.match("/ab")).toBeNull();
     });
 
-    test("constraint: /{id:maxlength(3)", () => {
+    test("constraint: /{id:maxlength(3)}", () => {
         const route = new RoutePattern("/{id:maxlength(3)}");
         expect(route.match("/abc")).toEqual({ id: "abc" });
         expect(route.match("/ab")).toEqual({ id: "ab" });
