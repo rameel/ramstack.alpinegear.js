@@ -87,7 +87,7 @@ export class RoutePattern {
 
     constructor(template, constraints = null) {
         this.#template = template;
-        this.#regex = build(
+        this.#regex = build_regex(
             template,
             this.#segments = [],
             this.#parameters = new Map(),
@@ -164,7 +164,7 @@ export class RoutePattern {
                             return null;
                         }
 
-                        // TODO check twice this statement
+                        // TODO Check twice
                         if (part.optional && part.default === value) {
                             continue;
                         }
@@ -193,8 +193,8 @@ export class RoutePattern {
     }
 }
 
-function build(pattern, segments, parameters, constraints) {
-    segments.push(...parse(pattern, constraints));
+function build_regex(pattern, segments, parameters, constraints) {
+    segments.push(...parse_route_pattern(pattern, constraints));
 
     let expression = segments.map(segment => {
         return segment.parts.map((part, index) => {
@@ -225,12 +225,13 @@ function build(pattern, segments, parameters, constraints) {
     return new RegExp(`^${ expression }$`);
 }
 
-function parse(pattern, factories) {
-    return preprocess(segments());
+function parse_route_pattern(pattern, factories) {
+    return preprocess_segments(parse_segments());
 
-    function preprocess(segments) {
-        segments.find(s => s.parts.length > 1 && s.parts.every(p => p.optional))
-            && throw_error("Using all segment parameters as optional is not permitted");
+    function preprocess_segments(segments) {
+        if (segments.find(s => s.parts.length > 1 && s.parts.every(p => p.optional))) {
+            throw_error("Using all segment parameters as optional is not permitted");
+        }
 
         const parameters = new Map;
 
@@ -269,36 +270,36 @@ function parse(pattern, factories) {
         return segments;
     }
 
-    function segments() {
+    function parse_segments() {
         const segments = [];
 
         for (let i = 0; i < pattern.length;) {
-            const r = segment(i);
-            r.template && segments.push(r);
-            i += r.template.length + 1;
+            const segment = parse_segment(i);
+            segment.template && segments.push(segment);
+            i += segment.template.length + 1;
         }
 
         return segments;
     }
 
-    function segment(p) {
+    function parse_segment(pos) {
         let parts = [];
-        let index = p;
+        let index = pos;
 
         while (index < pattern.length && pattern[index] !== "/") {
-            const part = literal(index) || parameter(index);
+            const part = parse_literal(index) || parse_parameter(index);
             parts.push(part);
 
             index += part.template.length;
         }
 
         return {
-            template: pattern.slice(p, index),
+            template: pattern.slice(pos, index),
             parts: parts
         }
     }
 
-    function constraints(text, p) {
+    function parse_constraints(text, p) {
         const array = [];
 
         for (let i = p; i < text.length;) {
@@ -306,26 +307,22 @@ function parse(pattern, factories) {
                 throw_error();
             }
 
-            const name = constraint_name(text.slice(i + 1));
+            const name = get_constraint_name(text.slice(i + 1));
             i += name.length + 1;
 
-            const argument = text[i] === "("
-                ? extract(i, text)
+            const arg = text[i] === "("
+                ? get_parameter_template(i, text)
                 : null;
 
-            is_nullish(argument) || (i += argument.length + 2);
+            is_nullish(arg) || (i += arg.length + 2);
 
-            if (!name && !argument) {
+            if (!name && !arg) {
                 throw_error();
             }
 
             array.push({
-                name: name === ""
-                    ? "regex"
-                    : name === "="
-                        ? "default"
-                        : name,
-                argument: argument ?? ""
+                name: name === "=" ? "default" : name || "regex",
+                argument: arg ?? ""
             });
 
         }
@@ -333,26 +330,21 @@ function parse(pattern, factories) {
         return array;
     }
 
-    function parameter(p) {
+    function parse_parameter(p) {
         if (pattern[p] !== "{") {
             return null;
         }
 
-        const value = extract(p);
-        const param_name = parameter_name(value);
-        const template = pattern.slice(p, p + value.length + 2);
-        const quantifier = (() => {
-            const q = value[param_name.length];
-            return q === "*"
-                || q === "+"
-                || q === "?" ? q : "";
-        })();
-        const list = constraints(value, param_name.length + quantifier.length);
+        const template = get_parameter_template(p);
+        const parameter_template = pattern.slice(p, p + template.length + 2);
+        const name = get_parameter_name(template);
+        const quantifier = /[*+?]/.exec(template[name.length])?.[0] ?? "";
+        const list = parse_constraints(template, name.length + quantifier.length);
 
         return {
+            name: name,
             kind: "parameter",
-            template: template,
-            name: param_name,
+            template: parameter_template,
             quantifier: quantifier,
             constraints: list.filter(c => c.name !== "default"),
             default: list.find(c => c.name === "default")?.argument,
@@ -362,16 +354,14 @@ function parse(pattern, factories) {
         };
     }
 
-    function literal(p) {
-        for (let i = p;; i++) {
-            if (i >= pattern.length
-                || pattern[i] === "/"
-                || pattern[i] === "{") {
-                if (i === p) {
+    function parse_literal(pos) {
+        for (let i = pos; ; i++) {
+            if (i >= pattern.length || pattern[i] === "/" || pattern[i] === "{") {
+                if (i === pos) {
                     return null;
                 }
 
-                const template = pattern.slice(p, i);
+                const template = pattern.slice(pos, i);
                 return {
                     kind: "literal",
                     template: template,
@@ -381,43 +371,40 @@ function parse(pattern, factories) {
         }
     }
 
-    function extract(p, s) {
-        s ??= pattern;
+    function get_parameter_template(pos, str) {
+        str ??= pattern;
         const stack = [];
 
-        loop: for (let i = p; i < s.length; i++) {
-            switch (s[i]) {
+        loop: for (let i = pos; i < str.length; i++) {
+            switch (str[i]) {
                 case "{": stack.push("}"); break;
                 case "(": stack.push(")"); break;
                 case "}":
                 case ")":
-                    if (stack.pop() !== s[i]) break loop;
+                    if (stack.pop() !== str[i]) break loop;
                     break;
             }
 
             if (stack.length === 0) {
-                return s.slice(p + 1, i);
+                return str.slice(pos + 1, i);
             }
         }
 
         throw_error();
     }
 
-    function parameter_name(value) {
-        const r = value.match(/^(?<name>[a-z_$][a-z0-9_$-]*?)(?:[:?+*]|$)/i)?.groups?.name;
-        if ((r?.length ?? -1) < 0) {
-            throw_error("Invalid parameter name");
-        }
-        return r;
+    function get_parameter_name(value) {
+        const name = value.match(/^(?<name>[a-z_$][a-z0-9_$-]*?)(?:[:?+*]|$)/i)?.groups?.name;
+        is_nullish(name) && throw_error("Invalid parameter name");
+
+        return name;
     }
 
-    function constraint_name(value) {
-        const r = value.match(/^(?<name>=|[a-z0-9_$]*)(?=[/:(]|$)/i)?.groups?.name;
-        if ((r?.length ?? -1) < 0) {
-            throw_error("Invalid constraint name");
-        }
+    function get_constraint_name(value) {
+        const name = value.match(/^(?<name>=|[a-z0-9_$]*)(?=[/:(]|$)/i)?.groups?.name;
+        is_nullish(name) && throw_error("Invalid constraint name");
 
-        return r;
+        return name;
     }
 
     function throw_error(message = "Invalid pattern") {

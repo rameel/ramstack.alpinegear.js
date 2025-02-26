@@ -12,7 +12,7 @@ const hash_api = {
     },
     resolve(path) {
         let url = new URL(path);
-        return url.hash ? (url.hash.slice(1) || "/") : url.pathname;
+        return url.hash ? url.hash.slice(1) || "/" : url.pathname;
     },
     navigate(path, replace = false) {
         path.indexOf("#") < 0 && (path = "#" + path);
@@ -42,7 +42,8 @@ function navigate(path, replace) {
 
 const known_api = {
     html5: html5_api,
-    hash: hash_api,
+    fragment: hash_api,
+    hash: hash_api
 };
 
 export function create_history(name) {
@@ -52,7 +53,7 @@ export function create_history(name) {
     let api = known_api[name];
 
     if (!api) {
-        warn(`Unknown history API: '${ name }'`);
+        warn(`Unknown history API: ${ name }`);
         api = html5_api;
     }
 

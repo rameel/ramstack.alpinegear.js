@@ -15,7 +15,7 @@ export default function({ directive, magic, $data }) {
             return;
         }
 
-        const route = closest(el, n => n._b_route)?._b_route;
+        const route = closest(el, n => n._r_route)?._r_route;
 
         if (is_nullish(route) && (value === "view" || value === "handler")) {
             warn(`no x-route directive found`);
@@ -37,7 +37,7 @@ export default function({ directive, magic, $data }) {
         }
 
         function process_route() {
-            const router = closest(el, n => n._b_router)?._b_router;
+            const router = closest(el, n => n._r_router)?._r_router;
             if (is_nullish(router)) {
                 warn(`no x-router directive found`);
                 return;
@@ -45,11 +45,11 @@ export default function({ directive, magic, $data }) {
 
             const view = () => new Promise(resolve => resolve(el.content));
 
-            el._b_route = Object.assign(new RoutePattern(expression), { el, view, handler: () => Promise.resolve() });
-            router.routes.push(el._b_route);
+            el._r_route = Object.assign(new RoutePattern(expression), { el, view, handler: () => Promise.resolve() });
+            router.routes.push(el._r_route);
 
             cleanup(() => {
-                router.routes = router.routes.filter(r => r !== el._b_route);
+                router.routes = router.routes.filter(r => r !== el._r_route);
             });
         }
 
@@ -81,5 +81,5 @@ export default function({ directive, magic, $data }) {
         }
     });
 
-    magic("route", el => closest(el, n => n._b_router)?._b_router.values);
+    magic("route", el => closest(el, n => n._r_router)?._r_router.values);
 }
