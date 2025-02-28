@@ -6,24 +6,30 @@ import { rimraf } from "rimraf";
 import { ConventionalGitClient } from "@conventional-changelog/git-client";
 
 const is_production = process.env.NODE_ENV === "production";
-const current_version = is_production
-    ? await obtain_version_from_tag()
-    : "0.0.0";
 
 const task_delete = create_task("delete -> delete build folders", () => {
     return rimraf(["dist", "coverage", "docs/public/js"]);
 });
 
-const task_update_packages = create_task(`update -> update version to '${current_version}'`, () => {
-    const update_version = data => {
-        data.version = current_version;
-        return data;
-    };
+const task_update_packages = create_task("update -> update version", async done => {
+    if (is_production) {
+        const current_version = await obtain_version_from_tag();
 
-    return gulp
-        .src("src/plugins/**/package.json")
-        .pipe(json_transform(update_version, 2))
-        .pipe(gulp.dest("dist"));
+        const update_version = data => {
+            data.version = current_version;
+            return data;
+        };
+
+        const timestamp = new Date().toLocaleTimeString("en", { hour12: false });
+        console.log(`[\x1b[35m${timestamp}\x1b[0m] Updating version to \x1b[32m${current_version}\x1b[0m`);
+
+        return gulp
+            .src("src/plugins/**/package.json")
+            .pipe(json_transform(update_version, 2))
+            .pipe(gulp.dest("dist"));
+    }
+
+    done();
 });
 
 const task_copy_readme = create_task("update -> copy README.md", () => {
