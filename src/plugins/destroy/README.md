@@ -1,4 +1,6 @@
 # @ramstack/alpinegear-destroy
+[![NPM](https://img.shields.io/npm/v/@ramstack/alpinegear-destroy)](https://www.npmjs.com/package/@ramstack/alpinegear-destroy)
+[![MIT](https://img.shields.io/github/license/rameel/ramstack.alpinegear.js)](https://github.com/rameel/ramstack.alpinegear.js/blob/main/LICENSE)
 
 `@ramstack/alpinegear-destroy` is a plugin for [Alpine.js](https://alpinejs.dev/) that provides the `x-destroy` directive.
 

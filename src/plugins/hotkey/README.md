@@ -1,4 +1,6 @@
 # @ramstack/alpinegear-hotkey
+[![NPM](https://img.shields.io/npm/v/@ramstack/alpinegear-hotkey)](https://www.npmjs.com/package/@ramstack/alpinegear-hotkey)
+[![MIT](https://img.shields.io/github/license/rameel/ramstack.alpinegear.js)](https://github.com/rameel/ramstack.alpinegear.js/blob/main/LICENSE)
 
 `@ramstack/alpinegear-hotkey` is a plugin for [Alpine.js](https://alpinejs.dev/) that provides the `x-hotkey` directive.
 
