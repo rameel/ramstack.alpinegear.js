@@ -1,8 +1,11 @@
 import gulp from "gulp";
-import json_transform from "gulp-json-transform";
-import { loadConfigFile as load_config_file } from "rollup/loadConfigFile";
+import gulp_json_transform from "gulp-json-transform";
+import logger from "gulplog";
+import path from "node:path";
 import { rollup } from "rollup";
 import { rimraf } from "rimraf";
+import { gulpPlugin as gulp_plugin } from "gulp-plugin-extras";
+import { loadConfigFile as load_config_file } from "rollup/loadConfigFile";
 import { ConventionalGitClient } from "@conventional-changelog/git-client";
 
 const is_production = process.env.NODE_ENV === "production";
@@ -20,12 +23,10 @@ const task_update_packages = create_task("update -> update version", async done 
             return data;
         };
 
-        const timestamp = new Date().toLocaleTimeString("en", { hour12: false });
-        console.log(`[\x1b[35m${timestamp}\x1b[0m] Updating version to \x1b[32m${current_version}\x1b[0m`);
-
         return gulp
             .src("src/plugins/**/package.json")
-            .pipe(json_transform(update_version, 2))
+            .pipe(gulp_json_transform(update_version, 2))
+            .pipe(gulp_title(p => `Updating version in \x1b[36m${p}\x1b[0m to \x1b[32m${current_version}\x1b[0m`))
             .pipe(gulp.dest("dist"));
     }
 
@@ -74,4 +75,13 @@ async function obtain_version_from_tag() {
 function create_task(name, task) {
     task.displayName = name;
     return task;
+}
+
+function gulp_title(format_callback) {
+    return gulp_plugin("gulp-title", file => {
+        const relative_path = path.relative(file.cwd, file.path)
+        const title = format_callback(relative_path);
+        title && logger.info(title);
+        return file;
+    });
 }
