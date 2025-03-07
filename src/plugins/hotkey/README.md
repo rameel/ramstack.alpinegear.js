@@ -81,9 +81,10 @@ To simplify common tasks like calling `event.preventDefault()` or `event.stopPro
 the `x-hotkey` directive supports following event modifiers:
 * `.prevent` - calls `event.preventDefault()` before calling the event handler.
 * `.stop` - call `event.stopPropagation()`, stopping the event from propagating further.
-* `.passive` - indicates that the handler will never call `event.preventDefault()`, which improves scrolling performance for touch and wheel events.
+* `.passive` - indicates that the handler will never call `event.preventDefault()`.
 * `.capture` - calling the event handler in the capture phase instead of the bubbling phase.
 * `.once` - ensures the event handler is called only once.
+* `.trusted` - ensures that only trusted events are handled.
 
 ```html
 <!-- prevent the default behavior for the keyboard event -->
@@ -93,7 +94,7 @@ the `x-hotkey` directive supports following event modifiers:
 <div x-hotkey.ctrl+s.stop="save($event)"></div>
 
 <!-- modifiers can be chained -->
-<div x-hotkey.ctrl+s.prevent.stop="save($event)"></div>
+<div x-hotkey.ctrl+s.prevent.stop.trusted="save($event)"></div>
 ```
 
 ### Global Event Listening
@@ -148,7 +149,6 @@ You can also exclude a group of elements by applying the attribute to their pare
     </form>
 </div>
 ```
-
 
 ## Source code
 You can find the source code for this plugin on GitHub:

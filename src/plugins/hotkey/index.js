@@ -1,7 +1,7 @@
 import { registerHotkey as register_hotkey } from "@ramstack/hotkey";
 import { single, has_modifier } from "@/utilities/utils";
 
-const option_keys = ["capture", "passive", "once", "prevent", "stop", "window", "document"];
+const option_keys = ["capture", "passive", "once", "prevent", "stop", "trusted", "window", "document"];
 
 function plugin({ directive }) {
     directive("hotkey", (el, { expression, value, modifiers }, { evaluateLater, cleanup }) => {
@@ -35,7 +35,8 @@ function plugin({ directive }) {
                 {
                     capture: has_modifier(modifiers, "capture"),
                     passive: has_modifier(modifiers, "passive"),
-                    once: has_modifier(modifiers, "once")
+                    once: has_modifier(modifiers, "once"),
+                    trusted: has_modifier(modifiers, "trusted")
                 }));
 
         cleanup(single(...disposes));
