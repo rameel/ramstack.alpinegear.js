@@ -1,4 +1,6 @@
 # @ramstack/alpinegear-main
+[![NPM](https://img.shields.io/npm/v/@ramstack/alpinegear-main)](https://www.npmjs.com/package/@ramstack/alpinegear-main)
+[![MIT](https://img.shields.io/github/license/rameel/ramstack.alpinegear.js)](https://github.com/rameel/ramstack.alpinegear.js/blob/main/LICENSE)
 
 `@ramstack/alpinegear-main` is a combined plugin for [Alpine.js](https://alpinejs.dev/) that includes several useful directives. This plugin aggregates multiple individual plugins, providing a convenient all-in-one package.
 

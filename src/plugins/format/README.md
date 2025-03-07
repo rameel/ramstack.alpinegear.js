@@ -1,4 +1,6 @@
 # @ramstack/alpinegear-format
+[![NPM](https://img.shields.io/npm/v/@ramstack/alpinegear-format)](https://www.npmjs.com/package/@ramstack/alpinegear-format)
+[![MIT](https://img.shields.io/github/license/rameel/ramstack.alpinegear.js)](https://github.com/rameel/ramstack.alpinegear.js/blob/main/LICENSE)
 
 `@ramstack/alpinegear-format` is a plugin for [Alpine.js](https://alpinejs.dev/) that provides the `x-format` directive.
 

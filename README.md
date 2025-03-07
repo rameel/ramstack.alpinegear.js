@@ -1,4 +1,7 @@
 # Ramstack.AlpineGear.js
+[![NPM](https://img.shields.io/npm/v/@ramstack/alpinegear-main)](https://www.npmjs.com/package/@ramstack/alpinegear-main)
+[![MIT](https://img.shields.io/github/license/rameel/ramstack.alpinegear.js)](https://github.com/rameel/ramstack.alpinegear.js/blob/main/LICENSE)
+
 
 **`Ramstack.AlpineGear.js`** provides useful and convenient plugins for [Alpine.js](https://alpinejs.dev/).
 
@@ -104,7 +107,7 @@ Provides the `x-when` directive, which allows for conditional rendering of eleme
 
 
 **[@ramstack/alpinegear-hotkey](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/hotkey)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/hotkey))<br>
-Provides the `x-when` directive, allowing easily handle keyboard shortcuts.
+Provides the `x-hotkey` directive, allowing easily handle keyboard shortcuts.
 
 ```html
 <div x-hotkey.shift+f.window="console.log($event.hotkey)">
