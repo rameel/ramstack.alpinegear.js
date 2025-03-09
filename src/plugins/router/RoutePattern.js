@@ -18,7 +18,7 @@ const default_constraints = Object.freeze({
     },
     "int"() {
         return {
-            test: v => /^\d+$/.test(v),
+            test: v => /^-?\d+$/.test(v),
             transform: v => +v
         };
     },
@@ -50,8 +50,11 @@ const default_constraints = Object.freeze({
         };
     },
     "length"(value) {
+        let values = value.split(",").map(v => v.trim());
         return {
-            test: v => v.length === +value
+            test: values.length == 2
+                ? v => v.length >=  +values[0] && v.length <= +values[1]
+                : v => v.length === +values[0]
         };
     },
     "minlength"(value) {

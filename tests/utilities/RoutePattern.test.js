@@ -300,6 +300,16 @@ describe("RoutePattern", () => {
         expect(route.match("/home")).toBeNull();
     });
 
+    test("constraint: /{id:int}", () => {
+        const route = new RoutePattern("/{id:int}");
+
+        expect(route.match("/-1000")).toEqual({ id: -1000 });
+        expect(route.match("/1001")).toEqual({ id: 1001 });
+        expect(route.match("/1002")).toEqual({ id: 1002 });
+
+        expect(route.match("/home")).toBeNull();
+    });
+
     test("constraint: /{path*:(\\d+):int:range(100,102):=(100)}", () => {
         const route = new RoutePattern("/{path*:(\\d+):int:range(100,102):=(100)}");
 
@@ -362,6 +372,17 @@ describe("RoutePattern", () => {
 
         expect(route.match("/ab")).toBeNull();
         expect(route.match("/abcd")).toBeNull();
+    });
+
+    test("constraint: /{id:length(3,5)}", () => {
+        const route = new RoutePattern("/{id:length(3,5)}");
+        expect(route.match("/abc")).toEqual({ id: "abc" });
+        expect(route.match("/abcd")).toEqual({ id: "abcd" });
+        expect(route.match("/abcde")).toEqual({ id: "abcde" });
+
+        expect(route.match("/a")).toBeNull();
+        expect(route.match("/ab")).toBeNull();
+        expect(route.match("/abcdef")).toBeNull();
     });
 
     test("constraint: /{id:minlength(3)}", () => {

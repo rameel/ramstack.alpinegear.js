@@ -11,8 +11,7 @@ const hash_api = {
         return location;
     },
     resolve(path) {
-        let url = new URL(path);
-        return url.hash ? url.hash.slice(1) || "/" : url.pathname;
+        return new URL(path).hash.slice(1) || "/";
     },
     navigate(path, replace = false) {
         path.indexOf("#") < 0 && (path = "#" + path);
@@ -42,7 +41,6 @@ function navigate(path, replace) {
 
 const known_api = {
     html5: html5_api,
-    fragment: hash_api,
     hash: hash_api
 };
 
