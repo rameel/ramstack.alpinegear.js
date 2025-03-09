@@ -105,7 +105,6 @@ Routes are defined using a `<template>` element with the `x-route` attribute.
     Home page
   </template>
 
-  <!-- External template -->
   <template x-route="/profile/{username}">
     Profile
   </template>
@@ -135,7 +134,6 @@ within an `x-router` element. If no route matches, `x-router:outlet` will render
     Home page
   </template>
 
-  <!-- External template -->
   <template x-route="/profile/{username}">
     Profile
   </template>
