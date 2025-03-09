@@ -374,6 +374,17 @@ describe("RoutePattern", () => {
         expect(route.match("/abcd")).toBeNull();
     });
 
+    test("constraint: /{id:length(3,5)}", () => {
+        const route = new RoutePattern("/{id:length(3,5)}");
+        expect(route.match("/abc")).toEqual({ id: "abc" });
+        expect(route.match("/abcd")).toEqual({ id: "abcd" });
+        expect(route.match("/abcde")).toEqual({ id: "abcde" });
+
+        expect(route.match("/a")).toBeNull();
+        expect(route.match("/ab")).toBeNull();
+        expect(route.match("/abcdef")).toBeNull();
+    });
+
     test("constraint: /{id:minlength(3)}", () => {
         const route = new RoutePattern("/{id:minlength(3)}");
         expect(route.match("/abc")).toEqual({ id: "abc" });
