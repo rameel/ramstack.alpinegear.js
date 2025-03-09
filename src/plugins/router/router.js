@@ -1,10 +1,9 @@
 import { create_history } from "@/plugins/router/history";
-import { create_getter } from "@/utilities/evaluator";
-import { as_array, closest, is_nullish, is_template, listen, warn } from "@/utilities/utils";
+import { closest, is_nullish, is_template, listen, warn } from "@/utilities/utils";
 import { watch } from "@/utilities/watch";
 
 export default function({ directive, magic, reactive }) {
-    directive("router", (el, { expression, value }, { cleanup, effect, evaluate, evaluateLater: evaluate_later }) => {
+    directive("router", (el, { expression, value }, { cleanup, evaluate }) => {
         value || (value = "html5");
 
         const router = closest(el, node => node._r_router)?._r_router;
@@ -143,20 +142,6 @@ export default function({ directive, magic, reactive }) {
 
                 router.navigate(`${ el.pathname }${ el.search }${ el.hash }`);
             });
-
-            if (expression) {
-                const is_active = create_getter(evaluate_later, "$active");
-                const list = as_array(evaluate(expression));
-
-                effect(() => {
-                    const active = is_active();
-                    for (let name of list) {
-                        el.classList.toggle(name, active);
-                    }
-                });
-
-                cleanup(() => el.classList.remove(...list));
-            }
 
             cleanup(unsubscribe);
         }
