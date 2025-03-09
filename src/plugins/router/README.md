@@ -206,6 +206,88 @@ Returns `true` or `false`, indicating whether a link corresponds to the active r
 </nav>
 ```
 
+## Route templates
+
+Routes can contain parameters enclosed in `{}` that are dynamically bound when a route is matched.
+Multiple parameters can be used within a route segment, but they must be separated by a static value. For example:
+```
+{controller}{action}
+```
+is invalid because `{controller}` and `{action}` are not separated by a static value.
+Instead, valid routes should use static separators:
+```
+{controller}/{action}
+```
+```
+article/{id}-{title}
+```
+
+### Route parameters
+Route parameters must have a name and can also include additional attributes.
+Literal values and path separators (`/`) must match exactly in the URL. Matching is case-insensitive and based
+on the decoded URL representation.
+
+#### Optional and Catch-All Parameters
+- **Optional parameters**: Defined with `?`, meaning they are not required. Example: `{id?}`
+- **Catch-all parameters** (`*`): Capture the remaining part of the URL. Example: `blog/{slug*}`
+    - Matches any URL starting with `blog/`.
+    - The remaining value is assigned to the `slug` parameter.
+- **Required catch-all parameters** (`+`): Like `*`, but at least one segment must match.
+
+### Parameter constraints
+Route parameters can have constraints to validate and transform values. Constraints are added using `:` after the parameter name.
+If a constraint requires arguments, they are placed in parentheses.
+
+Example:
+```
+blog/{id:int:min(100)}/{article:minlength(10)}
+```
+
+- `{id:int:min(100)}` ensures `id` is an integer and at least 100.
+- `{article:minlength(10)}` requires `article` to be at least 10 characters long.
+
+Some constraints also transform parameters. For example, `{id:int}` automatically converts `id` to a number.
+
+### Default values
+Route parameters can have **default values**, specified similarly to constraints but using `=` or `default`. Example:
+```
+{controller:=(home)}
+```
+is equivalent to:
+```
+{controller:default(home)}
+```
+If no value is provided in the URL, the default is used.
+
+### Example route patterns
+
+| Route template                                 | URI               | Description                                                   |
+|------------------------------------------------|-------------------|---------------------------------------------------------------|
+| `hello`                                        | `/hello`          | Matches only `/hello`.                                        |
+| `{controller}/{action}/{id?}`                  | `/product/list`   | Matches and sets `controller=product`, `action=list`.         |
+| `{controller}/{action}/{id?}`                  | `/product/list/1` | Matches and sets `controller=product`, `action=list`, `id=1`. |
+| `{controller:=(home)}/{action:=(index)}/{id?}` | `/`               | Matches and sets `controller=home`, `action=index`.           |
+| `{controller:=(home)}/{action:=(index)}/{id?}` | `/product`        | Matches and sets `controller=product`, `action=index`.        |
+| `blog/{slug*:=(start/with/new/blog)}`          | `/blog`           | Matches and sets `slug=[start,with,new,blog]`.                |
+
+### Route constraints
+
+| Constraint         | Example                       | Description                                       |
+|--------------------|-------------------------------|---------------------------------------------------|
+| `int`              | `{id:int}`                    | Matches an integer.                               |
+| `bool`             | `{id:bool}`                   | Matches `true` or `false` (case-insensitive).     |
+| `number`           | `{speed:number}`              | Matches a valid number.                           |
+| `alpha`            | `{name:alpha}`                | Matches alphabetic characters (case-insensitive). |
+| `min(value)`       | `{age:min(25)}`               | Ensures the value is at least `25`.               |
+| `max(value)`       | `{age:max(125)}`              | Ensures the value is no more than `125`.          |
+| `range(min,max)`   | `{age:range(25,125)}`         | Ensures the value is between `25` and `125`.      |
+| `length(value)`    | `{file:length(10)}`           | Requires exactly `10` characters.                 |
+| `length(min,max)`  | `{file:length(10,20)}`        | Requires between `10` and `20` characters.        |
+| `minlength(value)` | `{name:minlength(10)}`        | Requires at least `10` characters.                |
+| `maxlength(value)` | `{name:maxlength(50)}`        | Requires no more than `50` characters.            |
+| `regex(expr)`      | `{id:regex(^\\d{3}-\\d{5}$)}` | Must match a specific regex pattern.              |
+
+
 ## Source Code
 You can find the source code for this plugin on GitHub:
 
