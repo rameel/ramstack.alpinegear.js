@@ -64,7 +64,7 @@ Alpine.start();
 </div>
 ```
 
-## History Modes
+## History modes
 The router can be configured to use different history modes. There are two available modes:
 * `html5`: The default history mode.
 * `hash`: Uses a hash `#` in the URL to manage history.
@@ -96,7 +96,7 @@ configuration since the browser does not send the hash portion of the URL to the
 </div>
 ```
 
-## Route Directive
+## Route directive
 Routes are defined using a `<template>` element with the `x-route` attribute.
 
 ```html
@@ -124,7 +124,7 @@ When a route is matched, the `username` parameter can be accessed via `$route.pa
 
 For more details on dynamic (parameterized) routes, refer to the corresponding section below.
 
-## Outlet Directive
+## Outlet directive
 
 The `x-router:outlet` directive is used to render the matching route's content and can be placed anywhere
 within an `x-router` element. If no route matches, `x-router:outlet` will render nothing.
@@ -145,7 +145,7 @@ within an `x-router` element. If no route matches, `x-router:outlet` will render
 </div>
 ```
 
-## Link Directive
+## Link directive
 
 ```html
 <div x-router:hash>
@@ -178,7 +178,7 @@ The content of the route is loaded from an external HTML file specified in the `
 <template x-route="/about" x-route:view="/views/about.html"></template>
 ```
 
-## Magic Functions
+## Magic functions
 
 ### Magic `$route`
 Indicates the current active route and contains the following properties:
