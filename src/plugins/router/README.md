@@ -216,4 +216,5 @@ Bug reports and contributions are welcome.
 
 ## License
 This package is released as open source under the **MIT License**.
+
 See the [LICENSE](https://github.com/rameel/ramstack.alpinegear.js/blob/main/LICENSE) file for more details.
