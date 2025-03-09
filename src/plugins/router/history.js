@@ -42,7 +42,6 @@ function navigate(path, replace) {
 
 const known_api = {
     html5: html5_api,
-    fragment: hash_api,
     hash: hash_api
 };
 
