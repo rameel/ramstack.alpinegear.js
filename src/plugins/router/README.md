@@ -64,22 +64,6 @@ Alpine.start();
 </div>
 ```
 
-## Inline and External Templates
-Routes can be defined using either **inline templates** or **external templates**:
-
-- **Inline templates**: The content of the route is directly written inside the `<template>` element.
-  ```html
-  <template x-route="/">
-    Home page
-  </template>
-  ```
-
-- **External templates**: The content of the route is loaded from an external HTML file specified in the `x-route:view` attribute.
-  ```html
-  <template x-route="/about" x-route:view="/views/about.html"></template>
-  ```
-  This method is useful for keeping templates separate and organized.
-
 ## History Modes
 The router can be configured to use different history modes. There are two available modes:
 * `html5`: The default history mode.
@@ -176,6 +160,23 @@ within an `x-router` element. If no route matches, `x-router:outlet` will render
 The router does not automatically intercept all links. Only links with the `x-router:link` directive
 inside an `x-router` container are handled by the router. Links should always be specified normally,
 regardless of the selected history mode.
+
+## Inline and External Templates
+Routes can be defined using either **inline templates** or **external templates**:
+
+**Inline templates:**<br />
+The content of the route is directly written inside the `<template>` element.
+```html
+<template x-route="/">
+  Home page
+</template>
+```
+
+**External templates:**<br />
+The content of the route is loaded from an external HTML file specified in the `x-route:view` directive.
+```html
+<template x-route="/about" x-route:view="/views/about.html"></template>
+```
 
 ## Magic Functions
 
