@@ -25,40 +25,166 @@ Alternatively, you can install the plugin via `npm`:
 npm install --save @ramstack/alpinegear-router
 ```
 
-Then initialize it in your bundle:
+Then, initialize it in your project:
 
 ```js
-import Alpine from "alpinejs";
+import alpine from "alpinejs";
 import router from "@ramstack/alpinegear-router";
 
-Alpine.plugin(router);
-Alpine.start();
+alpine.plugin(router);
+alpine.start();
 ```
 
 ## Usage
 
 ```html
 <div x-data x-router>
+  <h1>Hello World!</h1>
+
+  <div>
+    <b>Current route:</b>
+    <pre x-format>{{ JSON.stringify($route, null, 2) }}</pre>
+  </div>
+
+  <!-- Inline template -->
   <template x-route="/">
-    Main page
+    Home page
   </template>
 
-  <template x-route="/article/{id?:int}">
-    <div x-format>
-      Article #{{ $route.params.id }}
-    </div>
-  </template>
-
-  <template x-route="/about" x-route:view="/views/about-us.html"></template>
+  <!-- External template -->
+  <template x-route="/about" x-route:view="/views/about.html"></template>
 
   <nav>
-    <a x-router:link href="/" :class="{'active': $active }">Main</a>
-    <a x-router:link href="/article/123" :class="{'active': $active }">What is routing?</a>
-    <a x-router:link href="/about" :class="{'active': $active }">About Us</a>
+    <a x-router:link href="/">Home</a>
+    <a x-router:link href="/about">About</a>
   </nav>
 
+  <!-- Render the matching route -->
+  <main x-router:outlet></main>
+</div>
+```
+
+## History Modes
+The router can be configured to use different history modes. There are two available modes:
+* `html5`: The default history mode.
+* `hash`: Uses a hash `#` in the URL to manage history.
+
+### HTML5 mode
+The `html5` mode uses the browser's history API to manage navigation.
+```html
+<div x-data x-router:html5>
+  ...
+</div>
+```
+
+Since this mode is the default, there is no need to specify it explicitly:
+```html
+<!-- HTML5 mode is used by default -->
+<div x-data x-router>
+  ...
+</div>
+```
+
+### Hash mode
+This mode uses a hash `#` in the URL to handle navigation. Unlike `html5` mode, it requires no special server-side
+configuration since the browser does not send the hash portion of the URL to the server.
+```html
+<div x-data x-router:hash>
+  ...
+</div>
+```
+
+## Route Directive
+Routes are defined using a `<template>` element with the `x-route` attribute.
+
+```html
+<div x-router>
+  <template x-route="/">
+    Home page
+  </template>
+
+  <!-- External template -->
+  <template x-route="/profile/{username}">
+    Profile
+  </template>
+
+  <!-- Render the matching route -->
   <div x-router:outlet></div>
 </div>
+```
+
+In this example, two routes are defined: a static `/` route representing the homepage,
+and a dynamic (parameterized) route `/profile/{username}`, where `username` is a route parameter enclosed
+in curly brackets.
+
+This means that URLs like `/profile/john` and `/profile/samantha` will both match the same route.
+When a route is matched, the `username` parameter can be accessed via `$route.params.username`.
+
+For more details on dynamic (parameterized) routes, refer to the corresponding section below.
+
+## Outlet Directive
+
+The `x-router:outlet` directive is used to render the matching route's content and can be placed anywhere
+within an `x-router` element. If no route matches, `x-router:outlet` will render nothing.
+
+```html
+<div x-router>
+  <template x-route="/">
+    Home page
+  </template>
+
+  <!-- External template -->
+  <template x-route="/profile/{username}">
+    Profile
+  </template>
+
+  <!-- Render the matching route -->
+  <div x-router:outlet></div>
+</div>
+```
+
+## Link Directive
+
+```html
+<div x-router:hash>
+  ...
+  <nav>
+    <a x-router:link href="/">Home</a>
+    <a x-router:link href="/about">About</a>
+  </nav>
+</div>
+```
+
+The router does not automatically intercept all links. Only links with the `x-router:link` directive
+inside an `x-router` container are handled by the router. Links should always be specified normally,
+regardless of the selected history mode.
+
+## Magic Functions
+
+### Magic `$route`
+Indicates the current active route and contains the following properties:
+
+```html
+<dl x-format>
+  <dt>Route pattern:</dt>
+  <dd>{{ $route.pattern }}</dd>
+
+  <dt>Route path:</dt>
+  <dd>{{ $route.path }}</dd>
+
+  <dt>Route params:</dt>
+  <dd>{{ $route.params.username }}</dd>
+</dl>
+```
+
+### Magic `$active`
+Returns `true` or `false`, indicating whether a link corresponds to the active route.
+
+```html
+<nav>
+  <a x-router:link href="/" class="{ link__active: $active }">Home</a>
+  <a x-router:link href="/about" class="{ link__active: $active }">About</a>
+</nav>
 ```
 
 ## Source Code
