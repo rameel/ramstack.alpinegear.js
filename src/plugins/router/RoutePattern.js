@@ -18,7 +18,7 @@ const default_constraints = Object.freeze({
     },
     "int"() {
         return {
-            test: v => /^\d+$/.test(v),
+            test: v => /^-?\d+$/.test(v),
             transform: v => +v
         };
     },

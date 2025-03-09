@@ -300,6 +300,16 @@ describe("RoutePattern", () => {
         expect(route.match("/home")).toBeNull();
     });
 
+    test("constraint: /{id:int}", () => {
+        const route = new RoutePattern("/{id:int}");
+
+        expect(route.match("/-1000")).toEqual({ id: -1000 });
+        expect(route.match("/1001")).toEqual({ id: 1001 });
+        expect(route.match("/1002")).toEqual({ id: 1002 });
+
+        expect(route.match("/home")).toBeNull();
+    });
+
     test("constraint: /{path*:(\\d+):int:range(100,102):=(100)}", () => {
         const route = new RoutePattern("/{path*:(\\d+):int:range(100,102):=(100)}");
 
