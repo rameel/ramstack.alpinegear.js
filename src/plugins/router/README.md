@@ -159,7 +159,7 @@ The router does not automatically intercept all links. Only links with the `x-ro
 inside an `x-router` container are handled by the router. Links should always be specified normally,
 regardless of the selected history mode.
 
-## Inline and External Templates
+## Inline and External templates
 Routes can be defined using either **inline templates** or **external templates**:
 
 **Inline templates:**<br />
