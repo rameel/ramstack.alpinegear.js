@@ -147,9 +147,13 @@ export default function({ directive, magic, reactive }) {
         }
 
         function process_outlet() {
-            router.outlet && warn("x-router:outlet already specified", router.outlet);
-            router.outlet || (router.outlet = el);
-            cleanup(() => router.outlet = null);
+            if (router.outlet) {
+                warn("x-router:outlet already specified", router.outlet, el);
+            }
+            else {
+                router.outlet = el;
+                cleanup(() => router.outlet = null);
+            }
         }
     });
 
@@ -157,11 +161,11 @@ export default function({ directive, magic, reactive }) {
 
     magic("active", el => {
         const router = closest(el, node => node._r_router)?._r_router;
-        if (is_nullish(router)) {
-            warn("No x-router directive found");
-            return;
+
+        if (!is_nullish(router)) {
+            return router.history.resolve(el.href) === router.values.path;
         }
 
-        return router.history.resolve(el.href) === router.values.path;
+        warn("No x-router directive found");
     });
 }
