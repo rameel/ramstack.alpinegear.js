@@ -28,11 +28,11 @@ npm install --save @ramstack/alpinegear-router
 Then, initialize it in your project:
 
 ```js
-import alpine from "alpinejs";
+import Alpine from "alpinejs";
 import router from "@ramstack/alpinegear-router";
 
-alpine.plugin(router);
-alpine.start();
+Alpine.plugin(router);
+Alpine.start();
 ```
 
 ## Usage
@@ -64,6 +64,22 @@ alpine.start();
 </div>
 ```
 
+## Inline and External Templates
+Routes can be defined using either **inline templates** or **external templates**:
+
+- **Inline templates**: The content of the route is directly written inside the `<template>` element.
+  ```html
+  <template x-route="/">
+    Home page
+  </template>
+  ```
+
+- **External templates**: The content of the route is loaded from an external HTML file specified in the `x-route:view` attribute.
+  ```html
+  <template x-route="/about" x-route:view="/views/about.html"></template>
+  ```
+  This method is useful for keeping templates separate and organized.
+
 ## History Modes
 The router can be configured to use different history modes. There are two available modes:
 * `html5`: The default history mode.
@@ -71,6 +87,7 @@ The router can be configured to use different history modes. There are two avail
 
 ### HTML5 mode
 The `html5` mode uses the browser's history API to manage navigation.
+
 ```html
 <div x-data x-router:html5>
   ...
@@ -78,6 +95,7 @@ The `html5` mode uses the browser's history API to manage navigation.
 ```
 
 Since this mode is the default, there is no need to specify it explicitly:
+
 ```html
 <!-- HTML5 mode is used by default -->
 <div x-data x-router>
