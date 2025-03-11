@@ -159,6 +159,19 @@ The router does not automatically intercept all links. Only links with the `x-ro
 inside an `x-router` container are handled by the router. Links should always be specified normally,
 regardless of the selected history mode.
 
+### Applying `x-router:link` to parent elements
+
+You can also apply `x-router:link` to parent elements, such as `<li>`, to enable more flexible markup structures:
+```html
+<li x-router:link :class="{ active: $active }">
+   <a href="/about">About</a>
+</li>
+```
+
+In this case:
+* `x-router:link` will locate the nested `<a>` element within the parent and use its `href` for routing.
+* The `$active` state will correctly reflect whether the nested link's `href` matches the current route.
+
 ## Inline and External templates
 Routes can be defined using either **inline templates** or **external templates**:
 
@@ -195,7 +208,7 @@ Indicates the current active route and contains the following properties:
 ```
 
 ### Magic `$active`
-Returns `true` or `false`, indicating whether a link corresponds to the active route.
+Returns `true` or `false`, indicating whether a `x-router:link` corresponds to the active route.
 
 ```html
 <nav>
@@ -203,6 +216,15 @@ Returns `true` or `false`, indicating whether a link corresponds to the active r
   <a x-router:link href="/about" class="{ link__active: $active }">About</a>
 </nav>
 ```
+
+#### Applying active class to parent element
+
+```html
+<li x-router:link :class="{ active: $active }">
+   <a href="/about">About</a>
+</li>
+```
+The `$active` state will correctly reflect whether the nested link's `href` matches the current route.
 
 ## Route templates
 
