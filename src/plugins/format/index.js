@@ -1,28 +1,16 @@
 import { create_getter } from "@/utilities/evaluator";
-import { is_nullish, has_modifier } from "@/utilities/utils";
+import { has_modifier } from "@/utilities/utils";
 
-function plugin({ directive, mutateDom }) {
-    directive("format", (el, { modifiers }, { effect, evaluateLater }) => {
-        const cache = new Map;
+function plugin({ directive, evaluateLater, mutateDom }) {
+    directive("format", (el, { modifiers }, { effect }) => {
         const placeholder_regex = /{{(?<expr>.+?)}}/g;
         const is_once = has_modifier(modifiers, "once");
 
         process(el);
 
-        function get_eval_fn(expression) {
-            let getter = cache.get(expression);
-            if (is_nullish(getter)) {
-                getter = create_getter(evaluateLater, expression);
-                cache.set(expression, getter);
-            }
-
-            return getter;
-        }
-
         function update(callback) {
             if (is_once) {
                 mutateDom(() => callback());
-                cache.clear();
             }
             else {
                 effect(() => mutateDom(() => callback()));
@@ -53,7 +41,7 @@ function plugin({ directive, mutateDom }) {
                         fragment.appendChild(document.createTextNode(tokens[i]));
                     }
                     else {
-                        const get_value = get_eval_fn(tokens[i]);
+                        const get_value = create_getter(evaluateLater, node.parentNode, tokens[i]);
                         const text = document.createTextNode("");
 
                         fragment.append(text);
@@ -71,7 +59,7 @@ function plugin({ directive, mutateDom }) {
                 const matches = [...attr.value.matchAll(placeholder_regex)];
                 if (matches.length) {
                     const template = attr.value;
-                    update(() => attr.value = template.replace(placeholder_regex, (_, expr) => get_eval_fn(expr)()));
+                    update(() => attr.value = template.replace(placeholder_regex, (_, expr) => create_getter(evaluateLater, node, expr)()));
                 }
             }
         }
