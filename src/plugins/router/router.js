@@ -149,6 +149,11 @@ export default function({ directive, magic, reactive }) {
 
                 cleanup(unsubscribe);
             }
+
+            //
+            // A warning about a non-existing anchor element is printed in the get_anchor_element function.
+            // warn("<a> element not found")
+            //
         }
 
         function process_outlet() {
