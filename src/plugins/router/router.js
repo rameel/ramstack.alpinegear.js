@@ -126,24 +126,34 @@ export default function({ directive, magic, reactive }) {
         }
 
         function process_link() {
-            const is_blank = (el.getAttribute("target") ?? "").indexOf("_blank") >= 0;
-            const unsubscribe = listen(el, "click", e => {
-                if (e.metaKey
-                    || e.altKey
-                    || e.ctrlKey
-                    || e.shiftKey
-                    || e.defaultPrevented
-                    || e.button > 0
-                    || is_blank) {
-                    return;
-                }
+            let link = get_anchor_element(el);
+            if (link) {
+                el._r_routerlink = link;
 
-                e.preventDefault();
+                const is_blank = (link.getAttribute("target") ?? "").indexOf("_blank") >= 0;
+                const unsubscribe = listen(link, "click", e => {
+                    if (e.metaKey
+                        || e.altKey
+                        || e.ctrlKey
+                        || e.shiftKey
+                        || e.defaultPrevented
+                        || e.button > 0
+                        || is_blank) {
+                        return;
+                    }
 
-                router.navigate(`${ el.pathname }${ el.search }${ el.hash }`);
-            });
+                    e.preventDefault();
 
-            cleanup(unsubscribe);
+                    router.navigate(`${ link.pathname }${ link.search }${ link.hash }`);
+                });
+
+                cleanup(unsubscribe);
+            }
+
+            //
+            // A warning about a non-existing anchor element is printed in the get_anchor_element function.
+            // warn("<a> element not found")
+            //
         }
 
         function process_outlet() {
@@ -161,11 +171,59 @@ export default function({ directive, magic, reactive }) {
 
     magic("active", el => {
         const router = closest(el, node => node._r_router)?._r_router;
-
-        if (!is_nullish(router)) {
-            return router.history.resolve(el.href) === router.values.path;
+        if (is_nullish(router)) {
+            warn("No x-router directive found");
+            return false;
         }
 
-        warn("No x-router directive found");
+        //
+        // Create a dependency on router.values
+        //
+        JSON.stringify(router.values);
+
+        const link = is_anchor_element(el) ? el : closest(el, node => node._r_routerlink)?._r_routerlink;
+
+        //
+        // The issue is that the router:link directive is processed later than x-bind,
+        // and if $active is used in x-bind, we won’t find node._r_routerlink.
+        // Therefore, we delay execution and try again.
+        //
+        // <div x-router:link :class="{ active: $active }">
+        //    ...
+        // </div>
+        //
+
+        if (link) {
+            return router.history.resolve(link.href) === router.values.path;
+        }
+
+        if (el._r_routerlink_init) {
+            warn(`x-router:link directive not found`, el);
+        }
+        else {
+            queueMicrotask(() => {
+                el._r_routerlink_init = true;
+                //
+                // Force an upate
+                //
+                router.values.path = router.values.path;
+            });
+        }
+
+        return false;
     });
+}
+
+function is_anchor_element(el) {
+    return el.tagName.toUpperCase() === "A";
+}
+
+function get_anchor_element(el) {
+    if (is_anchor_element(el)) {
+        return el;
+    }
+
+    const links = el.querySelectorAll("a");
+    links.length !== 1 && warn(`Expected exactly one link, but found ${links.length}`);
+    return links[0];
 }

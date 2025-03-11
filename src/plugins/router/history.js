@@ -11,7 +11,8 @@ const hash_api = {
         return location;
     },
     resolve(path) {
-        return new URL(path).hash.slice(1) || "/";
+        let url = new URL(path);
+        return url.hash ? url.hash.slice(1) || "/" : url.pathname;
     },
     navigate(path, replace = false) {
         path.indexOf("#") < 0 && (path = "#" + path);
