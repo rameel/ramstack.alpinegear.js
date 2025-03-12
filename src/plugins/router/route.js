@@ -2,20 +2,22 @@ import { RoutePattern } from "@/plugins/router/RoutePattern";
 import { load_template } from "@/utilities/load_template";
 import {
     asyncify,
-    closest,
     is_nullish,
     is_template,
     warn
 } from "@/utilities/utils";
 
-export default function({ directive, magic, $data }) {
+export default function({ directive, $data }) {
     directive("route", (el, { expression, value, modifiers }, { cleanup, evaluate }) => {
         if (!is_template(el)) {
             warn("x-route can only be used on a 'template' tag");
             return;
         }
 
-        const route = closest(el, n => n._r_route)?._r_route;
+        //
+        // x-route:view and x-route:handler must be declared on the same element as x-route
+        //
+        const route = el._r_route;
 
         if (is_nullish(route) && (value === "view" || value === "handler")) {
             warn(`no x-route directive found`);
@@ -37,7 +39,7 @@ export default function({ directive, magic, $data }) {
         }
 
         function process_route() {
-            const router = closest(el, n => n._r_router)?._r_router;
+            const router = $data(el)?.$router;
             if (is_nullish(router)) {
                 warn(`no x-router directive found`);
                 return;
@@ -80,6 +82,4 @@ export default function({ directive, magic, $data }) {
             });
         }
     });
-
-    magic("route", el => closest(el, n => n._r_router)?._r_router.values);
 }
