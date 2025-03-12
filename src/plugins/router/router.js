@@ -3,12 +3,12 @@ import { closest, is_nullish, is_template, listen, warn } from "@/utilities/util
 import { watch } from "@/utilities/watch";
 
 export default function({ $data, addScopeToNode, directive, magic, reactive }) {
-    directive("router", (el, { expression, value }, { cleanup, evaluate }) => {
+    directive("router", (el, { value }, { cleanup }) => {
         value || (value = "html5");
 
         const router = $data(el).$router;
 
-        if (is_nullish(router) && (value === "outlet" || value === "link")) {
+        if (!router && (value === "outlet" || value === "link")) {
             warn(`no x-router directive found`);
             return;
         }
@@ -39,9 +39,7 @@ export default function({ $data, addScopeToNode, directive, magic, reactive }) {
                 params: {}
             });
 
-            const api = is_nullish(value) && expression
-                ? evaluate(expression)
-                : create_history(value);
+            const api = create_history(value);
 
             const router = {
                 routes: [],
@@ -103,6 +101,7 @@ export default function({ $data, addScopeToNode, directive, magic, reactive }) {
                     for (let n of router.active.nodes ?? []) {
                         n.remove();
                     }
+
                     router.active.nodes = null;
                     router.active = null;
                 }

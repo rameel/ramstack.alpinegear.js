@@ -19,7 +19,7 @@ export default function({ directive, $data }) {
         //
         const route = el._r_route;
 
-        if (is_nullish(route) && (value === "view" || value === "handler")) {
+        if (!route && (value === "view" || value === "handler")) {
             warn(`no x-route directive found`);
             return;
         }
@@ -40,19 +40,17 @@ export default function({ directive, $data }) {
 
         function process_route() {
             const router = $data(el)?.$router;
-            if (is_nullish(router)) {
-                warn(`no x-router directive found`);
-                return;
+            if (router) {
+                const view = () => new Promise(resolve => resolve(el.content));
+
+                el._r_route = Object.assign(new RoutePattern(expression), { el, view, handler: () => Promise.resolve() });
+                router.routes.push(el._r_route);
+
+                cleanup(() => router.routes = router.routes.filter(r => r !== el._r_route));
             }
-
-            const view = () => new Promise(resolve => resolve(el.content));
-
-            el._r_route = Object.assign(new RoutePattern(expression), { el, view, handler: () => Promise.resolve() });
-            router.routes.push(el._r_route);
-
-            cleanup(() => {
-                router.routes = router.routes.filter(r => r !== el._r_route);
-            });
+            else {
+                warn(`no x-router directive found`);
+            }
         }
 
         function process_handler() {
