@@ -2,11 +2,11 @@ import { create_history } from "@/plugins/router/history";
 import { closest, is_nullish, is_template, listen, warn } from "@/utilities/utils";
 import { watch } from "@/utilities/watch";
 
-export default function({ directive, magic, reactive }) {
+export default function({ $data, addScopeToNode, directive, magic, reactive }) {
     directive("router", (el, { expression, value }, { cleanup, evaluate }) => {
         value || (value = "html5");
 
-        const router = closest(el, node => node._r_router)?._r_router;
+        const router = $data(el).$router;
 
         if (is_nullish(router) && (value === "outlet" || value === "link")) {
             warn(`no x-router directive found`);
@@ -36,7 +36,7 @@ export default function({ directive, magic, reactive }) {
             const values = reactive({
                 pattern: "",
                 path: "",
-                params: ""
+                params: {}
             });
 
             const api = is_nullish(value) && expression
@@ -66,7 +66,7 @@ export default function({ directive, magic, reactive }) {
                 }
             };
 
-            el._r_router = router;
+            addScopeToNode(el, { $route: values, $router: router });
 
             function activate(route, path, params) {
                 if (route.nodes?.length && values.path === path) {
@@ -77,7 +77,7 @@ export default function({ directive, magic, reactive }) {
 
                 values.path = path;
                 values.pattern = route.template;
-                values.params = params;
+                values.params = params ?? {};
 
                 router.active = route;
 
@@ -167,10 +167,8 @@ export default function({ directive, magic, reactive }) {
         }
     });
 
-    magic("router", el => closest(el, n => n._r_router)?._r_router);
-
     magic("active", el => {
-        const router = closest(el, node => node._r_router)?._r_router;
+        const router = $data(el).$router;
         if (is_nullish(router)) {
             warn("No x-router directive found");
             return false;
