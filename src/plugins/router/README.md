@@ -212,8 +212,8 @@ Returns `true` or `false`, indicating whether a `x-router:link` corresponds to t
 
 ```html
 <nav>
-  <a x-router:link href="/" class="{ link__active: $active }">Home</a>
-  <a x-router:link href="/about" class="{ link__active: $active }">About</a>
+  <a x-router:link href="/" class="{ active: $active }">Home</a>
+  <a x-router:link href="/about" class="{ active: $active }">About</a>
 </nav>
 ```
 
