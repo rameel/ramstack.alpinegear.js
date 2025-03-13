@@ -168,7 +168,7 @@ export default function({ $data, addScopeToNode, directive, magic, reactive }) {
 
     magic("active", el => {
         const router = $data(el).$router;
-        if (is_nullish(router)) {
+        if (!router) {
             warn("No x-router directive found");
             return false;
         }
