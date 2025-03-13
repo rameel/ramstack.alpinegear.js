@@ -56,7 +56,7 @@ Alpine.start();
 
   <nav>
     <a x-router:link href="/">Home</a>
-    <a x-router:link href="/about">About</a>
+    <a x-router:link.replace href="/about">About</a>
   </nav>
 
   <!-- Render the matching route -->
@@ -171,6 +171,27 @@ You can also apply `x-router:link` to parent elements, such as `<li>`, to enable
 In this case:
 * `x-router:link` will locate the nested `<a>` element within the parent and use its `href` for routing.
 * The `$active` state will correctly reflect whether the nested link's `href` matches the current route.
+
+### Modifier `replace`
+
+The `replace` modifier changes the default navigation behavior of the router. When a link with this modifier is clicked,
+it triggers `$router.navigate(href, /* replace */ true)`.
+
+Unlike the default behavior, which adds a new entry to the browser's history stack, this option replaces
+the current history entry with the new URL. As a result, the user's navigation history remains unchanged,
+and pressing the **"Back"** button will skip over the replaced entry.
+
+```html
+<div x-router:hash>
+  ...
+  <nav>
+    <a x-router:link href="/">Home</a>
+      <!-- The "replace" modifier ensures that clicking this link
+           replaces the current history entry instead of adding a new one -->
+    <a x-router:link.replace href="/about">About</a>
+  </nav>
+</div>
+```
 
 ## Inline and External templates
 Routes can be defined using either **inline templates** or **external templates**:
