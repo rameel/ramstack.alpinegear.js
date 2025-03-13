@@ -1,5 +1,5 @@
 import { create_history } from "@/plugins/router/history";
-import { closest, has_modifier, is_nullish, is_template, listen, warn } from "@/utilities/utils";
+import { closest, has_modifier, is_template, listen, warn } from "@/utilities/utils";
 import { watch } from "@/utilities/watch";
 
 export default function({ $data, addScopeToNode, directive, magic, reactive }) {
