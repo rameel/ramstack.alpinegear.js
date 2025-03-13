@@ -117,7 +117,7 @@ Provides the `x-hotkey` directive, allowing easily handle keyboard shortcuts.
 
 
 **[@ramstack/alpinegear-router](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/router)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/router))<br>
-Provides routing-related directives for Alpine.js, enabling client-side navigation and routing functionality.
+Provides routing-related directives, enabling client-side navigation and routing functionality.
 
 ```html
 <div x-data x-router:hash>
