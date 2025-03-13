@@ -1,9 +1,9 @@
 import { create_history } from "@/plugins/router/history";
-import { closest, is_nullish, is_template, listen, warn } from "@/utilities/utils";
+import { closest, has_modifier, is_nullish, is_template, listen, warn } from "@/utilities/utils";
 import { watch } from "@/utilities/watch";
 
 export default function({ $data, addScopeToNode, directive, magic, reactive }) {
-    directive("router", (el, { value }, { cleanup }) => {
+    directive("router", (el, { modifiers, value }, { cleanup }) => {
         value || (value = "html5");
 
         const router = $data(el).$router;
@@ -143,7 +143,7 @@ export default function({ $data, addScopeToNode, directive, magic, reactive }) {
 
                     e.preventDefault();
 
-                    router.navigate(`${ link.pathname }${ link.search }${ link.hash }`);
+                    router.navigate(`${ link.pathname }${ link.search }${ link.hash }`, has_modifier(modifiers, "replace"));
                 });
 
                 cleanup(unsubscribe);
