@@ -116,6 +116,37 @@ Provides the `x-hotkey` directive, allowing easily handle keyboard shortcuts.
 ```
 
 
+**[@ramstack/alpinegear-router](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/router)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/router))<br>
+Provides routing-related directives, enabling client-side navigation and routing functionality.
+
+```html
+<div x-data x-router:hash>
+  <h1>Hello World!</h1>
+
+  <div>
+    <b>Current route:</b>
+    <pre x-format>{{ JSON.stringify($route, null, 2) }}</pre>
+  </div>
+
+  <!-- Inline template -->
+  <template x-route="/">
+    Home page
+  </template>
+
+  <!-- External template -->
+  <template x-route="/about" x-route:view="/views/about.html"></template>
+
+  <nav>
+    <a x-router:link href="/">Home</a>
+    <a x-router:link.replace href="/about">About</a>
+  </nav>
+
+  <!-- Render the matching route -->
+  <main x-router:outlet></main>
+</div>
+```
+
+
 **[@ramstack/alpinegear-destroy](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/destroy)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/destroy))<br>
 Provides `x-destroy` provides directive, which is the opposite of `x-init` and allows you to execute code when an element is removed from the DOM.
 
