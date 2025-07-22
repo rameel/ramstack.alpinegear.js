@@ -1,4 +1,4 @@
-export const warn = (...args) => console.warn("alpine-gear.js:", ...args);
+export const warn = (...args) => console.warn("alpinegear.js:", ...args);
 export const is_array = Array.isArray;
 export const is_nullish = value => value === null || value === undefined;
 export const is_checkable_input = el => el.type === "checkbox" || el.type === "radio";

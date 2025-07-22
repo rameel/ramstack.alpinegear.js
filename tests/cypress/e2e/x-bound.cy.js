@@ -435,11 +435,11 @@ describe("x-bound: dimensions", () => {
 
     test("naturalWidth & naturalHeight", html`
         <div x-data="{ w: 0, h: 0 }" x-interpolate>
-            <img &naturalWidth="w" &naturalHeight="h" width="250" src="https://live.mdnplay.dev/en-US/docs/Web/HTML/Element/img/clock-demo-400px.png" />
+            <img &naturalWidth="w" &naturalHeight="h" width="250" src="/tests/cypress/dummy-617x398.png" />
             <pre x-format>{{ w }},{{ h }}</pre>
         </div>`, ({ get }) => {
 
-        get("pre").contains(/^400,398$/);
+        get("pre").contains(/^617,398$/);
     });
 
     test("videoWidth & videoHeight", html`
