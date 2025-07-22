@@ -1,7 +1,7 @@
 {
   "name": "@ramstack/alpinegear.js",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "@ramstack/alpinegear.js provides additional Alpine.js directives, magic functions, and utilities to enhance developer productivity.",
   "author": "Rameel Burhan",
   "license": "MIT",
