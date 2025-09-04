@@ -13,7 +13,7 @@ To include the CDN version of this plugin, add the following `<script>` tag befo
 
 ```html
 <!-- alpine.js plugin -->
-<script src="https://cdn.jsdelivr.net/npm/@ramstack/alpinegear-when@1/alpinegear-match.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@ramstack/alpinegear-match@1/alpinegear-match.min.js" defer></script>
 
 <!-- alpine.js -->
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
@@ -101,3 +101,4 @@ Bug reports and contributions are welcome.
 ## License
 This package is released as open source under the **MIT License**.
 See the [LICENSE](https://github.com/rameel/ramstack.alpinegear.js/blob/main/LICENSE) file for more details.
+
