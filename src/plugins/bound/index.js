@@ -129,12 +129,12 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
 
             const source = {
                 get: create_getter(evaluateLater, source_el, expression),
-                set: create_setter(evaluateLater, source_el, expression),
+                set: create_setter(evaluateLater, source_el, expression)
             };
 
             const target = {
                 get: create_getter(evaluateLater, el, value),
-                set: create_setter(evaluateLater, el, value),
+                set: create_setter(evaluateLater, el, value)
             };
 
             switch (modifier) {
@@ -172,14 +172,14 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
                     // will have no effect since there are no options yet.
                     // Therefore, we use a small trick to set the value a bit later
                     // when the "x-for" directive has finished its work.
-                    queueMicrotask(() => {
+                    setTimeout(() => {
                         // if the value of the bound property is "null" or "undefined",
                         // we initialize it with the value from the element.
                         is_nullish(get_value()) && update_variable();
 
                         effect(() => apply_select_values(el, as_array(get_value() ?? [])));
                         cleanup(listen(el, "change", () => set_value(collect_selected_values(el))));
-                    });
+                    }, 0);
 
                     processed = true;
                     break;

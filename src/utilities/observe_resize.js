@@ -1,8 +1,8 @@
 const key = Symbol();
-let observable;
+let observer;
 
 export function observe_resize(el, listener) {
-    observable ??= new ResizeObserver(entries => {
+    observer ??= new ResizeObserver(entries => {
         for (const e of entries) {
             for (const callback of e.target[key]?.values() ?? []) {
                 callback(e);
@@ -13,13 +13,13 @@ export function observe_resize(el, listener) {
     el[key] ??= new Set();
     el[key].add(listener);
 
-    observable.observe(el);
+    observer.observe(el);
 
     return () => {
         el[key].delete(listener);
 
         if (!el[key].size) {
-            observable.unobserve(el);
+            observer.unobserve(el);
             el[key] = null;
         }
     };

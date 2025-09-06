@@ -10,7 +10,8 @@ import {
 export default defineConfig({
     test: {
         globals: true,
-        environment: "jsdom"
+        environment: "jsdom",
+        include: ['tests/utilities/**/*.test.js']
     },
     resolve: {
         alias: {
