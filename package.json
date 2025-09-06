@@ -18,7 +18,7 @@
     "build:debug": "gulp build",
     "test": "gulp build && vitest run && playwright test",
     "test:playwright": "playwright test",
-    "test:vitest": "vitest run tests/utilities"
+    "test:vitest": "vitest run"
   },
   "peerDependencies": {
     "alpinejs": "^3.13.0"
