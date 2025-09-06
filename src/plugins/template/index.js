@@ -18,7 +18,7 @@ function plugin(alpine) {
         // to handle context propagation for cloned elements properly.
         // This is important because manipulation can occur within the mutateDom function
         // when mutation observing is disabled, preventing proper context propagation
-        // for cloned elements
+        // for cloned elements.
         queueMicrotask(() => {
             el.innerHTML = "";
             el.append(tpl.content.cloneNode(true));

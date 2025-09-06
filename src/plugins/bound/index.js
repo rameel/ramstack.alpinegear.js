@@ -129,12 +129,12 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
 
             const source = {
                 get: create_getter(evaluateLater, source_el, expression),
-                set: create_setter(evaluateLater, source_el, expression),
+                set: create_setter(evaluateLater, source_el, expression)
             };
 
             const target = {
                 get: create_getter(evaluateLater, el, value),
-                set: create_setter(evaluateLater, el, value),
+                set: create_setter(evaluateLater, el, value)
             };
 
             switch (modifier) {
