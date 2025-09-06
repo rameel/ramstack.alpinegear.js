@@ -16,15 +16,16 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production gulp build",
     "build:debug": "gulp build",
-    "test": "gulp build && vitest run && cypress run",
-    "test:cypress": "cypress run",
-    "test:vitest": "vitest run"
+    "test": "gulp build && vitest run && playwright test",
+    "test:playwright": "playwright test",
+    "test:vitest": "vitest run tests/utilities"
   },
   "peerDependencies": {
     "alpinejs": "^3.13.0"
   },
   "devDependencies": {
     "@conventional-changelog/git-client": "^2.5.1",
+    "@playwright/test": "^1.55.0",
     "@ramstack/hotkey": "^1.1.0",
     "@rollup/plugin-alias": "^5.1.1",
     "@rollup/plugin-node-resolve": "^16.0.1",
@@ -36,7 +37,6 @@
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
     "cross-env": "^7.0.3",
-    "cypress": "^14.5.2",
     "glob": "^11.0.3",
     "gulp": "^5.0.1",
     "gulp-json-transform": "^0.5.0",
