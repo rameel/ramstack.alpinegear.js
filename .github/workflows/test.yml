@@ -8,21 +8,21 @@ jobs:
   main:
     name: "Build & Test"
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+      options: --user 1001:1001 # Run as non-root user for security
 
     steps:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Dependencies
-        run: npm i
-
-      - name: Install Playwright
-        run: npx playwright install --with-deps
+        run: npm ci
 
       - name: Build (Debug version)
         run: npm run build:debug
