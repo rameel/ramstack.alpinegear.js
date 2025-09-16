@@ -23,6 +23,7 @@ const canonical_names = create_map(
     "videoHeight,videoWidth," +
     "naturalHeight,naturalWidth," +
     "clientHeight,clientWidth,offsetHeight,offsetWidth," +
+    "indeterminate," +
     "open," +
     "group");
 
@@ -97,6 +98,10 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
             case "offsetHeight":
             case "offsetWidth":
                 process_dimensions();
+                break;
+
+            case "indeterminate":
+                process_indeterminate();
                 break;
 
             case "open":
@@ -190,6 +195,14 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
             if (is_checkable_input(el)) {
                 effect(update_property);
                 cleanup(listen(el, "change", update_variable));
+                processed = true;
+            }
+        }
+
+        function process_indeterminate() {
+            if (el.type === "checkbox") {
+                is_nullish(get_value()) && update_variable();
+                effect(update_property);
                 processed = true;
             }
         }
