@@ -24,10 +24,15 @@ test.describe("x-bound: checkbox", () => {
                 <span x-format>{{ indeterminate }}</span>
             </div>`);
 
+        await expect(page.locator("input")).toHaveJSProperty('indeterminate', true);
         await expect(page.locator("span")).toHaveText("true");
+
         await page.locator("button").click();
+        await expect(page.locator("input")).toHaveJSProperty('indeterminate', false);
         await expect(page.locator("span")).toHaveText("false");
+
         await page.locator("button").click();
+        await expect(page.locator("input")).toHaveJSProperty('indeterminate', true);
         await expect(page.locator("span")).toHaveText("true");
     });
 
@@ -39,10 +44,15 @@ test.describe("x-bound: checkbox", () => {
                 <span x-format>{{ indeterminate }}</span>
             </div>`);
 
+        await expect(page.locator("input")).toHaveJSProperty('indeterminate', false);
         await expect(page.locator("span")).toHaveText("false");
+
         await page.locator("button").click();
+        await expect(page.locator("input")).toHaveJSProperty('indeterminate', true);
         await expect(page.locator("span")).toHaveText("true");
+
         await page.locator("button").click();
+        await expect(page.locator("input")).toHaveJSProperty('indeterminate', false);
         await expect(page.locator("span")).toHaveText("false");
     });
 
@@ -54,10 +64,15 @@ test.describe("x-bound: checkbox", () => {
                 <span x-format>{{ indeterminate }}</span>
             </div>`);
 
+        await expect(page.locator("input")).toHaveJSProperty('indeterminate', false);
         await expect(page.locator("span")).toHaveText("false");
+
         await page.locator("button").click();
+        await expect(page.locator("input")).toHaveJSProperty('indeterminate', true);
         await expect(page.locator("span")).toHaveText("true");
+
         await page.locator("button").click();
+        await expect(page.locator("input")).toHaveJSProperty('indeterminate', false);
         await expect(page.locator("span")).toHaveText("false");
     });
 
