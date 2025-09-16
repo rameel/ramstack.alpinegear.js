@@ -16,6 +16,51 @@ test.describe("x-bound: checkbox", () => {
         await expect(page.locator("span")).toHaveText("false");
     });
 
+    test("checkbox:indeterminate", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ indeterminate: true }">
+                <input type="checkbox" &indeterminate />
+                <button @click="indeterminate = !indeterminate">Clear indeterminate</button>
+                <span x-format>{{ indeterminate }}</span>
+            </div>`);
+
+        await expect(page.locator("span")).toHaveText("true");
+        await page.locator("button").click();
+        await expect(page.locator("span")).toHaveText("false");
+        await page.locator("button").click();
+        await expect(page.locator("span")).toHaveText("true");
+    });
+
+    test("checkbox:indeterminate - initialize from undefined", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ indeterminate: undefined }">
+                <input type="checkbox" &indeterminate />
+                <button @click="indeterminate = !indeterminate">Clear indeterminate</button>
+                <span x-format>{{ indeterminate }}</span>
+            </div>`);
+
+        await expect(page.locator("span")).toHaveText("false");
+        await page.locator("button").click();
+        await expect(page.locator("span")).toHaveText("true");
+        await page.locator("button").click();
+        await expect(page.locator("span")).toHaveText("false");
+    });
+
+    test("checkbox:indeterminate - initialize from null", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ indeterminate: null }">
+                <input type="checkbox" &indeterminate />
+                <button @click="indeterminate = !indeterminate">Clear indeterminate</button>
+                <span x-format>{{ indeterminate }}</span>
+            </div>`);
+
+        await expect(page.locator("span")).toHaveText("false");
+        await page.locator("button").click();
+        await expect(page.locator("span")).toHaveText("true");
+        await page.locator("button").click();
+        await expect(page.locator("span")).toHaveText("false");
+    });
+
     test("radio", async ({ page }) => {
         await set_html(page, `
             <div x-data="{ checked: true }">

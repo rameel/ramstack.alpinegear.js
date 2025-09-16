@@ -212,6 +212,33 @@ The group of `<input>` elements that should function together can utilize the `g
 </div>
 ```
 
+### Binding `input[type="checkbox"]:indeterminate` property
+The `x-bound` directive supports binding the `indeterminate` property of `<input type="checkbox">` elements,
+allowing you to control the checkbox's indeterminate state (a state where the checkbox is neither checked nor unchecked,
+typically represented visually with a dash or similar indicator).
+
+This is useful for scenarios like selecting a subset of items in a list, such as in a table header checkbox:
+```html
+<table>
+  <thead>
+    <tr>
+      <th>
+        <input type="checkbox"
+               &indeterminate="isPartialSelected"
+               &checked="isAllSelected" />
+      </th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  ...
+</table>
+```
+In this example, the `indeterminate` property of the checkbox is bound to the `isPartialSelected` data property.
+When `isPartialSelected` is `true`, the checkbox will be in the indeterminate state.
+
+> [!NOTE]
+> The `indeterminate` binding is one-way. Changes to the indeterminate property in the DOM (e.g., via user interaction or JavaScript) do not update the bound data property.
+
 ### Binding `Alpine` data properties
 
 The directive also supports synchronizing values between two data properties.
