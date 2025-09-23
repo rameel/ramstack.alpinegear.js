@@ -45,7 +45,7 @@ test("x-format: context aware", async ({ page }) => {
 test("x-format: nested x-data", async ({ page }) => {
     await set_html(page, `
       <div x-data="{ value1: 3.14 }" x-format>
-        <div x-data="{ value2: 2.71 }">
+        <div id="d2" x-data="{ value2: 2.71 }" title="{{ value2 }}">
           <span id="v2">{{ value2 }}</span>
           <button id="b2" @click="value2 = 'math.e'">Change</button>
         </div>
@@ -56,18 +56,20 @@ test("x-format: nested x-data", async ({ page }) => {
 
     await expect(page.locator("#v1")).toContainText("3.14");
     await expect(page.locator("#v2")).toContainText("2.71");
+    await expect(page.locator("#d2")).toHaveAttribute("title", "2.71");
 
     await page.locator("#b1").click();
     await expect(page.locator("#v1")).toContainText("math.pi");
 
     await page.locator("#b2").click();
     await expect(page.locator("#v2")).toContainText("math.e");
+    await expect(page.locator("#d2")).toHaveAttribute("title", "math.e");
 });
 
 test("x-format: nested x-data with manually x-format", async ({ page }) => {
     await set_html(page, `
       <div x-data="{ value1: 3.14 }" x-format>
-        <div x-data="{ value2: 2.71 }" x-format>
+        <div id="d2" x-data="{ value2: 2.71 }" x-format title="{{ value2 }}">
           <span id="v2">{{ value2 }}</span>
           <button id="b2" @click="value2 = 'math.e'">Change</button>
         </div>
@@ -78,11 +80,13 @@ test("x-format: nested x-data with manually x-format", async ({ page }) => {
 
     await expect(page.locator("#v1")).toContainText("3.14");
     await expect(page.locator("#v2")).toContainText("2.71");
+    await expect(page.locator("#d2")).toHaveAttribute("title", "2.71");
 
     await page.locator("#b1").click();
     await expect(page.locator("#v1")).toContainText("math.pi");
 
     await page.locator("#b2").click();
     await expect(page.locator("#v2")).toContainText("math.e");
+    await expect(page.locator("#d2")).toHaveAttribute("title", "math.e");
 });
 
