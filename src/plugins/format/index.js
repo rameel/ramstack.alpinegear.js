@@ -25,6 +25,30 @@ function plugin({ directive, evaluateLater, mutateDom }) {
                     break;
 
                 case Node.ELEMENT_NODE:
+                    if (node !== el) {
+                        //
+                        // When we encounter an element with the "x-data" attribute, its properties
+                        // are not yet initialized, and the Alpine context is unavailable.
+                        // Attempting to use these properties will result in
+                        // an "Alpine Expression Error: [expression] is not defined".
+                        //
+                        // Workaround:
+                        // To avoid this, we manually add our "x-format" directive to the element.
+                        // Alpine evaluates "x-format" directive once the context is initialized.
+                        // In the current loop, we skip these elements to defer their processing.
+                        //
+                        // This also handles cases where the user manually adds the "x-format" attribute.
+                        //
+                        if (node.hasAttribute("x-data") && !has_format_attr(node)) {
+                            node.setAttribute("x-format", "");
+                        }
+
+                        if (has_format_attr(node)) {
+                            break;
+                        }
+                    }
+
+
                     process_nodes(node);
                     process_attributes(node);
                     break;
@@ -67,29 +91,6 @@ function plugin({ directive, evaluateLater, mutateDom }) {
 
         function process_nodes(node) {
             for (let child of node.childNodes) {
-                if (child.nodeType === Node.ELEMENT_NODE) {
-                    //
-                    // When we encounter an element with the 'x-data' attribute, its properties
-                    // are not yet initialized, and the Alpine context is unavailable.
-                    // Attempting to use these properties will result in
-                    // an "Alpine Expression Error: [expression] is not defined".
-                    //
-                    // Workaround:
-                    // To avoid this, we manually add our 'x-format' directive to the element.
-                    // Alpine evaluates 'x-format' directive once the context is initialized.
-                    // In the current loop, we skip these elements to defer their processing.
-                    //
-                    // This also handles cases where the user manually adds the 'x-format' attribute.
-                    //
-                    if (child.hasAttribute("x-data") && !has_format_attr(child)) {
-                        child.setAttribute("x-format", "");
-                    }
-
-                    if (has_format_attr(child)) {
-                        continue;
-                    }
-                }
-
                 process(child);
             }
         }
