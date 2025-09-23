@@ -11,7 +11,9 @@
     },
     "keywords": [
       "alpine.js",
-      "alpinejs"
+      "alpinejs",
+      "alpinejs-directive",
+      "alpinejs-plugin"
     ],
     "main": "alpinegear-match.js",
     "module": "alpinegear-match.esm.js"

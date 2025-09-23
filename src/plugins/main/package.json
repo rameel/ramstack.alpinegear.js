@@ -11,7 +11,13 @@
     },
     "keywords": [
       "alpine.js",
-      "alpinejs"
+      "alpinejs",
+      "alpinejs-binding",
+      "alpinejs-fragment",
+      "alpinejs-directive",
+      "alpinejs-plugin",
+      "template",
+      "formatting"
     ],
     "main": "alpinegear-main.js",
     "module": "alpinegear-main.esm.js"

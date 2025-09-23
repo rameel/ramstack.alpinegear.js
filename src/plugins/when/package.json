@@ -12,6 +12,11 @@
       "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
       "directory": "src/plugins/when"
     },
-    "keywords": [],
+    "keywords": [
+      "alpine.js",
+      "alpinejs",
+      "alpinejs-directive",
+      "alpinejs-plugin"
+    ],
     "main": "dist/alpinegear-when.js"
   }
