@@ -4,7 +4,8 @@
 
 `@ramstack/alpinegear-destroy` is a plugin for [Alpine.js](https://alpinejs.dev/) that provides the `x-destroy` directive.
 
-This directive is the opposite of `x-init` and allows you to execute code when an element is removed from the DOM.
+This directive is the opposite of `x-init` and allows you to hook into the cleanup phase of any element in Alpine,
+running a callback when the element is removed from the DOM.
 
 ## Installation
 
@@ -41,19 +42,21 @@ In this example, when the `<div>` is removed, the message `Element destroyed` wi
 
 ```html
 <div x-data="{ show: true, destroyed: false }">
-  <button @click="show = false">Hide message</button>
+  <button @click="show = false">Remove element</button>
+  <button @click="show = true, destroyed = false">Reset</button>
 
   <p x-show="destroyed">
-    <u>Element destroyed</u>
+    Element destroyed
   </p>
 
   <template x-if="show">
-    <div x-destroy="destroyed = true">
-      <p>Hello, World!</p>
-    </div>
+    <p x-destroy="destroyed = true">
+      Hello, World!
+    </p>
   </template>
 </div>
 ```
+🚀 [Live demo | Alpine.js x-destroy: Handle DOM element removal](https://jsfiddle.net/rameel/qcnwm2b0/)
 
 ## Source code
 You can find the source code for this plugin on GitHub:
