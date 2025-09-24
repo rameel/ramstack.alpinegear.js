@@ -1,7 +1,7 @@
 {
   "name": "@ramstack/alpinegear.js",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.2.2",
   "description": "@ramstack/alpinegear.js provides additional Alpine.js directives, magic functions, and utilities to enhance developer productivity.",
   "author": "Rameel Burhan",
   "license": "MIT",
@@ -11,7 +11,17 @@
   },
   "keywords": [
     "alpine.js",
-    "alpinejs"
+    "alpinejs",
+    "alpinejs-directive",
+    "alpinejs-plugin",
+    "template",
+    "formatting",
+    "alpinejs-shortcut",
+    "alpinejs-hotkey",
+    "alpinejs-binding",
+    "fragment",
+    "alpinejs-fragment"
+
   ],
   "scripts": {
     "build": "cross-env NODE_ENV=production gulp build",
