@@ -149,7 +149,7 @@ This will generate the following HTML structure:
 As you can see, we are able to render nested elements by recursively referencing the same template within itself,
 which opens up a lot of possibilities for complex layouts.
 
-#### Interactive Tree with Recursive x-template
+#### Interactive Tree with Recursive Template
 
 Explore another example showcasing a recursive `x-template` to render an interactive tree with expandable folders
 and dynamic child addition.
