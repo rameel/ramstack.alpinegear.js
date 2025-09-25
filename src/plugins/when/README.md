@@ -19,7 +19,7 @@ To include the CDN version of this plugin, add the following `<script>` tag befo
 <script src="https://cdn.jsdelivr.net/npm/@ramstack/alpinegear-when@1/alpinegear-when.min.js" defer></script>
 
 <!-- alpine.js -->
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
 ```
 
 ### Using NPM
