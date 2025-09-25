@@ -66,11 +66,11 @@ The `x-when` directive can also be used with the directive `x-for` to conditiona
 ```html
 <div x-data="{
   items: [
-    { term: 'Star',   description: 'Luminous plasma sphere.' },
+    { term: 'Star', description: 'Luminous plasma sphere.' },
     { term: 'Planet', description: 'Body orbiting a star.' },
     { term: 'Galaxy', description: 'Stars and dust system.' },
-    { term: 'Nebula', description: 'Cloud of gas in space.' }]
-  }">
+    { term: 'Nebula', description: 'Cloud of gas in space.' }
+  ]}">
   <button @click="items.reverse()">Reverse</button>
 
   <dl>
