@@ -46,7 +46,7 @@ Here's a simple example:
 
 ```html
 <div x-data x-hotkey.shift+f.window="console.log($event.hotkey)">
-    Hello, World!
+  Hello, World!
 </div>
 ```
 
@@ -72,9 +72,9 @@ Also, the `x-hotkey` automatically passes the event object as the first argument
 <div x-data x-hotkey.shift+f.window="handle"></div>
 
 <script>
-    function handle(e) {
-        console.log(e);
-    }
+  function handle(e) {
+    console.log(e);
+  }
 </script>
 ```
 
@@ -115,7 +115,7 @@ This property contains the string representation of the hotkey.
 
 ```html
 <div x-data x-hotkey.ctrl+shift+f.alt+u.window="console.log($event.hotkey)">
-    Hello, World!
+  Hello, World!
 </div>
 ```
 
@@ -133,9 +133,9 @@ If you want to prevent hotkey handling from being triggered by specific elements
 
 ```html
 <div x-hotkey.shift+k="...">
-    ...
-    <!-- Ignoring hotkeys from the input element -->
-    <input type="text" data-hotkey-ignore>
+  ...
+  <!-- Ignoring hotkeys from the input element -->
+  <input type="text" data-hotkey-ignore>
 </div>
 ```
 
@@ -143,12 +143,12 @@ You can also exclude a group of elements by applying the attribute to their pare
 
 ```html
 <div x-hotkey.shift+k="...">
-    ...
+  ...
 
-    <!-- Ignoring hotkeys from all elements within the form -->
-    <form data-hotkey-ignore>
-    ...
-    </form>
+  <!-- Ignoring hotkeys from all elements within the form -->
+  <form data-hotkey-ignore>
+  ...
+  </form>
 </div>
 ```
 

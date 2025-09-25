@@ -95,7 +95,7 @@ Here's an example demonstrating the use of `<template>` with `x-case` to render 
   </template>
 </template>
 ```
-🚀 [Live demo | Alpine.js x-match: Multiple root elements with conditional rendering](https://jsfiddle.net/rameel/0vLksypo/)
+🚀 [Live demo | Alpine.js x-match: Multiple root elements](https://jsfiddle.net/rameel/0vLksypo/)
 
 In this example, the `x-match` directive with `<template>` tags allows rendering multiple root elements
 (e.g., `<h2>`, `<p>`, `<a>`, and `<button>`) without needing an extra wrapper like a `<div>`.
