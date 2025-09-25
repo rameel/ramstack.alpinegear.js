@@ -16,7 +16,7 @@ To include the CDN version of this plugin, add the following `<script>` tag befo
 <script src="https://cdn.jsdelivr.net/npm/@ramstack/alpinegear-format@1/alpinegear-format.min.js" defer></script>
 
 <!-- alpine.js -->
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
 ```
 
 ### Using NPM
@@ -128,7 +128,7 @@ For instance, in the example below, the `{{ message }}` inside `x-if` remains un
 ```html
 <div x-data="{ show: false, message: 'Hello, World!'}" x-format>
   <template x-if="show">
-    <span>{{ message }}</span>
+    <p>{{ message }}</p>
   </template>
 </div>
 ```
@@ -136,12 +136,20 @@ For instance, in the example below, the `{{ message }}` inside `x-if` remains un
 To ensure proper interpolation, include the `x-format` directive in the dynamically rendered elements:
 
 ```html
-<div x-data="{ show: false, message: 'Hello, World!'}">
-    <template x-if="show">
-        <span x-format>{{ message }}</span>
-    </template>
+<div x-data="{ show: false, message: 'Hello, World!' }">
+  <input x-model="message" />
+
+  <label>
+    <input type="checkbox" x-model="show" />
+    Show message
+  </label>
+
+  <template x-if="show">
+    <p x-format>{{ message }}</p>
+  </template>
 </div>
 ```
+🚀 [Live demo | Alpine.js x-format: Dynamic elements](https://jsfiddle.net/rameel/1s8pwcx9/)
 
 ## Source Code
 You can find the source code for this plugin on GitHub:
