@@ -17,7 +17,7 @@ To include the CDN version of this plugin, add the following `<script>` tag befo
 <script src="https://cdn.jsdelivr.net/npm/@ramstack/alpinegear-fragment@1/alpinegear-fragment.min.js" defer></script>
 
 <!-- alpine.js -->
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
 ```
 
 ### Using NPM
@@ -41,41 +41,53 @@ Alpine.start();
 With the `x-fragment` directive, you can use multiple root elements in your components without needing a wrapper container:
 
 ```html
-<div x-data="{ show: true, message: 'Example' }">
-    <div>
-        <button @click="show = !show">Edit Message</button>
-    </div>
+<div x-data="{ show: false }">
+  <button @click="show = !show">Show more</button>
+
+  <ul>
+    <li>Apple</li>
+    <li>Banana</li>
 
     <template x-if="show">
-        <template x-fragment>
-            <label>Message:</label>
-            <input x-model="message" />
-        </template>
+      <template x-fragment>
+        <li>Orange</li>
+        <li>Grape</li>
+        <li>Mango</li>
+      </template>
     </template>
+  </ul>
 </div>
 ```
-In this example, the `x-fragment` directive allows the `<label>` and `<input>` elements to exist side by side without a parent container.
+🚀 [Live demo | Alpine.js x-fragment: Multiple root elements](https://jsfiddle.net/rameel/jdwuoatf/)
+
+In this example, the `x-fragment` directive allows the `<li>` elements (Orange, Grape, and Mango) to be added
+to the `<ul>` without a parent container, enabling multiple root elements in the `x-if` template.
 
 ### Using with `x-for`
-The `x-fragment` directive can also be used with the directive `x-for`, giving you the flexibility to render multiple sibling elements for each iteration without wrapping them:
+The `x-fragment` directive can also be used with the directive `x-for`, giving you the flexibility to render
+multiple sibling elements for each iteration without wrapping them:
 
 ```html
 <div x-data="{
-    items: [
-        { id: 1, term: 'Item 1', description: 'Description 1' },
-        { id: 2, term: 'Item 2', description: 'Description 2' },
-        { id: 3, term: 'Item 3', description: 'Description 3' } ]
-    }">
-    <dl>
-        <template x-for="item in items" :key="item.id">
-            <template x-fragment>
-                <dt x-text="item.term"></dt>
-                <dd x-text="item.description"></dd>
-            </template>
-        </template>
-    </dl>
+  items: [
+    { term: 'Star', description: 'Luminous plasma sphere.' },
+    { term: 'Planet', description: 'Body orbiting a star.' },
+    { term: 'Galaxy', description: 'Stars and dust system.' },
+    { term: 'Nebula', description: 'Cloud of gas in space.' }]
+  }">
+  <button @click="items.reverse()">Reverse</button>
+
+  <dl>
+    <template x-for="item in items" :key="item.term">
+      <template x-fragment>
+        <dt x-text="item.term"></dt>
+        <dd x-text="item.description"></dd>
+      </template>
+    </template>
+  </dl>
 </div>
 ```
+🚀 [Live demo | Alpine.js x-fragment: Multiple root elements with x-for](https://jsfiddle.net/rameel/201rmntc/)
 
 ## Source code
 You can find the source code for this plugin on GitHub:
