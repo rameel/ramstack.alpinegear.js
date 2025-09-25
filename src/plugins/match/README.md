@@ -47,16 +47,17 @@ The corresponding block will be displayed if its condition evaluates to true.
 Here's a simple example solving the **FizzBuzz** game:
 ```html
 <div x-data="{ numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17] }">
-    <template x-for="n in numbers">
-        <template x-match>
-            <div x-case="n % 3 == 0 && n % 5 == 0">Fizz Buzz</div>
-            <div x-case="n % 3 == 0">Fizz</div>
-            <div x-case="n % 5 == 0">Buzz</div>
-            <div x-default x-text="n"></div>
-        </template>
+  <template x-for="n in numbers">
+    <template x-match>
+      <div x-case="n % 3 == 0 && n % 5 == 0">Fizz Buzz</div>
+      <div x-case="n % 3 == 0">Fizz</div>
+      <div x-case="n % 5 == 0">Buzz</div>
+      <div x-default x-text="n"></div>
     </template>
+  </template>
 </div>
 ```
+🚀 [Live demo | Alpine.js x-match: FizzBuzz game](https://jsfiddle.net/rameel/5reaopmb/)
 
 While it's possible to wrap the loop's content in an additional `<div>` (since `x-for` only allows a single root element),
 to achieve similar results, the `x-match` directive provides a much cleaner and more readable approach.
@@ -76,24 +77,25 @@ Additionally, it avoids introducing extra elements that are only needed to bypas
 Here's an example demonstrating the use of `<template>` with `x-case` to render multiple root elements:
 ```html
 <template x-match>
-    <template x-case="status === 'active'">
-        <h2>Welcome!</h2>
-        <p>You have full access to all features.</p>
-        <a href="/dashboard">Dashboard</a>
-    </template>
+  <template x-case="status === 'active'">
+    <h2>Welcome!</h2>
+    <p>You have full access to all features.</p>
+    <a href="#dashboard">Dashboard</a>
+  </template>
 
-    <template x-case="status === 'inactive'">
-        <h2>Inactive Account</h2>
-        <p>Please activate your account to continue.</p>
-    </template>
+  <template x-case="status === 'disabled'">
+    <h2>Inactive Account</h2>
+    <p>Please activate your account to continue.</p>
+  </template>
 
-    <template x-default>
-        <h2>Guest Mode</h2>
-        <p>Sign up to unlock more features!</p>
-        <button>Sign Up</button>
-    </template>
+  <template x-default>
+    <h2>Guest Mode</h2>
+    <p>Sign up to unlock more features!</p>
+    <button>Sign Up</button>
+  </template>
 </template>
 ```
+🚀 [Live demo | Alpine.js x-match: Multiple root elements with conditional rendering](https://jsfiddle.net/rameel/0vLksypo/)
 
 In this example, the `x-match` directive with `<template>` tags allows rendering multiple root elements
 (e.g., `<h2>`, `<p>`, `<a>`, and `<button>`) without needing an extra wrapper like a `<div>`.
