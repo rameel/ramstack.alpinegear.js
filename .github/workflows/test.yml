@@ -6,6 +6,7 @@ on:
 
 jobs:
   main:
+    if: ${{ !github.event.pull_request.draft }}
     name: "Build & Test"
     runs-on: ubuntu-latest
     container:
