@@ -43,38 +43,47 @@ Alpine.start();
 The `x-when` directive functions similarly to `x-if`, but allows multiple root elements in the `<template>` tag:
 
 ```html
-<div x-data="{ show: true, message: 'Example' }">
-    <div>
-        <button @click="show = !show">Edit Message</button>
-    </div>
+<div x-data="{ show: false }">
+  <button @click="show = !show">Show more</button>
+
+  <ul>
+    <li>Apple</li>
+    <li>Banana</li>
 
     <template x-when="show">
-        <label>Message:</label>
-        <input x-model="message" />
+      <li>Orange</li>
+      <li>Grape</li>
+      <li>Mango</li>
     </template>
+  </ul>
 </div>
 ```
+🚀 [Live demo | Alpine.js x-when: Multiple root elements](https://jsfiddle.net/rameel/91zhsLqp/)
 
 ### Using with `x-for`
 The `x-when` directive can also be used with the directive `x-for` to conditionally render multiple items:
 
 ```html
 <div x-data="{
-    items: [
-        { id: 1, visible: true, term: 'Item 1', description: 'Description 1' },
-        { id: 2, visible: false, term: 'Item 2', description: 'Description 2' },
-        { id: 3, visible: true, term: 'Item 3', description: 'Description 3' } ]
-    }">
-    <dl>
-        <template x-for="item in items" :key="item.id">
-            <template x-when="item.visible">
-                <dt x-text="item.term"></dt>
-                <dd x-text="item.description"></dd>
-            </template>
-        </template>
-    </dl>
+  items: [
+    { term: 'Star',   description: 'Luminous plasma sphere.' },
+    { term: 'Planet', description: 'Body orbiting a star.' },
+    { term: 'Galaxy', description: 'Stars and dust system.' },
+    { term: 'Nebula', description: 'Cloud of gas in space.' }]
+  }">
+  <button @click="items.reverse()">Reverse</button>
+
+  <dl>
+    <template x-for="item in items" :key="item.term">
+      <template x-when="true">
+        <dt x-text="item.term"></dt>
+        <dd x-text="item.description"></dd>
+      </template>
+    </template>
+  </dl>
 </div>
 ```
+🚀 [Live demo | Alpine.js x-when: Multiple root elements with x-for](https://jsfiddle.net/rameel/cuoh3297/)
 
 ## Source code
 You can find the source code for this plugin on GitHub:
