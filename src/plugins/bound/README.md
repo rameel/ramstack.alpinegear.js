@@ -44,12 +44,13 @@ Let's take the following example:
 
 ```html
 <div x-data="{ name: '' }">
-    <input x-bound:value="name" />
-    Hello <span x-text="name"></span>!
+  <input x-bound:value="name" />
+  Hello <span x-text="name"></span>!
 
-    <button @click="name = 'John'">Change Name</button>
+  <button @click="name = 'John'">Change Name</button>
 </div>
 ```
+🚀 [Live demo | Alpine.js x-bound: Basic usage](https://jsfiddle.net/rameel/8cw23y7o/)
 
 In this example, we bind the `name` property to the `value` property of the `<input>` element. Since `x-bound` provides two-way binding, any changes to `name` will be reflected in the `<input>` element, as will occur when the `button` is clicked.
 
@@ -76,12 +77,16 @@ In this example, the repetition of the `value` in `x-bound:value="value"` is red
 More examples:
 
 ```html
-<div x-data="{ name: '', text: '', yes: true }">
-    <input &value="name" />
-    <textarea &value="text"></textarea>
-    <input &checked="yes" type="checkbox" />
+<div x-data="{ name: '', text: '', yes: true, methods: [] }">
+  <input &value="name" />
+  <textarea &value="text"></textarea>
+  <input &checked="yes" type="checkbox" />
+  <select &value="methods">
+    ...
+  </select>
 </div>
 ```
+🚀 [Live demo | Alpine.js x-bound: Shorthand Syntax](https://jsfiddle.net/rameel/9ys23n4z/)
 
 ### Binding Numeric Inputs
 
@@ -90,6 +95,7 @@ For `<input>` elements with `type="number"` and `type="range"`, values are autom
 ```html
 <input &value="number" type="number" />
 ```
+🚀 [Live demo | Alpine.js x-bound: Bind Numeric Inputs](https://jsfiddle.net/rameel/e160vsta/)
 
 ### Binding `<input type="file">`
 
