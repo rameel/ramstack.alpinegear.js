@@ -46,24 +46,25 @@ Here's a simple example where the template definition is separated from the main
 
 ```html
 <template id="columns-template">
-    <td x-text="item.id"></td>
-    <td x-text="item.name"></td>
-    <td x-text="item.description"></td>
+  <td x-text="item.name"></td>
+  <td x-text="item.description"></td>
 </template>
 
 <div x-data="{
-    items: [
-        { id: 1, name: 'Item 1', description: 'Description 1' },
-        { id: 2, name: 'Item 2', description: 'Description 2' },
-        { id: 3, name: 'Item 3', description: 'Description 3' } ]
-    }">
-    <table>
-        <template x-for="item in items" :key="item.id">
-            <tr x-template="columns-template"></tr>
-        </template>
-    </table>
+  items: [
+    { name: 'Star', description: 'Luminous plasma sphere.' },
+    { name: 'Planet', description: 'Body orbiting a star.' },
+    { name: 'Galaxy', description: 'Stars and dust system.' },
+    { name: 'Nebula', description: 'Cloud of gas in space.' }
+  ]}">
+  <table>
+    <template x-for="item in items" :key="item.text">
+      <tr x-template="columns-template"></tr>
+    </template>
+  </table>
 </div>
 ```
+🚀 [Live demo | Alpine.js x-template: External template](https://jsfiddle.net/rameel/20boy7rq/)
 
 In this example, the table column template is extracted into a separate template (`columns-template`),
 which is referenced inside the loop.
@@ -87,49 +88,52 @@ Here's an example of rendering a simple file tree using `<ul>` tags:
 
 ```html
 <template id="treeitem">
-    <span x-format>{{ model.name }}</span>
+  <span x-text="model.name"></span>
 
-    <template x-if="model.list">
-        <ul>
-            <template x-for="item in model.list">
-                <li x-template="treeitem" x-data="{ model: item }"></li>
-            </template>
-        </ul>
-    </template>
+  <template x-if="model.list">
+    <ul>
+      <template x-for="item in model.list">
+        <!-- Recursively apply the current template to render nested items -->
+        <li x-template="treeitem" x-data="{ model: item }"></li>
+      </template>
+    </ul>
+  </template>
 </template>
 
 <ul x-data="json">
-    <li x-template="treeitem"></li>
+  <li x-template="treeitem"></li>
 </ul>
+
+<script>
+  const json = {
+    model: {
+      name: 'root',
+      list: [
+        {
+          name: 'Documents',
+          list: [
+            { name: 'Resume.docx' },
+            { name: 'CoverLetter.docx' }
+          ]
+        },
+        {
+          name: 'Pictures',
+          list: [
+            {
+              name: 'Nature',
+              list: [
+                { name: 'Mountains.jpg' },
+                { name: 'River.jpg' }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  };
+</script>
 ```
-```js
-const json = {
-  model: {
-    name: 'root',
-    list: [
-      {
-        name: 'Documents',
-        list: [
-          { name: 'Resume.docx' },
-          { name: 'CoverLetter.docx' }
-        ]
-      },
-      {
-        name: 'Pictures',
-        list: [
-          {
-            name: 'Nature',
-            list: [
-              { name: 'Mountains.jpg' },
-              { name: 'River.jpg' }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-};
-```
+🚀 [Live demo | Alpine.js x-template: Recursive template (tree rendering)](https://jsfiddle.net/rameel/8envy4o7/)
 
 This will generate the following HTML structure:
 
@@ -144,6 +148,14 @@ This will generate the following HTML structure:
 
 As you can see, we are able to render nested elements by recursively referencing the same template within itself,
 which opens up a lot of possibilities for complex layouts.
+
+#### Interactive Tree with Recursive x-template
+
+Explore another example showcasing a recursive `x-template` to render an interactive tree with expandable folders
+and dynamic child addition.
+
+🚀 [Live demo | Alpine.js x-template: Interactive Tree](https://jsfiddle.net/rameel/xwavq1to/)
+
 
 ## Source code
 You can find the source code for this plugin on GitHub:
