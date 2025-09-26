@@ -248,20 +248,22 @@ The group of `<input>` elements that should function together can utilize the `g
 ```html
 <div x-data="{ pets: ['goldfish', 'parrot'], contact: 'Email' }">
 
-    <!-- grouped checkboxes are similar to "select multiple"
-         and use an array for selected options -->
-    <input &group="pets" type="checkbox" value="cat" />
-    <input &group="pets" type="checkbox" value="goldfish" />
-    <input &group="pets" type="checkbox" value="parrot" />
-    <input &group="pets" type="checkbox" value="spider" />
+  <!-- grouped checkboxes are similar to "select multiple"
+       and use an array for selected options -->
+  <input &group="pets" type="checkbox" value="cat" />
+  <input &group="pets" type="checkbox" value="goldfish" />
+  <input &group="pets" type="checkbox" value="parrot" />
+  <input &group="pets" type="checkbox" value="spider" />
 
-    <!-- grouped radio inputs are mutually exclusive -->
-    <input &group="contact" type="radio" value="Email" />
-    <input &group="contact" type="radio" value="Phone" />
-    <input &group="contact" type="radio" value="Mail" />
+  <!-- grouped radio inputs are mutually exclusive -->
+  <input &group="contact" type="radio" value="Email" />
+  <input &group="contact" type="radio" value="Phone" />
+  <input &group="contact" type="radio" value="Mail" />
 
 </div>
 ```
+🚀 [Live demo | Alpine.js x-bound: Binding element dimensions](https://jsfiddle.net/rameel/f5jpry7b/)
+
 
 ### Binding `input[type="checkbox"]:indeterminate` property
 The `x-bound` directive supports binding the `indeterminate` property of `<input type="checkbox">` elements,
@@ -284,6 +286,8 @@ This is useful for scenarios like selecting a subset of items in a list, such as
   ...
 </table>
 ```
+🚀 [Live demo | Alpine.js x-bound: Binding indeterminate](https://jsfiddle.net/rameel/ryvhw3jt/)
+
 In this example, the `indeterminate` property of the checkbox is bound to the `isPartialSelected` data property.
 When `isPartialSelected` is `true`, the checkbox will be in the indeterminate state.
 
