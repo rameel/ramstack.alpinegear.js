@@ -22,7 +22,7 @@ test.describe("x-bound: checkbox", () => {
         await set_html(page, `
             <div x-data="{ indeterminate: true }">
                 <input type="checkbox" &indeterminate />
-                <button @click="indeterminate = !indeterminate">Clear indeterminate</button>
+                <button @click="indeterminate = !indeterminate">Inverse</button>
                 <span x-format>{{ indeterminate }}</span>
             </div>`);
 
@@ -36,6 +36,16 @@ test.describe("x-bound: checkbox", () => {
         await page.locator("button").click();
         await expect(page.locator("input")).toHaveJSProperty('indeterminate', true);
         await expect(page.locator("span")).toHaveText("true");
+
+        await page.locator("input").click();
+        await expect(page.locator("input")).toBeChecked();
+        await expect(page.locator("input")).toHaveJSProperty('indeterminate', false);
+        await expect(page.locator("span")).toHaveText("false");
+
+        await page.locator("input").click();
+        await expect(page.locator("input")).not.toBeChecked();
+        await expect(page.locator("input")).toHaveJSProperty('indeterminate', false);
+        await expect(page.locator("span")).toHaveText("false");
     });
 
     test("checkbox:indeterminate - initialize from undefined", async ({ page }) => {

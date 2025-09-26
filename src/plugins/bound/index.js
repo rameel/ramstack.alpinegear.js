@@ -203,6 +203,7 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
             if (el.type === "checkbox") {
                 is_nullish(get_value()) && update_variable();
                 effect(update_property);
+                cleanup(listen(el, "change", update_variable));
                 processed = true;
             }
         }
