@@ -111,38 +111,61 @@ For `<input>` elements with `type="file"`, the binding is applied to the `files`
 
 To bind the value of a `<select>` element, use the `value` property:
 ```html
-<select &value="pet">
-  <option value="cat">Cat</option>
-  <option value="goldfish">Goldfish</option>
-  <option value="parrot">Parrot</option>
-</select>
+<div x-data="{ fruit: '' }">
+  <select &value="fruit">
+    <option value="" disabled>Select...</option>
+    <option>Apple</option>
+    <option>Banana</option>
+    <option>Orange</option>
+    <option>Grape</option>
+    <option>Mango</option>
+  </select>
+
+  <p>
+    Fruit: <span x-text="fruit"></span>
+  </p>
+</div>
 ```
+🚀 [Live demo | Alpine.js x-bound: Binding select](https://jsfiddle.net/rameel/fs12bo5m/)
+
 
 For a `<select multiple>` element, the data property is an array containing the values of the selected options.
 
 ```html
 <div x-data="{ pets: ['goldfish', 'parrot'] }">
-    <select &value="pets" multiple>
-        <option value="cat">Cat</option>
-        <option value="goldfish">Goldfish</option>
-        <option value="parrot">Parrot</option>
-        <option value="spider">Spider</option>
-    </select>
+  <select &value="pets" multiple>
+    <option value="cat">Cat</option>
+    <option value="goldfish">Goldfish</option>
+    <option value="parrot">Parrot</option>
+    <option value="spider">Spider</option>
+  </select>
 
-    Pets: <span x-text="pets"></span>
+  Pets: <span x-text="pets"></span>
 </div>
 ```
+🚀 [Live demo | Alpine.js x-bound: Multiple select](https://jsfiddle.net/rameel/kq0xseo1/)
+
 
 ### Binding `<details>`
 
 The directive also allows binding to the `open` property of `<details>` elements:
 
 ```html
-<details &open="isOpen">
+<div x-data="{ open: true }">
+  <details &open>
     <summary>Details</summary>
     <p>Something small enough to escape casual notice.</p>
-</details>
+  </details>
+
+  <p>
+    <label>
+      <input &checked="open" type="checkbox" />
+      Open / Close
+    </label>
+  </p>
+</div>
 ```
+🚀 [Live demo | Alpine.js x-bound: Binding details](https://jsfiddle.net/rameel/fw2bkLqv/)
 
 ### Binding `<img>` sizes
 
