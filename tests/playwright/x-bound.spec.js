@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { set_html } from "./assets/utils";
+import { fileURLToPath } from "url";
+import path from "path";
 
 test.describe("x-bound: checkbox", () => {
     test("checkbox", async ({ page }) => {
@@ -191,6 +193,82 @@ test.describe("x-bound: numeric", () => {
         await expect(page.locator("span")).toHaveText("5");
         await page.locator("input").fill("15");
         await expect(page.locator("span")).toHaveText("20");
+    });
+});
+
+test.describe("x-bound: files", () => {
+    const dirname = path.dirname(
+        fileURLToPath(import.meta.url));
+
+    const file1 = path.resolve(dirname, "assets/dummy-617x398.png");
+    const file2 = path.resolve(dirname, "assets/test.webm");
+
+    test("Initialize from null", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{
+                files: null,
+                clear() {
+                    this.files = new DataTransfer().files;
+                }}">
+
+                <input id="f1" &files type="file" />
+                <input id="f2" &files type="file" multiple />
+
+                <span x-format>{{ files.length ? [...files].map(f => f.name).join("|") : "No file selected" }}</span>
+
+                <button @click="clear">Clear</button>
+            </div>`);
+
+        await expect(page.locator("span")).toHaveText("No file selected");
+
+        await page.locator("#f1").setInputFiles([file1]);
+        await expect(page.locator("span")).toHaveText("dummy-617x398.png");
+
+        await page.locator("#f1").setInputFiles([file2]);
+        await expect(page.locator("span")).toHaveText("test.webm");
+
+        await page.locator("button").click();
+        await expect(page.locator("span")).toHaveText("No file selected");
+
+        await page.locator("#f2").setInputFiles([file1, file2]);
+        await expect(page.locator("span")).toHaveText("dummy-617x398.png|test.webm");
+
+        await page.locator("button").click();
+        await expect(page.locator("span")).toHaveText("No file selected");
+    });
+
+    test("Initialize from empty array", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{
+                files: [],
+                clear() {
+                    this.files = new DataTransfer().files;
+                }}">
+
+                <input id="f1" &files type="file" />
+                <input id="f2" &files type="file" multiple />
+
+                <span x-format>{{ files.length ? [...files].map(f => f.name).join("|") : "No file selected" }}</span>
+
+                <button @click="clear">Clear</button>
+            </div>`);
+
+        await expect(page.locator("span")).toHaveText("No file selected");
+
+        await page.locator("#f1").setInputFiles([file1]);
+        await expect(page.locator("span")).toHaveText("dummy-617x398.png");
+
+        await page.locator("#f1").setInputFiles([file2]);
+        await expect(page.locator("span")).toHaveText("test.webm");
+
+        await page.locator("button").click();
+        await expect(page.locator("span")).toHaveText("No file selected");
+
+        await page.locator("#f2").setInputFiles([file1, file2]);
+        await expect(page.locator("span")).toHaveText("dummy-617x398.png|test.webm");
+
+        await page.locator("button").click();
+        await expect(page.locator("span")).toHaveText("No file selected");
     });
 });
 

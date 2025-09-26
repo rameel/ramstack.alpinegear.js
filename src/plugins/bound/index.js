@@ -209,6 +209,9 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
 
         function process_files() {
             if (el.type === "file") {
+                get_value() instanceof FileList || update_variable();
+
+                effect(update_property);
                 cleanup(listen(el, "input", update_variable));
                 processed = true;
             }
