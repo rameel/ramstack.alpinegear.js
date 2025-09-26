@@ -174,6 +174,7 @@ You can bind the `naturalWidth` and `naturalHeight` properties of an image after
 ```html
 <img src="..." &naturalWidth="width" &naturalHeight="height" />
 ```
+🚀 [Live demo | Alpine.js x-bound: Binding image sizes](https://jsfiddle.net/rameel/q4vb1d0w/)
 
 > [!TIP]
 > If you prefer using `kebab-case` for multi-word properties like `naturalWidth`, you can write it as `natural-width`. It will be automatically normalized internally:
@@ -192,6 +193,18 @@ You can bind the `naturalWidth` and `naturalHeight` properties of an image after
 > The `naturalWidth` and `naturalHeight` properties are read-only and reflect the original image dimensions, available after the image has loaded.
 
 
+### Binding `<video>` sizes
+
+You can bind the `videoWidth` and `videoHeight` properties of a video after it loads:
+
+```html
+<video &videoWidth="width" &videoHeight="height">
+  <source src="..." type="video/mp4">
+</video>
+```
+🚀 [Live demo | Alpine.js x-bound: Binding video sizes](https://jsfiddle.net/rameel/nah2pfcx/)
+
+
 ### Binding `contenteditable` elements
 
 For `contenteditable` elements, you can bind the following properties:
@@ -200,12 +213,15 @@ For `contenteditable` elements, you can bind the following properties:
 - [textContent](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
 
 ```html
-<div &inner-html="html" contenteditable="true"></div>
+<div &innerHtml="html" contenteditable="true"></div>
 ```
+🚀 [Live demo | Alpine.js x-bound: Contenteditable bindings](https://jsfiddle.net/rameel/n5sj0rdz/)
+
 
 ### Binding block-level element sizes
 
-You can bind to the following properties to get the **width** and **height** of block-level elements. The values will update whenever the element's size changes:
+You can bind to the following properties to get the **width** and **height** of block-level elements,
+measured with a `ResizeObserver`. The values will update whenever the element's size changes:
 
 - [clientHeight](https://developer.mozilla.org/en-US/docs/Web/API/Element/clientHeight)
 - [clientWidth](https://developer.mozilla.org/en-US/docs/Web/API/Element/clientWidth)
@@ -215,9 +231,16 @@ You can bind to the following properties to get the **width** and **height** of 
 ```html
 <div &client-width="width" &client-height="height"></div>
 ```
+🚀 [Live demo | Alpine.js x-bound: Binding element dimensions](https://jsfiddle.net/rameel/jc4eu921/)
 
 > [!NOTE]
 > These properties are read-only.
+
+> [!IMPORTANT]
+> Elements with `display: inline` don't have an explicit width or height (unless they are intrinsically sized, like `<img>` or `<canvas>`). Therefore, a `ResizeObserver` cannot track their size. If you need to observe their size, change their `display` style to something like `inline-block`.
+>
+> Also keep in mind that CSS transforms do not trigger `ResizeObserver` updates.
+
 
 ### Binding group of `<input type="radio">` and `<input type="checkbox">`
 The group of `<input>` elements that should function together can utilize the `group` bound property.
