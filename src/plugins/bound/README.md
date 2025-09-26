@@ -104,9 +104,8 @@ For `<input>` elements with `type="file"`, the binding is applied to the `files`
 ```html
 <input &files type="file" accept="image/jpeg" />
 ```
+🚀 [Live demo | Alpine.js x-bound: Bind Files](https://jsfiddle.net/rameel/phy2zn0a/)
 
-> [!NOTE]
-> The `files` binding is one-way.
 
 ### Binding `<select>`
 
