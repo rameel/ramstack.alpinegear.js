@@ -270,6 +270,19 @@ The `x-bound` directive supports binding the `indeterminate` property of `<input
 allowing you to control the checkbox's indeterminate state (a state where the checkbox is neither checked nor unchecked,
 typically represented visually with a dash or similar indicator).
 
+```html
+<div x-data="{ checked: false, indeterminate: true }">
+  <input type="checkbox" &checked &indeterminate />
+
+  <template x-match>
+    <span x-case="indeterminate">Waiting...</span>
+    <span x-case="checked">Checked</span>
+    <span x-default>Unchecked</span>
+  </template>
+</div>
+```
+🚀 [Live demo | Alpine.js x-bound: Binding indeterminate](https://jsfiddle.net/rameel/o8ubzac0/)
+
 This is useful for scenarios like selecting a subset of items in a list, such as in a table header checkbox:
 ```html
 <table>
@@ -286,7 +299,7 @@ This is useful for scenarios like selecting a subset of items in a list, such as
   ...
 </table>
 ```
-🚀 [Live demo | Alpine.js x-bound: Binding indeterminate](https://jsfiddle.net/rameel/ryvhw3jt/)
+🚀 [Live demo | Alpine.js x-bound: Binding indeterminate (table)](https://jsfiddle.net/rameel/ryvhw3jt/)
 
 In this example, the `indeterminate` property of the checkbox is bound to the `isPartialSelected` data property.
 When `isPartialSelected` is `true`, the checkbox will be in the indeterminate state.
@@ -307,6 +320,7 @@ The directive also supports synchronizing values between two data properties.
     Number: <span x-text="number"></span>
 </div>
 ```
+🚀 [Live demo | Alpine.js x-bound: Binding data properties](https://jsfiddle.net/rameel/972qyomn/)
 
 In this example, we bind the outer `number` property to the inner `count` property. Since `number` is initially set to `5`, the `count` property is also set to `5` when the binding occurs.
 
