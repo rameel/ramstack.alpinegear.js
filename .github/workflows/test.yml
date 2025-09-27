@@ -3,13 +3,19 @@ name: Build & Test
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "**.js"
+      - "**.ts"
+      - "**.json"
 
 jobs:
   main:
+    if: ${{ !github.event.pull_request.draft }}
     name: "Build & Test"
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.55.0-noble
+      image: mcr.microsoft.com/playwright:v1.55.1-noble
       options: --user 1001:1001 # Run as non-root user for security
 
     steps:

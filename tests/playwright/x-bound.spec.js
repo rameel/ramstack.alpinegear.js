@@ -615,7 +615,7 @@ test.describe("x-bound: dimensions", () => {
 
     test("naturalWidth & naturalHeight", async ({ page }) => {
         await set_html(page, `
-            <div x-data="{ w: 0, h: 0 }" x-interpolate>
+            <div x-data="{ w: 0, h: 0 }">
                 <img &naturalWidth="w" &naturalHeight="h" width="250" src="dummy-617x398.png" alt="" />
                 <pre x-format>{{ w }},{{ h }}</pre>
             </div>`);

@@ -11,7 +11,10 @@
     },
     "keywords": [
       "alpine.js",
-      "alpinejs"
+      "alpinejs",
+      "alpinejs-binding",
+      "alpinejs-directive",
+      "alpinejs-plugin"
     ],
     "main": "alpinegear-bound.js",
     "module": "alpinegear-bound.esm.js"

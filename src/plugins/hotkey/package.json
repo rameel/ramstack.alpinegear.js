@@ -11,7 +11,13 @@
     },
     "keywords": [
       "alpine.js",
-      "alpinejs"
+      "alpinejs",
+      "hotkey",
+      "shortcut",
+      "alpinejs-hotkey",
+      "alpinejs-shortcut",
+      "alpinejs-directive",
+      "alpinejs-plugin"
     ],
     "main": "alpinegear-hotkey.js",
     "module": "alpinegear-hotkey.esm.js"

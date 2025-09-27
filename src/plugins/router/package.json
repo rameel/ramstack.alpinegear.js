@@ -11,7 +11,11 @@
     },
     "keywords": [
       "alpine.js",
-      "alpinejs"
+      "alpinejs",
+      "alpinejs-router",
+      "alpinejs-routing",
+      "alpinejs-directive",
+      "alpinejs-plugin"
     ],
     "main": "alpinegear-router.js",
     "module": "alpinegear-router.esm.js"

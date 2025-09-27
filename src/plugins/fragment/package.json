@@ -11,7 +11,12 @@
     },
     "keywords": [
       "alpine.js",
-      "alpinejs"
+      "alpinejs",
+      "fragment",
+      "alpinejs-fragment",
+      "alpinejs-directive",
+      "alpinejs-plugin",
+      "template"
     ],
     "main": "alpinegear-fragment.js",
     "module": "alpinegear-fragment.esm.js"

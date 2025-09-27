@@ -18,7 +18,7 @@ To include the CDN version of this plugin, add the following `<script>` tag befo
 <script src="https://cdn.jsdelivr.net/npm/@ramstack/alpinegear-hotkey@1/alpinegear-hotkey.min.js" defer></script>
 
 <!-- alpine.js -->
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" defer></script>
 ```
 
 ### Using NPM
@@ -46,7 +46,7 @@ Here's a simple example:
 
 ```html
 <div x-data x-hotkey.shift+f.window="console.log($event.hotkey)">
-    Hello, World!
+  Hello, World!
 </div>
 ```
 
@@ -72,9 +72,9 @@ Also, the `x-hotkey` automatically passes the event object as the first argument
 <div x-data x-hotkey.shift+f.window="handle"></div>
 
 <script>
-    function handle(e) {
-        console.log(e);
-    }
+  function handle(e) {
+    console.log(e);
+  }
 </script>
 ```
 
@@ -115,7 +115,7 @@ This property contains the string representation of the hotkey.
 
 ```html
 <div x-data x-hotkey.ctrl+shift+f.alt+u.window="console.log($event.hotkey)">
-    Hello, World!
+  Hello, World!
 </div>
 ```
 
@@ -133,9 +133,9 @@ If you want to prevent hotkey handling from being triggered by specific elements
 
 ```html
 <div x-hotkey.shift+k="...">
-    ...
-    <!-- Ignoring hotkeys from the input element -->
-    <input type="text" data-hotkey-ignore>
+  ...
+  <!-- Ignoring hotkeys from the input element -->
+  <input type="text" data-hotkey-ignore>
 </div>
 ```
 
@@ -143,12 +143,12 @@ You can also exclude a group of elements by applying the attribute to their pare
 
 ```html
 <div x-hotkey.shift+k="...">
-    ...
+  ...
 
-    <!-- Ignoring hotkeys from all elements within the form -->
-    <form data-hotkey-ignore>
-    ...
-    </form>
+  <!-- Ignoring hotkeys from all elements within the form -->
+  <form data-hotkey-ignore>
+  ...
+  </form>
 </div>
 ```
 
@@ -156,6 +156,44 @@ You can also exclude a group of elements by applying the attribute to their pare
 You can find the source code for this plugin on GitHub:
 
 https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/hotkey
+
+
+## Related projects
+
+**[@ramstack/alpinegear-main](https://www.npmjs.com/package/@ramstack/alpinegear-main)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/main))<br>
+Provides a combined plugin that includes several useful directives.
+This package aggregates multiple individual plugins, offering a convenient all-in-one bundle.
+Included directives: `x-bound`, `x-format`, `x-fragment`, `x-match`, `x-template`, and `x-when`.
+
+**[@ramstack/alpinegear-bound](https://www.npmjs.com/package/@ramstack/alpinegear-bound)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/bound))<br>
+Provides the `x-bound` directive, which allows for two-way binding of input elements and their associated data properties.
+It works similarly to the binding provided by [Svelte](https://svelte.dev/docs/element-directives#bind-property)
+and also supports synchronizing values between two `Alpine.js` data properties.
+
+**[@ramstack/alpinegear-format](https://www.npmjs.com/package/@ramstack/alpinegear-format)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/format))<br>
+Provides the `x-format` directive, which allows you to easily interpolate text using a template syntax similar to what's available in `Vue.js`.
+
+**[@ramstack/alpinegear-template](https://www.npmjs.com/package/@ramstack/alpinegear-template)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/template))<br>
+Provides the `x-template` directive, which allows you to define a template once anywhere in the DOM and reference it by its ID.
+
+**[@ramstack/alpinegear-fragment](https://www.npmjs.com/package/@ramstack/alpinegear-fragment)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/fragment))<br>
+Provides the `x-fragment` directive, which allows for fragment-like behavior similar to what's available in frameworks
+like `Vue.js` or `React`, where multiple root elements can be grouped together.
+
+**[@ramstack/alpinegear-match](https://www.npmjs.com/package/@ramstack/alpinegear-match)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/match))<br>
+Provides the `x-match` directive, which functions similarly to the `switch` statement in many programming languages,
+allowing you to conditionally render elements based on matching cases.
+
+**[@ramstack/alpinegear-when](https://www.npmjs.com/package/@ramstack/alpinegear-when)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/when))<br>
+Provides the `x-when` directive, which allows for conditional rendering of elements similar to `x-if`, but supports multiple root elements.
+
+**[@ramstack/alpinegear-destroy](https://www.npmjs.com/package/@ramstack/alpinegear-destroy)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/destroy))<br>
+Provides the `x-destroy` directive, which is the opposite of `x-init` and allows you to hook into the cleanup phase
+of any element, running a callback when the element is removed from the DOM.
+
+**[@ramstack/alpinegear-router](https://www.npmjs.com/package/@ramstack/alpinegear-router)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/router))<br>
+Provides the `x-router` and `x-route` directives, which enable client-side navigation and routing functionality within your Alpine.js application.
+
 
 ## Contributions
 Bug reports and contributions are welcome.
