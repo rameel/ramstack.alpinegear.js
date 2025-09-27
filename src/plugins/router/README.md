@@ -64,7 +64,7 @@ Alpine.start();
 </div>
 ```
 🚀 [Live demo | Alpine.js x-router: Basic example](https://jsfiddle.net/rameel/h9mygjcd/)<br />
-🚀 [Live demo | Alpine.js x-router: Nested router](https://jsfiddle.net/rameel/rwkxapnu/)
+🚀 [Live demo | Alpine.js x-router: Nested router](https://jsfiddle.net/rameel/cjoza3ng/)
 
 ## History modes
 The router can be configured to use different history modes. There are two available modes:
