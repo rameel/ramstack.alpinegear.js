@@ -541,6 +541,79 @@ test.describe("x-bound: details", () => {
     });
 });
 
+test.describe("x-bound: dialog", () => {
+    test("dialog: initialize state from element", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ open: false }">
+                <dialog &open open>
+                    Hello World!
+                </dialog>
+                <span x-format>{{ open }}</span>
+            </div>
+        `);
+
+        await expect(page.locator("dialog")).toHaveAttribute("open");
+        await expect(page.locator("span")).toHaveText("true");
+    });
+
+    test("dialog: always initialize from element", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ open: true }">
+                <dialog &open>
+                    Hello World!
+                </dialog>
+                <span x-format>{{ open }}</span>
+            </div>
+        `);
+
+        await expect(page.locator("dialog")).not.toHaveAttribute("open");
+        await expect(page.locator("span")).toHaveText("false");
+    });
+
+    test("dialog: property changes do not directly control element.open", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ open: true }">
+                <dialog &open>
+                    Hello World!
+                </dialog>
+                <button @click="open = true">Toggle</button>
+                <span x-format>{{ open }}</span>
+            </div>
+        `);
+
+        // initial state comes from dialog (closed by default)
+        await expect(page.locator("dialog")).not.toHaveAttribute("open");
+        await expect(page.locator("span")).toHaveText("false");
+
+        await page.locator("button").click();
+
+        // property changes, but dialog state is not affected
+        await expect(page.locator("dialog")).not.toHaveAttribute("open");
+        await expect(page.locator("span")).toHaveText("true");
+    });
+
+    test("dialog: native open updates bound state", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ open: false }">
+                <dialog &open>
+                    Hello World!
+                </dialog>
+                <span x-format>{{ open }}</span>
+            </div>
+        `);
+
+        await page.evaluate(() => document.querySelector("dialog").showModal());
+
+        await expect(page.locator("dialog")).toHaveAttribute("open");
+        await expect(page.locator("span")).toHaveText("true");
+
+        await page.evaluate(() => document.querySelector("dialog").close());
+
+        await expect(page.locator("dialog")).not.toHaveAttribute("open");
+        await expect(page.locator("span")).toHaveText("false");
+    });
+});
+
 test.describe("x-bound: group", () => {
     test("radio", async ({ page }) => {
         await set_html(page, `
