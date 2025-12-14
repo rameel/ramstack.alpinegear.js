@@ -105,7 +105,7 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
                 break;
 
             case "open":
-                process_details();
+                process_open_attribute();
                 break;
 
             case "group":
@@ -241,13 +241,29 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
             processed = true;
         }
 
-        function process_details() {
-            if (tag_name === "DETAILS") {
-                // if the value of the bound property is "null" or "undefined",
-                // we initialize it with the value from the element.
-                is_nullish(get_value()) && update_variable();
+        function process_open_attribute() {
+            const [is_details, is_dialog] = [tag_name === "DETAILS", tag_name === "DIALOG"];
 
-                effect(update_property);
+            if (is_details || is_dialog) {
+                //
+                // <details>:
+                //   Supports safe two-way binding via the "open" attribute,
+                //   so we initialize from the element only if the bound value
+                //   is null or undefined.
+                //
+                // <dialog>:
+                //   Directly setting element.open is discouraged by the spec,
+                //   as it breaks native dialog behavior and the "close" event.
+                //   Therefore, we always initialize state from the element
+                //   and treat it as a one-way source of truth.
+                //   https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/open#value
+                //
+                (is_dialog || is_nullish(get_value())) && update_variable();
+
+                //
+                // Enable two-way binding only for "<details>"
+                //
+                is_details && effect(update_property);
                 cleanup(listen(el, "toggle", update_variable));
                 processed = true;
             }
