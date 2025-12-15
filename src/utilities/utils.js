@@ -4,6 +4,7 @@ export const is_nullish = value => value === null || value === undefined;
 export const is_checkable_input = el => el.type === "checkbox" || el.type === "radio";
 export const is_numeric_input = el => el.type === "number" || el.type === "range";
 export const is_template = el => el instanceof HTMLTemplateElement;
+export const is_dialog = el => el instanceof HTMLDialogElement;
 export const is_element = el => el.nodeType === Node.ELEMENT_NODE;
 export const is_function = value => typeof value === "function";
 export const as_array = value => is_array(value) ? value : [value];

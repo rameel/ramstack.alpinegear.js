@@ -1,0 +1,25 @@
+{
+  "name": "@ramstack/alpinegear-dialog",
+  "version": "0.0.0",
+  "description": "A headless, unstyled dialog (modal) component for Alpine.js",
+  "author": "Rameel Burhan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
+    "directory": "src/plugins/dialog"
+  },
+  "keywords": [
+    "alpine.js",
+    "alpinejs",
+    "dialog",
+    "modal",
+    "headless-ui",
+    "component",
+    "alpinejs-directive",
+    "alpinejs-plugin",
+    "alpinejs-component"
+  ],
+  "main": "alpinegear-dialog.js",
+  "module": "alpinegear-dialog.esm.js"
+}
