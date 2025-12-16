@@ -1,7 +1,6 @@
 import {
     closest,
     is_dialog,
-    is_nullish,
     is_template,
     listen,
     warn
@@ -24,13 +23,10 @@ function plugin({ $data, addScopeToNode, bind, directive }) {
         else if (value === "trigger") {
             process_trigger();
         }
-        else if (value === "accept") {
-            process_accept();
+        else if (value === "action") {
+            process_action();
         }
-        else if (value === "cancel") {
-            process_cancel();
-        }
-        else if (value === "" || value === "modal") {
+        else if (value === "modal" || !value) {
             process_dialog();
         }
         else {
@@ -61,7 +57,7 @@ function plugin({ $data, addScopeToNode, bind, directive }) {
                         return Promise.resolve();
                     },
                     close(value = null) {
-                        is_nullish(value) ? dialog_cancel() : dialog_accept(value);
+                        dialog_close(value);
                     }
                 }
             });
@@ -80,7 +76,7 @@ function plugin({ $data, addScopeToNode, bind, directive }) {
                         //
                         e.preventDefault();
 
-                        dialog_accept(e.submitter?.value);
+                        dialog_close(e.submitter?.value);
                     }
                 })
             );
@@ -100,9 +96,10 @@ function plugin({ $data, addScopeToNode, bind, directive }) {
 
             bind(el, {
                 "@toggle": e => {
-                    dispatch(owner, el.open ? "open" : "close");
-                    dispatch(owner, "toggle", { oldState: e.oldState, newState: e.newState });
+                    el.open && dispatch(owner, "open");
+                    dispatch(owner, "toggle", { state: e.newState });
                 },
+                "@cancel.prevent": e => dialog_close(),
                 //
                 // https://issues.chromium.org/issues/346597066
                 // HTMLDialogElement's "cancel" event is not cancelable when "ESC" key is pressed several times
@@ -120,18 +117,6 @@ function plugin({ $data, addScopeToNode, bind, directive }) {
                     }
                 }
             });
-
-            //
-            // Use setTimeout to defer binding, ensuring this listener executes last
-            //
-            setTimeout(() =>
-                cleanup(
-                    listen(el, "cancel", e => {
-                        dispatch(owner, "requestcancel", {}, { cancelable: true }) || e.preventDefault();
-                        e.defaultPrevented || dispatch(owner, "cancel");
-                    })
-                )
-            );
         }
 
         function process_trigger() {
@@ -140,45 +125,30 @@ function plugin({ $data, addScopeToNode, bind, directive }) {
             });
         }
 
-        function process_accept() {
+        function process_action() {
             //
-            // The x-dialog:accept button must be placed inside a <dialog> element.
+            // The x-dialog:action button must be placed inside a <dialog> element.
             //
-            if (ensure_dialog_panel("x-dialog:accept")) {
-                el.form || bind(el, {
-                    "@click.prevent": e => dialog_accept(el.value)
-                });
+            if (!closest(el, is_dialog)) {
+                return warn("x-dialog:action is missing a parent x-dialog:panel");
             }
+
+            el.form || bind(el, {
+                "@click.prevent": e => dialog_close(el.value)
+            });
         }
 
-        function process_cancel() {
-            //
-            // The x-dialog:cancel button must be placed inside a <dialog> element.
-            //
-            if (ensure_dialog_panel("x-dialog:cancel")) {
-                bind(el, {
-                    "@click.prevent": dialog_cancel
-                });
-            }
-        }
+        function dialog_close(value) {
+            value ??= "";
 
-        function dialog_accept(value) {
-            value ??= "ok"
             const { owner, panel } = get_dialog_info();
             const detail = { value };
-            if (dispatch(owner, "requestaccept", detail, { cancelable: true })) {
-                value && dispatch(owner, "accept:" + value.toLowerCase(), detail);
-                dispatch(owner, "accept", detail);
+
+            if (dispatch(owner, "requestclose", detail, { cancelable: true })) {
+                value && dispatch(owner, "close:" + value.toLowerCase(), detail);
+                dispatch(owner, "close", detail);
                 panel.close(value);
             }
-        }
-
-        function dialog_cancel() {
-            get_dialog_info().panel?.requestClose();
-        }
-
-        function ensure_dialog_panel(name) {
-            return !!(closest(el, is_dialog) || warn(name + ": no x-dialog:panel found"));
         }
 
         function dispatch(el, name, detail = {}, options = {}) {
