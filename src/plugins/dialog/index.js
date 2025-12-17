@@ -1,19 +1,18 @@
 import {
     closest,
     is_dialog,
-    is_template,
     listen,
     warn
 } from "@/utilities/utils";
 
-function plugin({ $data, addScopeToNode, bind, directive }) {
-    directive("dialog", (el, { expression, value }, { cleanup }) => {
+function plugin({ bind, directive }) {
+    directive("dialog", (el, { value }, { cleanup }) => {
         const get_dialog_info = () => closest(el, n => n._r_dialog)?._r_dialog;
 
         value ||= "";
 
         if (!get_dialog_info() && value !== "modal" && value !== "") {
-            warn("no x-dialog found");
+            warn(`x-dialog:${value} is missing a parent x-dialog`);
             return;
         }
 
@@ -34,30 +33,29 @@ function plugin({ $data, addScopeToNode, bind, directive }) {
         }
 
         function process_dialog() {
-            if (is_template(el)) {
-                return warn("x-dialog cannot be used on a 'template' tag");
-            }
-
             el._r_dialog = {
                 owner: el,
                 panel: null,
                 modal: value === "modal"
             };
 
-            addScopeToNode(el, {
-                $dialog: {
-                    show() {
-                        const { panel, modal } = get_dialog_info();
-                        if (panel) {
-                            return new Promise(resolve => {
-                                listen(panel, "close", () => resolve(panel.returnValue), { once: true });
-                                panel[modal ? "showModal" : "show"]();
-                            });
+            bind(el, {
+                "x-data"() {
+                    return {
+                        open: false,
+                        show() {
+                            const { panel, modal } = get_dialog_info();
+                            if (panel) {
+                                return new Promise(resolve => {
+                                    listen(panel, "close", () => resolve(panel.returnValue), { once: true });
+                                    panel[modal ? "showModal" : "show"]();
+                                });
+                            }
+                            return Promise.resolve();
+                        },
+                        close(value) {
+                            dialog_close(value);
                         }
-                        return Promise.resolve();
-                    },
-                    close(value = null) {
-                        dialog_close(value);
                     }
                 }
             });
@@ -83,28 +81,35 @@ function plugin({ $data, addScopeToNode, bind, directive }) {
         }
 
         function process_panel() {
-            if (!is_dialog(el)) {
-                return warn("x-dialog:panel can only be used on a 'dialog' element");
-            }
-
             if (__DEV__ && get_dialog_info().panel) {
                 warn("x-dialog:panel is already present. Only the last one will be used.");
+            }
+
+            if (!is_dialog(el)) {
+                warn("x-dialog:panel can only be used on a 'dialog' element");
+                return;
             }
 
             const owner = get_dialog_info().owner;
             get_dialog_info().panel = el;
 
             bind(el, {
-                "@toggle": e => {
+                "x-init"() {
+                    this.open = el.open;
+                },
+                "@toggle"(e) {
                     el.open && dispatch(owner, "open");
                     dispatch(owner, "toggle", { state: e.newState });
+                    this.open = el.open;
                 },
-                "@cancel.prevent": e => dialog_close(),
+                "@cancel.prevent"() {
+                    dialog_close();
+                },
                 //
                 // https://issues.chromium.org/issues/346597066
                 // HTMLDialogElement's "cancel" event is not cancelable when "ESC" key is pressed several times
                 //
-                "@keydown.escape.prevent.stop": e => {
+                "@keydown.escape.prevent.stop"() {
                     //
                     // https://bugs.webkit.org/show_bug.cgi?id=284592
                     // Safari still lacks native support for the "closedby" attribute on <dialog>
@@ -121,20 +126,20 @@ function plugin({ $data, addScopeToNode, bind, directive }) {
 
         function process_trigger() {
             bind(el, {
-                "@click.prevent": "$dialog.show"
+                "@click.prevent": "show"
             });
         }
 
         function process_action() {
-            //
-            // The x-dialog:action button must be placed inside a <dialog> element.
-            //
             if (!closest(el, is_dialog)) {
-                return warn("x-dialog:action is missing a parent x-dialog:panel");
+                warn("x-dialog:action is missing a parent x-dialog:panel");
+                return;
             }
 
             el.form || bind(el, {
-                "@click.prevent": e => dialog_close(el.value)
+                "@click.prevent"() {
+                    dialog_close(el.value);
+                }
             });
         }
 
