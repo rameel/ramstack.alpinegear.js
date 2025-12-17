@@ -1,7 +1,7 @@
 {
   "name": "@ramstack/alpinegear-dialog",
   "version": "0.0.0",
-  "description": "A headless, unstyled dialog (modal) component for Alpine.js",
+  "description": "A headless, unstyled directive-based dialog (modal) component for Alpine.js, built on the native <dialog> element",
   "author": "Rameel Burhan",
   "license": "MIT",
   "repository": {
@@ -18,7 +18,8 @@
     "component",
     "alpinejs-directive",
     "alpinejs-plugin",
-    "alpinejs-component"
+    "alpinejs-component",
+    "htmx"
   ],
   "main": "alpinegear-dialog.js",
   "module": "alpinegear-dialog.esm.js"

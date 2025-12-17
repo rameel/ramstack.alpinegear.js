@@ -1,11 +1,32 @@
 # @ramstack/alpinegear-dialog
+
 [![NPM](https://img.shields.io/npm/v/@ramstack/alpinegear-dialog)](https://www.npmjs.com/package/@ramstack/alpinegear-dialog)
 [![MIT](https://img.shields.io/github/license/rameel/ramstack.alpinegear.js)](https://github.com/rameel/ramstack.alpinegear.js/blob/main/LICENSE)
+
+`@ramstack/alpinegear-dialog` is a **headless dialog directive for Alpine.js** built on top of the native HTML `<dialog>` element.
+
+It allows you to describe dialog behavior declaratively, without coupling logic to JavaScript code,
+which makes it especially suitable for **progressive enhancement** and **seamless integration with htmx**.
+
+The plugin provides a small set of composable directives that together form a dialog "component",
+while leaving markup, layout, and styling entirely up to you.
+
+## Features
+
+* Declarative dialog composition using Alpine directives
+* Supports **modal** and **non-modal** dialogs
+* Built on the native `<dialog>` element
+* Value-based close semantics
+* Promise-based API for imperative usage
+* Value-scoped events for htmx integration
+* No styling or markup constraints (headless UI)
+
 
 ## Installation
 
 ### Using CDN
-To include the CDN version of this plugin, add the following `<script>` tag before the core `alpine.js` file:
+
+Include the plugin **before** Alpine.js:
 
 ```html
 <!-- alpine.js plugin -->
@@ -16,13 +37,14 @@ To include the CDN version of this plugin, add the following `<script>` tag befo
 ```
 
 ### Using NPM
-Alternatively, you can install the plugin via `npm`:
+
+Install the package:
 
 ```bash
 npm install --save @ramstack/alpinegear-dialog
 ```
 
-Then initialize it in your bundle:
+Initialize the plugin:
 
 ```js
 import Alpine from "alpinejs";
@@ -31,6 +53,191 @@ import Dialog from "@ramstack/alpinegear-dialog";
 Alpine.plugin(Dialog);
 Alpine.start();
 ```
+
+## Usage
+
+### Basic Example
+
+```html
+<div x-dialog:modal>
+  <button x-dialog:trigger>Update</button>
+
+  <dialog x-dialog:panel>
+    Are you sure you want to continue?
+
+    <div>
+      <button x-dialog:action value="yes">Yes</button>
+      <button x-dialog:action value="no">No</button>
+      <button x-dialog:action>Cancel</button>
+    </div>
+  </dialog>
+</div>
+```
+
+Dialogs are composed using the following directives:
+
+* `x-dialog` – dialog root and scope provider (`x-dialog:modal` enables modal behavior)
+* `x-dialog:trigger` – element that opens the dialog
+* `x-dialog:panel` – the dialog panel (must be a `<dialog>` element)
+* `x-dialog:action` – closes the dialog and optionally provides a return value
+
+### Dialog Modes
+
+The root directive `x-dialog` supports two display modes:
+
+* **Non-modal dialog** (default)
+* **Modal dialog**, enabled by using `x-dialog:modal`
+
+### Actions and return values
+
+The `x-dialog:action` directive closes the dialog when activated.
+
+* The `value` attribute defines the dialog's return value
+* If `value` is omitted, an empty string (`""`) is used
+
+The return value is propagated through events and the Promise-based API.
+
+## Forms in dialogs
+
+Dialogs can contain forms and fully rely on the browser's native form handling.
+
+```html
+<div x-dialog:modal>
+  <button x-dialog:trigger>Update details</button>
+
+  <dialog x-dialog:panel>
+    <form method="dialog">
+      <label>
+        Name:
+        <input name="username" required />
+      </label>
+
+      <div>
+        <button value="update">Update</button>
+        <button formnovalidate>Cancel</button>
+      </div>
+    </form>
+  </dialog>
+</div>
+```
+
+### Notes
+
+* `x-dialog:action` is **optional** inside `<form method="dialog">`
+* Native form validation applies automatically
+* The dialog closes only if validation succeeds
+* `formnovalidate` allows closing the dialog without triggering validation
+
+In short, the dialog behaves exactly like a standard HTML dialog with a form.
+
+## Events
+
+All events are dispatched from the `x-dialog` root element.
+
+### `open`
+
+* Fired when the dialog is opened
+* Non-cancelable, does not bubble
+
+### `toggle`
+
+* Fired whenever the dialog state changes
+* `event.detail.state` contains the new state (`true` / `false`)
+* Non-cancelable, does not bubble
+
+### `requestclose`
+
+* Fired **before** the dialog is closed
+* Cancelable, does not bubble
+* `event.detail.value` contains the proposed return value
+
+If this event is canceled, the dialog remains **open**.
+
+### `close:[value]`
+
+* Fired after the dialog is closed
+* Value-scoped event
+* Event name is normalized to lowercase
+* `event.detail.value` contains the return value
+
+Example:
+`value="Yes"` → `close:yes`
+
+### `close`
+
+* Fired after the dialog is fully closed
+* `event.detail.value` contains the return value
+
+### Event Example
+
+```html
+<div x-dialog:modal
+     @open="console.log('open')"
+     @requestclose="console.log('requestclose', $event.detail.value)"
+     @close:yes="console.log('User confirmed')"
+     @close="console.log('Dialog closed')">
+
+  <button x-dialog:trigger>Update</button>
+
+  <dialog x-dialog:panel>
+    Are you sure you want to continue?
+
+    <div>
+      <button x-dialog:action value="yes">Yes</button>
+      <button x-dialog:action value="no">No</button>
+      <button x-dialog:action>Cancel</button>
+    </div>
+  </dialog>
+</div>
+```
+
+## HTXM Integration
+
+Value-scoped close events make integration with `htmx` straightforward and js-free.
+
+```html
+<div x-dialog:modal
+     hx-trigger="close:yes"
+     hx-delete="/account/5">
+
+  <button x-dialog:trigger>Deactivate account</button>
+
+  <dialog x-dialog:panel>
+    Are you sure you wish to deactivate your account?
+
+    <div>
+      <button x-dialog:action value="yes">Yes</button>
+      <button x-dialog:action>Cancel</button>
+    </div>
+  </dialog>
+</div>
+```
+
+## Properties and Methods
+
+All properties and methods are available within the `x-dialog` scope.
+
+### `open` (readonly)
+
+A boolean representing the dialog state:
+
+* `true` — dialog is open
+* `false` — dialog is closed
+
+### `show(): Promise<string>`
+
+Displays the dialog using the configured mode (modal or non-modal).
+
+Returns a `Promise<string>` that resolves when the dialog is closed.
+The resolved value is the dialog's return value.
+
+### `close(returnValue?: string): void`
+
+Closes the dialog programmatically.
+
+* `returnValue` — string returned by the dialog
+* Closing can be prevented by canceling `requestclose`
+
 
 ## Source Code
 You can find the source code for this plugin on GitHub:
