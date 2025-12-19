@@ -149,7 +149,7 @@ function plugin({ bind, directive }) {
             const { owner, panel } = get_dialog_info();
             const detail = { value };
 
-            if (dispatch(owner, "requestclose", detail, { cancelable: true })) {
+            if (dispatch(owner, "beforeclose", detail, { cancelable: true })) {
                 value && dispatch(owner, "close:" + value.toLowerCase(), detail);
                 dispatch(owner, "close", detail);
                 panel.close(value);

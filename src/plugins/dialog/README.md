@@ -145,7 +145,7 @@ All events are dispatched from the `x-dialog` root element.
 * `event.detail.state` contains the new state (`true` / `false`)
 * Non-cancelable, does not bubble
 
-### `requestclose`
+### `beforeclose`
 
 * Fired **before** the dialog is closed
 * Cancelable, does not bubble
@@ -161,7 +161,7 @@ If this event is canceled, the dialog remains **open**.
 * `event.detail.value` contains the return value
 
 Example:
-`value="Yes"` → `close:yes`
+`value="Yes"` >> `close:yes`
 
 ### `close`
 
@@ -173,7 +173,7 @@ Example:
 ```html
 <div x-dialog:modal
      @open="console.log('open')"
-     @requestclose="console.log('requestclose', $event.detail.value)"
+     @beforeclose="console.log('beforeclose', $event.detail.value)"
      @close:yes="console.log('User confirmed')"
      @close="console.log('Dialog closed')">
 
@@ -236,7 +236,7 @@ The resolved value is the dialog's return value.
 Closes the dialog programmatically.
 
 * `returnValue` — string returned by the dialog
-* Closing can be prevented by canceling `requestclose`
+* Closing can be prevented by canceling `beforeclose`
 
 
 ## Source Code
