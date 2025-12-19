@@ -9,7 +9,7 @@ export default function({ $data, addScopeToNode, directive, magic, reactive }) {
         const router = $data(el).$router;
 
         if (!router && (value === "outlet" || value === "link")) {
-            warn(`no x-router directive found`);
+            warn("no x-router directive found");
             return;
         }
 
