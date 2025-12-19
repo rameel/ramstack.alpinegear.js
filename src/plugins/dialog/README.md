@@ -5,8 +5,8 @@
 
 `@ramstack/alpinegear-dialog` is a **headless dialog directive for Alpine.js** built on top of the native HTML `<dialog>` element.
 
-It allows you to describe dialog behavior declaratively, without coupling logic to JavaScript code,
-which makes it especially suitable for **progressive enhancement** and **seamless integration with htmx**.
+It allows you to describe dialog behavior declaratively, without coupling logic to JavaScript code.
+This makes it especially suitable for **progressive enhancement** and **seamless integration with htmx**.
 
 The plugin provides a small set of composable directives that together form a dialog "component",
 while leaving markup, layout, and styling entirely up to you.
@@ -17,7 +17,7 @@ while leaving markup, layout, and styling entirely up to you.
 * Supports **modal** and **non-modal** dialogs
 * Built on the native `<dialog>` element
 * Value-based close semantics
-* Promise-based API for imperative usage
+* Promise-based API for imperative control
 * Value-scoped events for htmx integration
 * No styling or markup constraints (headless UI)
 
@@ -93,7 +93,7 @@ The root directive `x-dialog` supports two display modes:
 The `x-dialog:action` directive closes the dialog when activated.
 
 * The `value` attribute defines the dialog's return value
-* If `value` is omitted, an empty string (`""`) is used
+* If `value` is omitted, an empty string (`""`) is used as the return value
 
 The return value is propagated through events and the Promise-based API.
 
@@ -141,7 +141,7 @@ All events are dispatched from the `x-dialog` root element.
 
 ### `toggle`
 
-* Fired whenever the dialog state changes
+* Fired whenever the dialog open state changes
 * `event.detail.state` contains the new state (`true` / `false`)
 * Non-cancelable, does not bubble
 
@@ -191,7 +191,7 @@ Example:
 </div>
 ```
 
-## HTXM Integration
+## HTMX Integration
 
 Value-scoped close events make integration with `htmx` straightforward and js-free.
 
@@ -224,7 +224,7 @@ This limitation is intentional and is based on native HTML constraints:
 * Buttons inside nested dialogs may be treated as part of an outer form
 * Validation and submission semantics become unpredictable across browsers
 
-For these reasons, we do not attempt to emulate or implement workarounds for nested dialog behavior.
+For these reasons, we intentionally do not attempt to emulate or implement workarounds for nested dialog behavior.
 
 ### Recommended pattern
 
@@ -289,7 +289,7 @@ Instead of nesting dialogs, the recommended approach is to **guard the close ope
 
 The `beforeclose` event is dispatched **synchronously**.
 
-Because of this, the decision to cancel the close operation **must be made synchronously during event dispatch**.
+As a result, the decision to cancel the close operation **must be made synchronously during event dispatch**.
 If the event handler returns a `Promise` or performs asynchronous work before calling `preventDefault()`,
 the event dispatch will already have completed and the dialog will close regardless.
 
@@ -326,11 +326,11 @@ const result = await el.show();
 ### `open` (readonly)
 
 A boolean representing the dialog state:
-* `true` — dialog is open; otherwise, closed
+* `true` — dialog is open; otherwise `false`
 
 ### `show(): Promise<string>`
 
-Displays the dialog using the configured mode (modal or non-modal).
+Displays the dialog using the configured display mode (modal or non-modal).
 
 Returns a `Promise<string>` that resolves when the dialog is closed.
 The resolved value is the dialog's return value.
@@ -347,43 +347,6 @@ Closes the dialog programmatically.
 You can find the source code for this plugin on GitHub:
 
 https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/dialog
-
-
-## Related projects
-
-**[@ramstack/alpinegear-main](https://www.npmjs.com/package/@ramstack/alpinegear-main)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/main))<br>
-Provides a combined plugin that includes several useful directives.
-This package aggregates multiple individual plugins, offering a convenient all-in-one bundle.
-Included directives: `x-bound`, `x-format`, `x-fragment`, `x-match`, `x-template`, and `x-when`.
-
-**[@ramstack/alpinegear-bound](https://www.npmjs.com/package/@ramstack/alpinegear-bound)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/bound))<br>
-Provides the `x-bound` directive, which allows for two-way binding of input elements and their associated data properties.
-It works similarly to the binding provided by [Svelte](https://svelte.dev/docs/element-directives#bind-property)
-and also supports synchronizing values between two `Alpine.js` data properties.
-
-**[@ramstack/alpinegear-template](https://www.npmjs.com/package/@ramstack/alpinegear-template)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/template))<br>
-Provides the `x-template` directive, which allows you to define a template once anywhere in the DOM and reference it by its ID.
-
-**[@ramstack/alpinegear-fragment](https://www.npmjs.com/package/@ramstack/alpinegear-fragment)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/fragment))<br>
-Provides the `x-fragment` directive, which allows for fragment-like behavior similar to what's available in frameworks
-like `Vue.js` or `React`, where multiple root elements can be grouped together.
-
-**[@ramstack/alpinegear-match](https://www.npmjs.com/package/@ramstack/alpinegear-match)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/match))<br>
-Provides the `x-match` directive, which functions similarly to the `switch` statement in many programming languages,
-allowing you to conditionally render elements based on matching cases.
-
-**[@ramstack/alpinegear-when](https://www.npmjs.com/package/@ramstack/alpinegear-when)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/when))<br>
-Provides the `x-when` directive, which allows for conditional rendering of elements similar to `x-if`, but supports multiple root elements.
-
-**[@ramstack/alpinegear-destroy](https://www.npmjs.com/package/@ramstack/alpinegear-destroy)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/destroy))<br>
-Provides the `x-destroy` directive, which is the opposite of `x-init` and allows you to hook into the cleanup phase
-of any element, running a callback when the element is removed from the DOM.
-
-**[@ramstack/alpinegear-hotkey](https://www.npmjs.com/package/@ramstack/alpinegear-hotkey)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/hotkey))<br>
-Provides the `x-hotkey` directive, which allows you to easily handle keyboard shortcuts within your Alpine.js components or application.
-
-**[@ramstack/alpinegear-router](https://www.npmjs.com/package/@ramstack/alpinegear-router)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/router))<br>
-Provides the `x-router` and `x-route` directives, which enable client-side navigation and routing functionality within your Alpine.js application.
 
 
 ## Contributions
