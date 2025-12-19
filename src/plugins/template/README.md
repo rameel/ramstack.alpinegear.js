@@ -202,6 +202,11 @@ Provides the `x-hotkey` directive, which allows you to easily handle keyboard sh
 **[@ramstack/alpinegear-router](https://www.npmjs.com/package/@ramstack/alpinegear-router)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/router))<br>
 Provides the `x-router` and `x-route` directives, which enable client-side navigation and routing functionality within your Alpine.js application.
 
+**[@ramstack/alpinegear-dialog](https://www.npmjs.com/package/@ramstack/alpinegear-dialog)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/dialog))<br>
+Provides a headless dialog directive for Alpine.js based on the native HTML `<dialog>` element.
+It supports declarative composition, value-based close semantics, and both modal and non-modal dialogs,
+with optional Promise-based imperative control.
+
 
 ## Contributions
 Bug reports and contributions are welcome.

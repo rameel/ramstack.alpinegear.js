@@ -9,7 +9,7 @@ export default function({ $data, addScopeToNode, directive, magic, reactive }) {
         const router = $data(el).$router;
 
         if (!router && (value === "outlet" || value === "link")) {
-            warn(`no x-router directive found`);
+            warn(`x-router:${value} is missing a parent x-router`)
             return;
         }
 
@@ -157,7 +157,7 @@ export default function({ $data, addScopeToNode, directive, magic, reactive }) {
 
         function process_outlet() {
             if (router.outlet) {
-                warn("x-router:outlet already specified", router.outlet, el);
+                warn("x-router:outlet is already present", router.outlet, el);
             }
             else {
                 router.outlet = el;

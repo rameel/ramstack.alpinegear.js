@@ -372,6 +372,11 @@ of any element, running a callback when the element is removed from the DOM.
 **[@ramstack/alpinegear-hotkey](https://www.npmjs.com/package/@ramstack/alpinegear-hotkey)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/hotkey))<br>
 Provides the `x-hotkey` directive, which allows you to easily handle keyboard shortcuts within your Alpine.js components or application.
 
+**[@ramstack/alpinegear-dialog](https://www.npmjs.com/package/@ramstack/alpinegear-dialog)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/dialog))<br>
+Provides a headless dialog directive for Alpine.js based on the native HTML `<dialog>` element.
+It supports declarative composition, value-based close semantics, and both modal and non-modal dialogs,
+with optional Promise-based imperative control.
+
 
 ## Contributions
 Bug reports and contributions are welcome.

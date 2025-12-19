@@ -1,22 +1,22 @@
 {
-    "name": "@ramstack/alpinegear-router",
-    "version": "0.0.0",
-    "description": "@ramstack/alpinegear-router provides routing-related directives for Alpine.js, enabling client-side navigation and routing functionality.",
-    "author": "Rameel Burhan",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
-      "directory": "src/plugins/router"
-    },
-    "keywords": [
-      "alpine.js",
-      "alpinejs",
-      "alpinejs-router",
-      "alpinejs-routing",
-      "alpinejs-directive",
-      "alpinejs-plugin"
-    ],
-    "main": "alpinegear-router.js",
-    "module": "alpinegear-router.esm.js"
-  }
+  "name": "@ramstack/alpinegear-router",
+  "version": "0.0.0",
+  "description": "@ramstack/alpinegear-router provides routing-related directives for Alpine.js, enabling client-side navigation and routing functionality.",
+  "author": "Rameel Burhan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
+    "directory": "src/plugins/router"
+  },
+  "keywords": [
+    "alpine.js",
+    "alpinejs",
+    "alpinejs-router",
+    "alpinejs-routing",
+    "alpinejs-directive",
+    "alpinejs-plugin"
+  ],
+  "main": "alpinegear-router.js",
+  "module": "alpinegear-router.esm.js"
+}
