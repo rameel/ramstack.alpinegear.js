@@ -17,10 +17,10 @@ import {
 
 const is_production = process.env.NODE_ENV === "production";
 
-const global_plugins = [
+const global_plugins = optimize => [
     node_resolve(),
-    remove_comments(),
-    trim_ws(),
+    optimize && remove_comments(),
+    optimize && trim_ws(),
     bundle_size(),
     alias({
         entries: [
@@ -73,7 +73,7 @@ function create_configuration({ plugin_name, input, format, optimize }) {
             })]
         },
         plugins: [
-            ...global_plugins,
+            ...global_plugins(optimize),
             replace({
                 preventAssignment: true,
                 values: {
