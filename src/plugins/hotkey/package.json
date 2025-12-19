@@ -1,24 +1,24 @@
 {
-    "name": "@ramstack/alpinegear-hotkey",
-    "version": "0.0.0",
-    "description": "@ramstack/alpinegear-hotkey provides 'x-hotkey' Alpine.js directive, allowing easily handle keyboard shortcuts.",
-    "author": "Rameel Burhan",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
-      "directory": "src/plugins/hotkey"
-    },
-    "keywords": [
-      "alpine.js",
-      "alpinejs",
-      "hotkey",
-      "shortcut",
-      "alpinejs-hotkey",
-      "alpinejs-shortcut",
-      "alpinejs-directive",
-      "alpinejs-plugin"
-    ],
-    "main": "alpinegear-hotkey.js",
-    "module": "alpinegear-hotkey.esm.js"
-  }
+  "name": "@ramstack/alpinegear-hotkey",
+  "version": "0.0.0",
+  "description": "@ramstack/alpinegear-hotkey provides 'x-hotkey' Alpine.js directive, allowing easily handle keyboard shortcuts.",
+  "author": "Rameel Burhan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
+    "directory": "src/plugins/hotkey"
+  },
+  "keywords": [
+    "alpine.js",
+    "alpinejs",
+    "hotkey",
+    "shortcut",
+    "alpinejs-hotkey",
+    "alpinejs-shortcut",
+    "alpinejs-directive",
+    "alpinejs-plugin"
+  ],
+  "main": "alpinegear-hotkey.js",
+  "module": "alpinegear-hotkey.esm.js"
+}

@@ -1,22 +1,22 @@
 {
-    "name": "@ramstack/alpinegear-when",
-    "version": "0.0.0",
-    "description": "@ramstack/alpinegear-when provides additional directives, magic functions, and utilities for a more productive development experience",
-    "author": {
-      "name": "Rameel Burhan",
-      "email": "rameel-b@hotmail.com"
-    },
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
-      "directory": "src/plugins/when"
-    },
-    "keywords": [
-      "alpine.js",
-      "alpinejs",
-      "alpinejs-directive",
-      "alpinejs-plugin"
-    ],
-    "main": "dist/alpinegear-when.js"
-  }
+  "name": "@ramstack/alpinegear-when",
+  "version": "0.0.0",
+  "description": "@ramstack/alpinegear-when provides additional directives, magic functions, and utilities for a more productive development experience",
+  "author": {
+    "name": "Rameel Burhan",
+    "email": "rameel-b@hotmail.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
+    "directory": "src/plugins/when"
+  },
+  "keywords": [
+    "alpine.js",
+    "alpinejs",
+    "alpinejs-directive",
+    "alpinejs-plugin"
+  ],
+  "main": "dist/alpinegear-when.js"
+}

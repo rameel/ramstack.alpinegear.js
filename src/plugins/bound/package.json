@@ -1,21 +1,21 @@
 {
-    "name": "@ramstack/alpinegear-bound",
-    "version": "0.0.0",
-    "description": "@ramstack/alpinegear-bound provides the 'x-bound' Alpine.js directive, which allows for two-way binding of input elements and their associated data properties.",
-    "author": "Rameel Burhan",
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
-      "directory": "src/plugins/bound"
-    },
-    "keywords": [
-      "alpine.js",
-      "alpinejs",
-      "alpinejs-binding",
-      "alpinejs-directive",
-      "alpinejs-plugin"
-    ],
-    "main": "alpinegear-bound.js",
-    "module": "alpinegear-bound.esm.js"
-  }
+  "name": "@ramstack/alpinegear-bound",
+  "version": "0.0.0",
+  "description": "@ramstack/alpinegear-bound provides the 'x-bound' Alpine.js directive, which allows for two-way binding of input elements and their associated data properties.",
+  "author": "Rameel Burhan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
+    "directory": "src/plugins/bound"
+  },
+  "keywords": [
+    "alpine.js",
+    "alpinejs",
+    "alpinejs-binding",
+    "alpinejs-directive",
+    "alpinejs-plugin"
+  ],
+  "main": "alpinegear-bound.js",
+  "module": "alpinegear-bound.esm.js"
+}
