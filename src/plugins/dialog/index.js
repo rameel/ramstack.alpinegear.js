@@ -39,19 +39,27 @@ function plugin({ bind, directive }) {
                 modal: value === "modal"
             };
 
+            Object.defineProperty(el, "open", {
+                get() {
+                    return !!el._r_dialog?.panel.open;
+                }
+            });
+
+            Object.assign(el, {
+                show() {
+                    return dialog_show();
+                },
+                close(value) {
+                    dialog_close(value);
+                }
+            });
+
             bind(el, {
                 "x-data"() {
                     return {
                         open: false,
                         show() {
-                            const { panel, modal } = get_dialog_info();
-                            if (panel) {
-                                return new Promise(resolve => {
-                                    listen(panel, "close", () => resolve(panel.returnValue), { once: true });
-                                    panel[modal ? "showModal" : "show"]();
-                                });
-                            }
-                            return Promise.resolve();
+                            return dialog_show();
                         },
                         close(value) {
                             dialog_close(value);
@@ -141,6 +149,19 @@ function plugin({ bind, directive }) {
                     dialog_close(el.value);
                 }
             });
+        }
+
+        function dialog_show() {
+            const { panel, modal } = get_dialog_info();
+
+            if (panel) {
+                return new Promise(resolve => {
+                    listen(panel, "close", () => resolve(panel.returnValue), { once: true });
+                    panel[modal ? "showModal" : "show"]();
+                });
+            }
+
+            return Promise.resolve();
         }
 
         function dialog_close(value) {
