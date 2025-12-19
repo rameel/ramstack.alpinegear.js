@@ -213,16 +213,120 @@ Value-scoped close events make integration with `htmx` straightforward and js-fr
 </div>
 ```
 
+## Nested dialogs
+
+Nesting `x-dialog` components directly in the DOM is **not supported** and results in **undefined behavior**.
+
+This limitation is intentional and is based on native HTML constraints:
+
+* The `<dialog>` element does not define consistent behavior for nested dialogs
+* HTML forms cannot be safely nested
+* Buttons inside nested dialogs may be treated as part of an outer form
+* Validation and submission semantics become unpredictable across browsers
+
+For these reasons, we do not attempt to emulate or implement workarounds for nested dialog behavior.
+
+### Recommended pattern
+
+A common use case that appears to require nested dialogs is **confirming a destructive or cancel action**
+while a dialog is already open (for example, canceling a form with unsaved data).
+
+Instead of nesting dialogs, the recommended approach is to **guard the close operation** using a secondary dialog.
+
+```html
+<div x-dialog:modal @beforeclose="confirm"
+     x-data="{
+       email: '',
+       password: '',
+       confirm(e) {
+         if (!e.detail.value && (this.email || this.password)) {
+           e.preventDefault();
+
+           this.$refs.discardconfirm.show().then(result => {
+             if (result === 'yes') {
+               e.target.close('create');
+             }
+           });
+         }
+       }
+     }"
+>
+  <button x-dialog:trigger>Create</button>
+
+  <dialog x-dialog:panel closedby="closerequest">
+    <form method="dialog">
+      <h3>Create an account</h3>
+
+      <label>
+        Email:
+        <input x-model="email" type="email" required />
+      </label>
+
+      <label>
+        Password:
+        <input x-model="password" type="password" required />
+      </label>
+
+      <div class="actions">
+        <button value="create">Create</button>
+        <button formnovalidate>Cancel</button>
+      </div>
+    </form>
+  </dialog>
+</div>
+
+<div x-dialog:modal x-ref="discardconfirm">
+  <dialog x-dialog:panel closedby="any">
+    You have unsaved changes. Discard them?
+
+    <button x-dialog:action value="yes">Yes</button>
+    <button x-dialog:action autofocus>No</button>
+  </dialog>
+</div>
+```
+
+### NOTE
+
+The `beforeclose` event is dispatched **synchronously**.
+
+Because of this, the decision to cancel the close operation **must be made synchronously during event dispatch**.
+If the event handler returns a `Promise` or performs asynchronous work before calling `preventDefault()`,
+the event dispatch will already have completed and the dialog will close regardless.
+
+For this reason:
+
+* `beforeclose` handlers **must not rely on `async / await`**
+* `event.preventDefault()` **must be called synchronously**
+* any asynchronous confirmation logic must be deferred until after the close has been canceled
+
+In the example above, this is why the confirmation dialog is shown *after* the close has been prevented:
+
+1. `beforeclose` is dispatched synchronously
+2. The handler immediately calls `event.preventDefault()`
+3. The close operation is canceled
+4. A secondary dialog is shown using `show().then(...)`
+5. If the user confirms, the original dialog is closed programmatically
+
 ## Properties and Methods
 
 All properties and methods are available within the `x-dialog` scope.
 
+In addition, the same API is exposed on the root DOM element to which the `x-dialog` directive is applied.
+This allows imperative control via `x-ref` when needed.
+
+```js
+const result = await this.$refs.dialog.show();
+```
+```js
+const el = document.getElementById("dialog");
+const result = await el.show();
+```
+
+
 ### `open` (readonly)
 
 A boolean representing the dialog state:
-
-* `true` — dialog is open
-* `false` — dialog is closed
+* `true` — dialog is open; otherwise, closed
 
 ### `show(): Promise<string>`
 
