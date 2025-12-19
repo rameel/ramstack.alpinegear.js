@@ -44,8 +44,8 @@
     "@rollup/plugin-virtual": "^3.0.2",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
-    "@vitest/coverage-v8": "^4.0.15",
-    "@vitest/ui": "^4.0.15",
+    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/ui": "^4.0.16",
     "cross-env": "^10.1.0",
     "glob": "^13.0.0",
     "gulp": "^5.0.1",
@@ -54,10 +54,10 @@
     "gulplog": "^2.2.0",
     "jsdom": "^27.3.0",
     "rimraf": "^6.1.2",
-    "rollup": "^4.53.3",
+    "rollup": "^4.53.5",
     "rollup-plugin-bundle-size": "^1.0.3",
     "strip-comments": "^2.0.1",
     "terser": "^5.44.1",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.16"
   }
 }
