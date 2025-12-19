@@ -144,12 +144,33 @@ Provides routing-related directives, enabling client-side navigation and routing
 </div>
 ```
 
+**[@ramstack/alpinegear-dialog](https://www.npmjs.com/package/@ramstack/alpinegear-dialog)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/dialog))<br>
+Provides a headless dialog directive, built on the native HTML `<dialog>` element.
+It enables declarative composition of modal and non-modal dialogs with value-based close semantics,
+Promise-based imperative control, and seamless integration with htmx.
+
+```html
+<div x-dialog:modal
+     @close:yes="console.log('Confirmed')"
+     @close="console.log('Closed with', $event.detail.value)">
+
+  <button x-dialog:trigger>Delete</button>
+
+  <dialog x-dialog:panel>
+    Are you sure you want to delete this item?
+
+    <div>
+      <button x-dialog:action value="yes">Yes</button>
+      <button x-dialog:action>Cancel</button>
+    </div>
+  </dialog>
+</div>
+```
 
 **[@ramstack/alpinegear-destroy](https://www.npmjs.com/package/@ramstack/alpinegear-destroy)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/destroy))<br>
 Provides `x-destroy` provides directive, which is the opposite of `x-init` and allows you to execute code when an element is removed from the DOM.
 
 ```html
-
 <template x-if="show">
   <div x-destroy="destroyed = true">
     <p>Hello, World!</p>
