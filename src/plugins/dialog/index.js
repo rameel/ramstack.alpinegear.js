@@ -67,25 +67,6 @@ function plugin({ bind, directive }) {
                     }
                 }
             });
-
-            cleanup(
-                //
-                // Listening to the "submit" event on the document element, ensuring (to some extent)
-                // that our handler executes last among all handlers listening for this event.
-                // This allows us to determine whether the event was canceled by someone else.
-                //
-                listen(document, "submit", e => {
-                    if (e.target.method === "dialog" && closest(e.target, n => n === el) && !e.defaultPrevented) {
-                        //
-                        // Prevent the dialog from closing immediately,
-                        // as we need to trigger our own custom events first.
-                        //
-                        e.preventDefault();
-
-                        dialog_close(e.submitter?.value);
-                    }
-                })
-            );
         }
 
         function process_panel() {
@@ -94,7 +75,7 @@ function plugin({ bind, directive }) {
             }
 
             if (!is_dialog(el)) {
-                warn("x-dialog:panel can only be used on a 'dialog' element");
+                warn("x-dialog:panel should be used on a <dialog> element");
                 return;
             }
 
@@ -106,9 +87,8 @@ function plugin({ bind, directive }) {
                     this.open = el.open;
                 },
                 "@toggle"(e) {
-                    el.open && dispatch(owner, "open");
+                    (this.open = el.open) && dispatch(owner, "open");
                     dispatch(owner, "toggle", { state: e.newState });
-                    this.open = el.open;
                 },
                 "@cancel.prevent"() {
                     dialog_close();
@@ -130,6 +110,25 @@ function plugin({ bind, directive }) {
                     }
                 }
             });
+
+            cleanup(
+                //
+                // Listening to the "submit" event on the document element, ensuring (to some extent)
+                // that our handler executes last among all handlers listening for this event.
+                // This allows us to determine whether the event was canceled by someone else.
+                //
+                listen(document, "submit", e => {
+                    if (e.target.method === "dialog" && closest(e.target, n => n === el) && !e.defaultPrevented) {
+                        //
+                        // Prevent the dialog from closing immediately,
+                        // as we need to trigger our own custom events first.
+                        //
+                        e.preventDefault();
+
+                        dialog_close(e.submitter?.value);
+                    }
+                })
+            );
         }
 
         function process_trigger() {
