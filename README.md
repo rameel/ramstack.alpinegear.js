@@ -178,6 +178,18 @@ Provides `x-destroy` provides directive, which is the opposite of `x-init` and a
 </template>
 ```
 
+**[@ramstack/alpinegear-typegrab](https://www.npmjs.com/package/@ramstack/alpinegear-typegrab)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/typegrab))<br>
+Provides the `x-typegrab` directive, which automatically focuses an element when the user starts typing,
+as long as no editable element is currently focused. This is useful for search inputs or similar UX patterns
+where typing should immediately direct input to a specific field.
+```html
+<input
+  type="search"
+  placeholder="Type to search..."
+  x-typegrab
+/>
+```
+
 **[@ramstack/alpinegear-main](https://www.npmjs.com/package/@ramstack/alpinegear-main)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/main))<br>
 Is a combined plugin that includes several directives, providing a convenient all-in-one package.
 
