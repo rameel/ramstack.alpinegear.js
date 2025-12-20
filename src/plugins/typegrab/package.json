@@ -1,0 +1,23 @@
+{
+  "name": "@ramstack/alpinegear-typegrab",
+  "version": "0.0.0",
+  "description": "@ramstack/alpinegear-typegrab provides the x-typegrab Alpine.js directive, which automatically focuses an element when the user starts typing and no editable element is active.",
+  "author": "Rameel Burhan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
+    "directory": "src/plugins/typegrab"
+  },
+  "keywords": [
+    "alpine.js",
+    "alpinejs",
+    "alpinejs-directive",
+    "alpinejs-plugin",
+    "keyboard",
+    "focus",
+    "ux"
+  ],
+  "main": "alpinegear-typegrab.js",
+  "module": "alpinegear-typegrab.esm.js"
+}
