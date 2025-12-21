@@ -425,6 +425,22 @@ test.describe("x-bound: contenteditable", () => {
         await expect(page.locator("span")).toContainText("Hello World!");
     });
 
+    test("supports contenteditable='plaintext-only'", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ innerHTML: '<h1>Sample</h1>' }">
+                <pre contenteditable="plaintext-only" &innerHTML></pre>
+                <button @click="innerHTML='Hello!'">Click</button>
+                <span x-format>{{ innerHTML }}</pre>
+            </div>`);
+
+        await expect(page.locator("span")).toContainText("<h1>Sample</h1>");
+        await page.locator("button").click();
+        await expect(page.locator("span")).toContainText("Hello!");
+        await page.locator("pre").clear();
+        await page.locator("pre").fill("Hello World!");
+        await expect(page.locator("span")).toContainText("Hello World!");
+    });
+
     test("innerHTML (initliaze from element when property is null)", async ({ page }) => {
         await set_html(page, `
             <div x-data="{ innerHTML: null }">
