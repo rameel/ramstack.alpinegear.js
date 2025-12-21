@@ -219,7 +219,7 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
         }
 
         function process_contenteditable() {
-            if (el.contentEditable === "true") {
+            if (el.isContentEditable) {
                 is_nullish(get_value()) && update_variable();
 
                 effect(update_property);
