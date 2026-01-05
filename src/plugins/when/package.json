@@ -18,6 +18,6 @@
     "alpinejs-directive",
     "alpinejs-plugin"
   ],
-  "main": "dist/alpinegear-when.js",
-  "module": "dist/alpinegear-when.esm.js"
+  "main": "alpinegear-when.js",
+  "module": "alpinegear-when.esm.js"
 }
