@@ -309,7 +309,7 @@ In this example, the `indeterminate` property of the checkbox is bound to the `i
 When `isPartialSelected` is `true`, the checkbox will be in the indeterminate state.
 
 > [!NOTE]
-> The `indeterminate` binding is one-way. Changes to the indeterminate property in the DOM (e.g., via user interaction or JavaScript) do not update the bound data property.
+> The `indeterminate` binding is one-way. Changes to the indeterminate property in the DOM (e.g., via user interaction or programmatically) do not update the bound data property.
 
 ### Binding `Alpine` data properties
 

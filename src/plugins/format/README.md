@@ -42,7 +42,7 @@ Alpine.start();
 
 ## Usage
 The `x-format` directive enables you to use double curly braces (`{{ ... }}`) to evaluate expressions
-and inject their values into the DOM. The expressions within placeholders can be any valid JavaScript expression,
+and inject their values into the DOM. The expressions within placeholders can be any valid script expression,
 such as variables, arithmetic operations, or function calls, as long as they are available in the Alpine.js scope.
 
 ```html

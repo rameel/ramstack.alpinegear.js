@@ -57,7 +57,7 @@ Here's a simple example:
 
 ### Event Object
 
-The `x-hotkey` directive provides access to the native JavaScript event object via the magic `$event` property.
+The `x-hotkey` directive provides access to the native event object via the magic `$event` property.
 
 ```html
 <div x-data x-hotkey.shift+f.window="console.log($event)"></div>
