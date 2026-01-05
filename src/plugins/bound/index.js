@@ -184,7 +184,7 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
 
                         effect(() => apply_select_values(el, as_array(get_value() ?? [])));
                         cleanup(listen(el, "change", () => set_value(collect_selected_values(el))));
-                    }, 0);
+                    });
 
                     processed = true;
                     break;

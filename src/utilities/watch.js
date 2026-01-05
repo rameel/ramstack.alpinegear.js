@@ -25,7 +25,7 @@ export function watch(get_value, callback, options = null) {
             setTimeout(() => {
                 callback(new_value, old_value);
                 old_value = new_value;
-            }, 0);
+            });
         }
 
         initialized = true;
