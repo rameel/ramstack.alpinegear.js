@@ -48,7 +48,6 @@ function plugin({ directive, evaluateLater, mutateDom }) {
                         }
                     }
 
-
                     process_nodes(node);
                     process_attributes(node);
                     break;
