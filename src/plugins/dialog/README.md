@@ -48,9 +48,9 @@ Initialize the plugin:
 
 ```js
 import Alpine from "alpinejs";
-import Dialog from "@ramstack/alpinegear-dialog";
+import dialog from "@ramstack/alpinegear-dialog";
 
-Alpine.plugin(Dialog);
+Alpine.plugin(dialog);
 Alpine.start();
 ```
 

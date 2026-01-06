@@ -37,9 +37,9 @@ npm install --save @ramstack/alpinegear-typegrab
 
 ```js
 import Alpine from "alpinejs";
-import Typegrab from "@ramstack/alpinegear-typegrab";
+import typegrab from "@ramstack/alpinegear-typegrab";
 
-Alpine.plugin(Typegrab);
+Alpine.plugin(typegrab);
 Alpine.start();
 ```
 
