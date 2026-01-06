@@ -21,7 +21,6 @@
     "alpinejs-binding",
     "fragment",
     "alpinejs-fragment"
-
   ],
   "scripts": {
     "build": "cross-env NODE_ENV=production gulp build",
@@ -53,9 +52,10 @@
     "gulp-plugin-extras": "^1.1.0",
     "gulplog": "^2.2.0",
     "jsdom": "^27.4.0",
+    "maxmin": "^4.1.0",
+    "picocolors": "^1.1.1",
     "rimraf": "^6.1.2",
     "rollup": "^4.55.1",
-    "rollup-plugin-bundle-size": "^1.0.3",
     "strip-comments": "^2.0.1",
     "terser": "^5.44.1",
     "vitest": "^4.0.16"

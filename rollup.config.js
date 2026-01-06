@@ -1,7 +1,8 @@
-import path from "path";
+import path from "node:path";
 import alias from "@rollup/plugin-alias";
-import bundle_size from "rollup-plugin-bundle-size";
+import color from "picocolors";
 import replace from "@rollup/plugin-replace";
+import maxmin from "maxmin";
 import node_resolve from "@rollup/plugin-node-resolve";
 import strip_comments from "strip-comments";
 import terser from "@rollup/plugin-terser";
@@ -109,6 +110,17 @@ function trim_ws() {
                 const key = path.basename(options.file);
                 bundle[key].code = bundle[key].code.trim();
             }
+        }
+    };
+}
+
+function bundle_size() {
+    return {
+        name: "bundle_size",
+        generateBundle(options, bundle) {
+            const name = path.basename(options.file);
+            const size = maxmin(bundle[name].code, bundle[name].code, true);
+            this.info(`Produced '${color.cyan(name)}': ${size.slice(size.indexOf(' → ') + 3)}`);
         }
     };
 }

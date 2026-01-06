@@ -1,3 +1,4 @@
+import color from "picocolors";
 import gulp from "gulp";
 import gulp_json_transform from "gulp-json-transform";
 import logger from "gulplog";
@@ -45,7 +46,10 @@ const task_bundle_scripts = create_task("bundle -> compile package scripts", asy
     for (let options of options_list) {
         const bundle = await rollup({ ...options,
             onLog(level, log) {
-                console.log(`\n\x1b[33m[${level}] ${log}\x1b[0m\n`);
+                const message = log.message.replace(/^\[[^]+]\s*/, "");
+                const level_fname = ["warn", "error"].includes(level) ? level : "info";
+
+                logger[level_fname](message);
             }
         });
 
