@@ -77,8 +77,9 @@ function create_configuration({ plugin_name, input, format, optimize }) {
             }),
             virtual({
                 [input]: format === "iife"
-                    ? `import __${plugin_name} from "src/plugins/${plugin_name}/index.js";
-                       document.addEventListener("alpine:init", () => { Alpine.plugin(__${plugin_name}); });`
+                    ? `import { listen } from "src/utilities/utils.js";
+                       import __${plugin_name} from "src/plugins/${plugin_name}/index.js";
+                       listen(document, "alpine:init", () => Alpine.plugin(__${plugin_name}));`
                     : `import plugin from "src/plugins/${plugin_name}/index.js";
                        export default plugin;
                        export * from "src/plugins/${plugin_name}/index.js";`
