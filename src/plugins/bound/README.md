@@ -275,7 +275,7 @@ The group of `<input>` elements that should function together can utilize the `g
 
 </div>
 ```
-🚀 [Live demo | Alpine.js x-bound: Binding element dimensions](https://jsfiddle.net/rameel/f5jpry7b/)
+🚀 [Live demo | Alpine.js x-bound: Binding group inputs](https://jsfiddle.net/rameel/f5jpry7b/)
 
 
 ### Binding `input[type="checkbox"]:indeterminate` property
