@@ -3,8 +3,8 @@ name: Publish
 on:
   push:
     tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
-      - "[0-9]+.[0-9]+.[0-9]+-[a-z]+.[0-9]+"
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-[a-z]+.[0-9]+'
 
 permissions:
   contents: write
@@ -12,15 +12,15 @@ permissions:
 jobs:
   publish:
     if: github.repository == 'rameel/ramstack.alpinegear.js'
-    name: "Publish Packages"
+    name: 'Publish Packages'
     runs-on: ubuntu-latest
 
     steps:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,8 +34,8 @@ jobs:
       - name: Publish packages
         run: |
           for dir in dist/*; do
-            if [ -d "$dir" ]; then
-              cd "$dir"
+            if [ -d '$dir' ]; then
+              cd '$dir'
               npm publish --access public
               cd - > /dev/null
             fi
