@@ -1,6 +1,6 @@
 import path from "node:path";
 import { execSync as exec } from "node:child_process";
-import { statSync as stat, existsSync as exists } from "node:fs";
+import { statSync as stat, existsSync as exists, writeFileSync as write_file } from "node:fs";
 import { globSync as glob } from "glob";
 
 const MAIN_WORKTREE = ".worktrees/main";
@@ -61,7 +61,7 @@ function generate_report(files, pr, main) {
     }
 
     console.log(md);
-
+    process.env.SIZE_REPORT_OUTPUT && write_file(process.env.SIZE_REPORT_OUTPUT, md.trim());
 }
 
 try {

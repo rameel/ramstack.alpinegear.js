@@ -30,17 +30,18 @@ jobs:
         run: npm ci --include=dev
 
       - name: Run size comparison
-        run: npm run size-report > comment.md
+        run: npm run size-report
         env:
           NODE_ENV: production
           SKIP_GIT_TAG_RESOLUTION: true
+          SIZE_REPORT_OUTPUT: ${{ runner.temp }}/comment-${{ github.event.issue.number }}.md
 
       - name: Comment PR
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const body = fs.readFileSync('./comment.md', 'utf8');
+            const body = fs.readFileSync(process.env.SIZE_REPORT_OUTPUT, 'utf8');
             const pr_number = context.issue.number;
 
             const { data: comments } = await github.rest.issues.listComments({
