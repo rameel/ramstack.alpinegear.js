@@ -19,6 +19,12 @@
     "template",
     "formatting"
   ],
-  "main": "alpinegear-main.js",
-  "module": "alpinegear-main.esm.js"
+  "exports": {
+    ".": {
+      "import": {
+        "production": "./alpinegear-main.esm.min.js",
+        "default": "./alpinegear-main.esm.js"
+      }
+    }
+  }
 }

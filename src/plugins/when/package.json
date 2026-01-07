@@ -18,6 +18,12 @@
     "alpinejs-directive",
     "alpinejs-plugin"
   ],
-  "main": "alpinegear-when.js",
-  "module": "alpinegear-when.esm.js"
+  "exports": {
+    ".": {
+      "import": {
+        "production": "./alpinegear-when.esm.min.js",
+        "default": "./alpinegear-when.esm.js"
+      }
+    }
+  }
 }

@@ -15,6 +15,12 @@
     "alpinejs-directive",
     "alpinejs-plugin"
   ],
-  "main": "alpinegear-match.js",
-  "module": "alpinegear-match.esm.js"
+  "exports": {
+    ".": {
+      "import": {
+        "production": "./alpinegear-match.esm.min.js",
+        "default": "./alpinegear-match.esm.js"
+      }
+    }
+  }
 }

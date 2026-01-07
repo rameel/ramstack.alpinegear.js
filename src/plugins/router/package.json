@@ -17,6 +17,12 @@
     "alpinejs-directive",
     "alpinejs-plugin"
   ],
-  "main": "alpinegear-router.js",
-  "module": "alpinegear-router.esm.js"
+  "exports": {
+    ".": {
+      "import": {
+        "production": "./alpinegear-router.esm.min.js",
+        "default": "./alpinegear-router.esm.js"
+      }
+    }
+  }
 }
