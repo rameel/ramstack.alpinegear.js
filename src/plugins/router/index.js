@@ -1,4 +1,4 @@
-﻿import route from "@/plugins/router/route";
+import route from "@/plugins/router/route";
 import router from "@/plugins/router/router";
 import {
     RoutePattern
