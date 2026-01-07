@@ -85,8 +85,7 @@ as if it was defined in place.
 
 ### Recursive Template
 
-Since you can reference a template within itself by ID, it becomes easy to render **tree-like** structures -
-an otherwise challenging task.
+Since you can reference a template within itself by ID, it becomes easy to render **tree-like** structures – an otherwise challenging task.
 
 Here's an example of rendering a simple file tree using `<ul>` tags:
 

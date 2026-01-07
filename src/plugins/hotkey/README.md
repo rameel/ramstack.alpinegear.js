@@ -39,8 +39,8 @@ Alpine.start();
 ```
 
 ## Usage
-Define a hotkey combination using the directive by specifying key modifiers (such as `Ctrl`, `Alt`, `Shift`) with a `+` sign
-(e.g., `Ctrl+Alt+Shift+S`).
+Define a hotkey combination using the directive by specifying key modifiers (such as `Ctrl`, `Alt`, `Shift`)
+with a `+` sign (e.g., `Ctrl+Alt+Shift+S`).
 
 Here's a simple example:
 
@@ -129,7 +129,8 @@ By default, the event is `keydown`, but you can specify `keyup`, `keypress`, or 
 
 ### Exclude Elements
 
-If you want to prevent hotkey handling from being triggered by specific elements, add the `data-hotkey-ignore` attribute to those elements:
+If you want to prevent hotkey handling from being triggered by specific elements,
+add the `data-hotkey-ignore` attribute to those elements:
 
 ```html
 <div x-hotkey.shift+k="...">

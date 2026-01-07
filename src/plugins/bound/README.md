@@ -4,7 +4,9 @@
 
 `@ramstack/alpinegear-bound` is a plugin for [Alpine.js](https://alpinejs.dev/) that provides the `x-bound` directive.
 
-This directive allows for two-way binding between input elements and their associated data properties. It works similarly to the binding provided by [Svelte](https://svelte.dev/docs/element-directives#bind-property) and also supports synchronizing values between two `Alpine.js` data properties.
+This directive allows for two-way binding between input elements and their associated data properties.
+It works similarly to the binding provided by [Svelte](https://svelte.dev/docs/element-directives#bind-property)
+and also supports synchronizing values between two `Alpine.js` data properties.
 
 > [!Note]
 > This package is part of the **[`@ramstack/alpinegear-main`](https://www.npmjs.com/package/@ramstack/alpinegear-main)** bundle.
@@ -56,7 +58,9 @@ Let's take the following example:
 ```
 🚀 [Live demo | Alpine.js x-bound: Basic usage](https://jsfiddle.net/rameel/8cw23y7o/)
 
-In this example, we bind the `name` property to the `value` property of the `<input>` element. Since `x-bound` provides two-way binding, any changes to `name` will be reflected in the `<input>` element, as will occur when the `button` is clicked.
+In this example, we bind the `name` property to the `value` property of the `<input>` element.
+Since `x-bound` provides two-way binding, any changes to `name` will be reflected in the `<input>` element,
+as will occur when the `button` is clicked.
 
 ### Shorthand Syntax
 The `x-bound` directive also supports shorthand syntax: `&`.
@@ -72,7 +76,9 @@ If the element's property name matches the bound data property, you can simplify
 <input x-bound:value />
 ```
 
-In this example, the repetition of the `value` in `x-bound:value="value"` is redundant, so we can simply shorten it to `<input x-bound:value>`. Since we can use `&` instead of `x-bound`, the example can be written as follows:
+In this example, the repetition of the `value` in `x-bound:value="value"` is redundant,
+so we can simply shorten it to `<input x-bound:value>`. Since we can use `&` instead of `x-bound`,
+the example can be written as follows:
 
 ```html
 <input &value />
@@ -94,7 +100,8 @@ More examples:
 
 ### Binding Numeric Inputs
 
-For `<input>` elements with `type="number"` and `type="range"`, values are automatically coerced into numbers. If the `<input>` value is empty or invalid, the bound property will be set to `null`.
+For `<input>` elements with `type="number"` and `type="range"`, values are automatically coerced into numbers.
+If the `<input>` value is empty or invalid, the bound property will be set to `null`.
 
 ```html
 <input &value="number" type="number" />
@@ -103,7 +110,9 @@ For `<input>` elements with `type="number"` and `type="range"`, values are autom
 
 ### Binding `<input type="file">`
 
-For `<input>` elements with `type="file"`, the binding is applied to the `files` property, resulting in a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList) object being assigned, containing the list of selected files.
+For `<input>` elements with `type="file"`, the binding is applied to the `files` property,
+resulting in a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList) object being assigned,
+containing the list of selected files.
 
 ```html
 <input &files type="file" accept="image/jpeg" />
@@ -326,11 +335,13 @@ The directive also supports synchronizing values between two data properties.
 ```
 🚀 [Live demo | Alpine.js x-bound: Binding data properties](https://jsfiddle.net/rameel/972qyomn/)
 
-In this example, we bind the outer `number` property to the inner `count` property. Since `number` is initially set to `5`, the `count` property is also set to `5` when the binding occurs.
+In this example, we bind the outer `number` property to the inner `count` property. Since `number` is initially set to `5`,
+the `count` property is also set to `5` when the binding occurs.
 
 By default, the binding is two-way, so changes in `count` are reflected in `number` and vice versa.
 
-But what if we want changes to propagate in one direction only? For this case, the `x-bound` directive provides three modifiers to control data flow:
+But what if we want changes to propagate in one direction only? For this case, the `x-bound` directive
+provides three modifiers to control data flow:
 
 > [!TIP]
 > - **`inout`**: Binding works in both directions. This means that changes in one property are automatically reflected in the other and vice versa. This modifier is used by default.

@@ -2,7 +2,8 @@
 [![NPM](https://img.shields.io/npm/v/@ramstack/alpinegear-main)](https://www.npmjs.com/package/@ramstack/alpinegear-main)
 [![MIT](https://img.shields.io/github/license/rameel/ramstack.alpinegear.js)](https://github.com/rameel/ramstack.alpinegear.js/blob/main/LICENSE)
 
-`@ramstack/alpinegear-main` is a combined plugin for [Alpine.js](https://alpinejs.dev/) that includes several useful directives. This plugin aggregates multiple individual plugins, providing a convenient all-in-one package.
+`@ramstack/alpinegear-main` is a combined plugin for [Alpine.js](https://alpinejs.dev/) that includes several useful directives.
+This plugin aggregates multiple individual plugins, providing a convenient all-in-one package.
 
 ## Installation
 
@@ -37,7 +38,9 @@ Alpine.start();
 ## Included Plugins
 
 **[@ramstack/alpinegear-bound](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/bound)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/bound))<br>
-Provides the `x-bound` directive, which allows for two-way binding of input elements and their associated data properties. It works similarly to the binding provided by [Svelte](https://svelte.dev/docs/element-directives#bind-property) and also supports synchronizing values between two `Alpine.js` data properties.
+Provides the `x-bound` directive, which allows for two-way binding of input elements and their associated data properties.
+It works similarly to the binding provided by [Svelte](https://svelte.dev/docs/element-directives#bind-property)
+and also supports synchronizing values between two `Alpine.js` data properties.
 
 ```html
 <div x-data="{ width: 0, height: 0, files: [] }">
@@ -54,7 +57,8 @@ Provides the `x-bound` directive, which allows for two-way binding of input elem
 
 
 **[@ramstack/alpinegear-format](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/format)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/format))<br>
-Provides `x-format` directive, which allows you to easily interpolate text using a template syntax similar to what's available in `Vue.js`.
+Provides `x-format` directive, which allows you to easily interpolate text using a template syntax
+similar to what's available in `Vue.js`.
 
 ```html
 <div x-data="{ message: 'Hello, World!'}" x-format>
@@ -91,7 +95,8 @@ something that would otherwise be quite complex to implement.
 
 
 **[@ramstack/alpinegear-fragment](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/fragment)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/fragment))<br>
-Provides the `x-fragment` directive, allowing for fragment-like behavior similar to what's available in frameworks like `Vue.js` or `React`, where multiple root elements can be grouped together.
+Provides the `x-fragment` directive, allowing for fragment-like behavior similar to what's available in frameworks
+like `Vue.js` or `React`, where multiple root elements can be grouped together.
 
 It is particularly useful when you want to avoid wrapping elements in unnecessary container tags.
 
@@ -108,7 +113,8 @@ It is particularly useful when you want to avoid wrapping elements in unnecessar
 
 
 **[@ramstack/alpinegear-match](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/match)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/match))<br>
-Provides the `x-match` directive, which functions similarly to the `switch` statement in many programming languages, allowing to conditionally render elements based on matching cases.
+Provides the `x-match` directive, which functions similarly to the `switch` statement in many programming languages,
+allowing to conditionally render elements based on matching cases.
 
 ```html
 <template x-for="n in numbers">
@@ -123,7 +129,8 @@ Provides the `x-match` directive, which functions similarly to the `switch` stat
 
 
 **[@ramstack/alpinegear-when](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/when)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/when))<br>
-Provides the `x-when` directive, which allows for conditional rendering of elements similar to `x-if`, but supports multiple root elements.
+Provides the `x-when` directive, which allows for conditional rendering of elements similar to `x-if`,
+but supports multiple root elements.
 
 ```html
 <template x-for="item in items" :key="item.id">

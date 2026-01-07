@@ -4,7 +4,8 @@
 
 `@ramstack/alpinegear-fragment` is a plugin for [Alpine.js](https://alpinejs.dev/) that provides the `x-fragment` directive.
 
-This directive allows you to use multiple root elements in your templates, similar to the `Fragment` feature found in frameworks like `Vue.js` and `React`. It is particularly useful when you want to avoid wrapping elements in unnecessary container tags.
+This directive allows you to use multiple root elements in your templates, similar to the `Fragment` feature found in frameworks
+like `Vue.js` and `React`. It is particularly useful when you want to avoid wrapping elements in unnecessary container tags.
 
 > [!Note]
 > This package is part of the **[`@ramstack/alpinegear-main`](https://www.npmjs.com/package/@ramstack/alpinegear-main)** bundle.
