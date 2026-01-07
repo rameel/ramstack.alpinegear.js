@@ -16,7 +16,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      SIZE_REPORT_OUTPUT: ${{ runner.temp }}/comment-${{ github.event.issue.number }}.md
+      SIZE_REPORT_OUTPUT: ${{ runner.temp }}/comment-${{ github.context.issue.number }}.md
 
     steps:
       - name: Setup Node.js
