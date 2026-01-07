@@ -39,7 +39,7 @@ const pr_sizes = Object.fromEntries(pr_files.map(f => [f, size(f)]));
 
 exec("git fetch origin main", { stdio: "inherit" });
 exec("git checkout origin/main", { stdio: "ignore" });
-exec("npm ci", { stdio: "inherit" });
+exec("npm ci --include=dev", { stdio: "inherit" });
 exec("npm run build", { stdio: "inherit" });
 
 const main_sizes = Object.fromEntries(pr_files.map(f => [f, size(f)]));
