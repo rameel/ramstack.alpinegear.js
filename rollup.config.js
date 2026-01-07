@@ -1,20 +1,14 @@
-import path from "node:path";
 import alias from "@rollup/plugin-alias";
 import color from "picocolors";
-import replace from "@rollup/plugin-replace";
 import maxmin from "maxmin";
 import node_resolve from "@rollup/plugin-node-resolve";
+import path from "node:path";
+import replace from "@rollup/plugin-replace";
 import strip_comments from "strip-comments";
 import terser from "@rollup/plugin-terser";
 import virtual from "@rollup/plugin-virtual";
-
-import {
-    globSync as glob
-} from "glob";
-
-import {
-    fileURLToPath
-} from "url";
+import { fileURLToPath } from "url";
+import { globSync as glob } from "glob";
 
 const is_production = process.env.NODE_ENV === "production";
 

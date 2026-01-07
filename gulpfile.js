@@ -1,13 +1,12 @@
-import color from "picocolors";
 import gulp from "gulp";
 import gulp_json_transform from "gulp-json-transform";
 import logger from "gulplog";
 import path from "node:path";
-import { rollup } from "rollup";
-import { rimraf } from "rimraf";
+import { ConventionalGitClient } from "@conventional-changelog/git-client";
 import { gulpPlugin as gulp_plugin } from "gulp-plugin-extras";
 import { loadConfigFile as load_config_file } from "rollup/loadConfigFile";
-import { ConventionalGitClient } from "@conventional-changelog/git-client";
+import { rimraf } from "rimraf";
+import { rollup } from "rollup";
 
 const is_production = process.env.NODE_ENV === "production";
 
