@@ -4,7 +4,9 @@
 
 `@ramstack/alpinegear-bound` is a plugin for [Alpine.js](https://alpinejs.dev/) that provides the `x-bound` directive.
 
-This directive allows for two-way binding between input elements and their associated data properties. It works similarly to the binding provided by [Svelte](https://svelte.dev/docs/element-directives#bind-property) and also supports synchronizing values between two `Alpine.js` data properties.
+This directive allows for two-way binding between input elements and their associated data properties.
+It works similarly to the binding provided by [Svelte](https://svelte.dev/docs/element-directives#bind-property)
+and also supports synchronizing values between two `Alpine.js` data properties.
 
 > [!Note]
 > This package is part of the **[`@ramstack/alpinegear-main`](https://www.npmjs.com/package/@ramstack/alpinegear-main)** bundle.
@@ -56,7 +58,9 @@ Let's take the following example:
 ```
 🚀 [Live demo | Alpine.js x-bound: Basic usage](https://jsfiddle.net/rameel/8cw23y7o/)
 
-In this example, we bind the `name` property to the `value` property of the `<input>` element. Since `x-bound` provides two-way binding, any changes to `name` will be reflected in the `<input>` element, as will occur when the `button` is clicked.
+In this example, we bind the `name` property to the `value` property of the `<input>` element.
+Since `x-bound` provides two-way binding, any changes to `name` will be reflected in the `<input>` element,
+as will occur when the `button` is clicked.
 
 ### Shorthand Syntax
 The `x-bound` directive also supports shorthand syntax: `&`.
@@ -72,7 +76,9 @@ If the element's property name matches the bound data property, you can simplify
 <input x-bound:value />
 ```
 
-In this example, the repetition of the `value` in `x-bound:value="value"` is redundant, so we can simply shorten it to `<input x-bound:value>`. Since we can use `&` instead of `x-bound`, the example can be written as follows:
+In this example, the repetition of the `value` in `x-bound:value="value"` is redundant,
+so we can simply shorten it to `<input x-bound:value>`. Since we can use `&` instead of `x-bound`,
+the example can be written as follows:
 
 ```html
 <input &value />
@@ -94,7 +100,8 @@ More examples:
 
 ### Binding Numeric Inputs
 
-For `<input>` elements with `type="number"` and `type="range"`, values are automatically coerced into numbers. If the `<input>` value is empty or invalid, the bound property will be set to `null`.
+For `<input>` elements with `type="number"` and `type="range"`, values are automatically coerced into numbers.
+If the `<input>` value is empty or invalid, the bound property will be set to `null`.
 
 ```html
 <input &value="number" type="number" />
@@ -103,7 +110,9 @@ For `<input>` elements with `type="number"` and `type="range"`, values are autom
 
 ### Binding `<input type="file">`
 
-For `<input>` elements with `type="file"`, the binding is applied to the `files` property, resulting in a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList) object being assigned, containing the list of selected files.
+For `<input>` elements with `type="file"`, the binding is applied to the `files` property,
+resulting in a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList) object being assigned,
+containing the list of selected files.
 
 ```html
 <input &files type="file" accept="image/jpeg" />
@@ -266,7 +275,7 @@ The group of `<input>` elements that should function together can utilize the `g
 
 </div>
 ```
-🚀 [Live demo | Alpine.js x-bound: Binding element dimensions](https://jsfiddle.net/rameel/f5jpry7b/)
+🚀 [Live demo | Alpine.js x-bound: Binding group inputs](https://jsfiddle.net/rameel/f5jpry7b/)
 
 
 ### Binding `input[type="checkbox"]:indeterminate` property
@@ -326,11 +335,13 @@ The directive also supports synchronizing values between two data properties.
 ```
 🚀 [Live demo | Alpine.js x-bound: Binding data properties](https://jsfiddle.net/rameel/972qyomn/)
 
-In this example, we bind the outer `number` property to the inner `count` property. Since `number` is initially set to `5`, the `count` property is also set to `5` when the binding occurs.
+In this example, we bind the outer `number` property to the inner `count` property. Since `number` is initially set to `5`,
+the `count` property is also set to `5` when the binding occurs.
 
 By default, the binding is two-way, so changes in `count` are reflected in `number` and vice versa.
 
-But what if we want changes to propagate in one direction only? For this case, the `x-bound` directive provides three modifiers to control data flow:
+But what if we want changes to propagate in one direction only? For this case, the `x-bound` directive
+provides three modifiers to control data flow:
 
 > [!TIP]
 > - **`inout`**: Binding works in both directions. This means that changes in one property are automatically reflected in the other and vice versa. This modifier is used by default.
@@ -348,49 +359,19 @@ But what if we want changes to propagate in one direction only? For this case, t
 > [!NOTE]
 > The default behavior (`inout`) can also be achieved using the `x-model` and `x-modelable` directives.
 
+
 ## Source code
 You can find the source code for this plugin on GitHub:
 
 https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/bound
 
-## Related projects
 
-**[@ramstack/alpinegear-main](https://www.npmjs.com/package/@ramstack/alpinegear-main)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/main))<br>
-Provides a combined plugin that includes several useful directives.
-This package aggregates multiple individual plugins, offering a convenient all-in-one bundle.
-Included directives: `x-bound`, `x-format`, `x-fragment`, `x-match`, `x-template`, and `x-when`.
+## Related packages
+This package is part of **[AlpineGear](https://github.com/rameel/ramstack.alpinegear.js)** —
+a collection of utilities and directives for [Alpine.js](https://alpinejs.dev).
 
-**[@ramstack/alpinegear-format](https://www.npmjs.com/package/@ramstack/alpinegear-format)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/format))<br>
-Provides the `x-format` directive, which allows you to easily interpolate text using a template syntax similar to what's available in `Vue.js`.
-
-**[@ramstack/alpinegear-template](https://www.npmjs.com/package/@ramstack/alpinegear-template)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/template))<br>
-Provides the `x-template` directive, which allows you to define a template once anywhere in the DOM and reference it by its ID.
-
-**[@ramstack/alpinegear-fragment](https://www.npmjs.com/package/@ramstack/alpinegear-fragment)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/fragment))<br>
-Provides the `x-fragment` directive, which allows for fragment-like behavior similar to what's available in frameworks
-like `Vue.js` or `React`, where multiple root elements can be grouped together.
-
-**[@ramstack/alpinegear-match](https://www.npmjs.com/package/@ramstack/alpinegear-match)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/match))<br>
-Provides the `x-match` directive, which functions similarly to the `switch` statement in many programming languages,
-allowing you to conditionally render elements based on matching cases.
-
-**[@ramstack/alpinegear-when](https://www.npmjs.com/package/@ramstack/alpinegear-when)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/when))<br>
-Provides the `x-when` directive, which allows for conditional rendering of elements similar to `x-if`, but supports multiple root elements.
-
-**[@ramstack/alpinegear-destroy](https://www.npmjs.com/package/@ramstack/alpinegear-destroy)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/destroy))<br>
-Provides the `x-destroy` directive, which is the opposite of `x-init` and allows you to hook into the cleanup phase
-of any element, running a callback when the element is removed from the DOM.
-
-**[@ramstack/alpinegear-hotkey](https://www.npmjs.com/package/@ramstack/alpinegear-hotkey)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/hotkey))<br>
-Provides the `x-hotkey` directive, which allows you to easily handle keyboard shortcuts within your Alpine.js components or application.
-
-**[@ramstack/alpinegear-router](https://www.npmjs.com/package/@ramstack/alpinegear-router)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/router))<br>
-Provides the `x-router` and `x-route` directives, which enable client-side navigation and routing functionality within your Alpine.js application.
-
-**[@ramstack/alpinegear-dialog](https://www.npmjs.com/package/@ramstack/alpinegear-dialog)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/dialog))<br>
-Provides a headless dialog directive for Alpine.js based on the native HTML `<dialog>` element.
-It supports declarative composition, value-based close semantics, and both modal and non-modal dialogs,
-with optional Promise-based imperative control.
+You can find the full list of related packages and their documentation here:
+https://github.com/rameel/ramstack.alpinegear.js
 
 
 ## Contributions

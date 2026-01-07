@@ -2,7 +2,8 @@
 [![NPM](https://img.shields.io/npm/v/@ramstack/alpinegear-main)](https://www.npmjs.com/package/@ramstack/alpinegear-main)
 [![MIT](https://img.shields.io/github/license/rameel/ramstack.alpinegear.js)](https://github.com/rameel/ramstack.alpinegear.js/blob/main/LICENSE)
 
-`@ramstack/alpinegear-main` is a combined plugin for [Alpine.js](https://alpinejs.dev/) that includes several useful directives. This plugin aggregates multiple individual plugins, providing a convenient all-in-one package.
+`@ramstack/alpinegear-main` is a combined plugin for [Alpine.js](https://alpinejs.dev/) that includes several useful directives.
+This plugin aggregates multiple individual plugins, providing a convenient all-in-one package.
 
 ## Installation
 
@@ -37,7 +38,9 @@ Alpine.start();
 ## Included Plugins
 
 **[@ramstack/alpinegear-bound](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/bound)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/bound))<br>
-Provides the `x-bound` directive, which allows for two-way binding of input elements and their associated data properties. It works similarly to the binding provided by [Svelte](https://svelte.dev/docs/element-directives#bind-property) and also supports synchronizing values between two `Alpine.js` data properties.
+Provides the `x-bound` directive, which allows for two-way binding of input elements and their associated data properties.
+It works similarly to the binding provided by [Svelte](https://svelte.dev/docs/element-directives#bind-property)
+and also supports synchronizing values between two `Alpine.js` data properties.
 
 ```html
 <div x-data="{ width: 0, height: 0, files: [] }">
@@ -54,7 +57,8 @@ Provides the `x-bound` directive, which allows for two-way binding of input elem
 
 
 **[@ramstack/alpinegear-format](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/format)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/format))<br>
-Provides `x-format` directive, which allows you to easily interpolate text using a template syntax similar to what's available in `Vue.js`.
+Provides `x-format` directive, which allows you to easily interpolate text using a template syntax
+similar to what's available in `Vue.js`.
 
 ```html
 <div x-data="{ message: 'Hello, World!'}" x-format>
@@ -91,7 +95,8 @@ something that would otherwise be quite complex to implement.
 
 
 **[@ramstack/alpinegear-fragment](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/fragment)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/fragment))<br>
-Provides the `x-fragment` directive, allowing for fragment-like behavior similar to what's available in frameworks like `Vue.js` or `React`, where multiple root elements can be grouped together.
+Provides the `x-fragment` directive, allowing for fragment-like behavior similar to what's available in frameworks
+like `Vue.js` or `React`, where multiple root elements can be grouped together.
 
 It is particularly useful when you want to avoid wrapping elements in unnecessary container tags.
 
@@ -108,7 +113,8 @@ It is particularly useful when you want to avoid wrapping elements in unnecessar
 
 
 **[@ramstack/alpinegear-match](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/match)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/match))<br>
-Provides the `x-match` directive, which functions similarly to the `switch` statement in many programming languages, allowing to conditionally render elements based on matching cases.
+Provides the `x-match` directive, which functions similarly to the `switch` statement in many programming languages,
+allowing to conditionally render elements based on matching cases.
 
 ```html
 <template x-for="n in numbers">
@@ -123,7 +129,8 @@ Provides the `x-match` directive, which functions similarly to the `switch` stat
 
 
 **[@ramstack/alpinegear-when](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/when)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/when))<br>
-Provides the `x-when` directive, which allows for conditional rendering of elements similar to `x-if`, but supports multiple root elements.
+Provides the `x-when` directive, which allows for conditional rendering of elements similar to `x-if`,
+but supports multiple root elements.
 
 ```html
 <template x-for="item in items" :key="item.id">
@@ -139,44 +146,13 @@ You can find the source code for this plugin on GitHub:
 
 https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/main
 
-## Related projects
 
-**[@ramstack/alpinegear-bound](https://www.npmjs.com/package/@ramstack/alpinegear-bound)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/bound))<br>
-Provides the `x-bound` directive, which allows for two-way binding of input elements and their associated data properties.
-It works similarly to the binding provided by [Svelte](https://svelte.dev/docs/element-directives#bind-property)
-and also supports synchronizing values between two `Alpine.js` data properties.
+## Related packages
+This package is part of **[AlpineGear](https://github.com/rameel/ramstack.alpinegear.js)** —
+a collection of utilities and directives for [Alpine.js](https://alpinejs.dev).
 
-**[@ramstack/alpinegear-format](https://www.npmjs.com/package/@ramstack/alpinegear-format)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/format))<br>
-Provides the `x-format` directive, which allows you to easily interpolate text using a template syntax similar to what's available in `Vue.js`.
-
-**[@ramstack/alpinegear-template](https://www.npmjs.com/package/@ramstack/alpinegear-template)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/template))<br>
-Provides the `x-template` directive, which allows you to define a template once anywhere in the DOM and reference it by its ID.
-
-**[@ramstack/alpinegear-fragment](https://www.npmjs.com/package/@ramstack/alpinegear-fragment)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/fragment))<br>
-Provides the `x-fragment` directive, which allows for fragment-like behavior similar to what's available in frameworks
-like `Vue.js` or `React`, where multiple root elements can be grouped together.
-
-**[@ramstack/alpinegear-match](https://www.npmjs.com/package/@ramstack/alpinegear-match)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/match))<br>
-Provides the `x-match` directive, which functions similarly to the `switch` statement in many programming languages,
-allowing you to conditionally render elements based on matching cases.
-
-**[@ramstack/alpinegear-when](https://www.npmjs.com/package/@ramstack/alpinegear-when)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/when))<br>
-Provides the `x-when` directive, which allows for conditional rendering of elements similar to `x-if`, but supports multiple root elements.
-
-**[@ramstack/alpinegear-destroy](https://www.npmjs.com/package/@ramstack/alpinegear-destroy)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/destroy))<br>
-Provides the `x-destroy` directive, which is the opposite of `x-init` and allows you to hook into the cleanup phase
-of any element, running a callback when the element is removed from the DOM.
-
-**[@ramstack/alpinegear-hotkey](https://www.npmjs.com/package/@ramstack/alpinegear-hotkey)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/hotkey))<br>
-Provides the `x-hotkey` directive, which allows you to easily handle keyboard shortcuts within your Alpine.js components or application.
-
-**[@ramstack/alpinegear-router](https://www.npmjs.com/package/@ramstack/alpinegear-router)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/router))<br>
-Provides the `x-router` and `x-route` directives, which enable client-side navigation and routing functionality within your Alpine.js application.
-
-**[@ramstack/alpinegear-dialog](https://www.npmjs.com/package/@ramstack/alpinegear-dialog)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/dialog))<br>
-Provides a headless dialog directive for Alpine.js based on the native HTML `<dialog>` element.
-It supports declarative composition, value-based close semantics, and both modal and non-modal dialogs,
-with optional Promise-based imperative control.
+You can find the full list of related packages and their documentation here:
+https://github.com/rameel/ramstack.alpinegear.js
 
 
 ## Contributions
