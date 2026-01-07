@@ -9,13 +9,14 @@ import { rimraf } from "rimraf";
 import { rollup } from "rollup";
 
 const is_production = process.env.NODE_ENV === "production";
+const skip_git_tag_resolution = process.env.SKIP_GIT_TAG_RESOLUTION === "true";
 
 const task_delete = create_task("delete -> delete build folders", () => {
     return rimraf(["dist", "coverage", "docs/public/js"]);
 });
 
 const task_update_packages = create_task("update -> update version", async done => {
-    if (is_production) {
+    if (is_production && !skip_git_tag_resolution) {
         const current_version = await obtain_version_from_tag();
 
         const update_version = data => {
