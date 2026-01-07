@@ -31,6 +31,9 @@ jobs:
       - name: Install Dependencies
         run: npm ci --include=dev
 
+      - name: Prepate report path
+        run: echo "${{ runner.temp }}/comment-${{ github.event.pull_request.number }}.md" >> $GITHUB_ENV
+
       - name: Run size comparison
         run: npm run size-report
         env:
