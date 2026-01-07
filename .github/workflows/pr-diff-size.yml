@@ -38,6 +38,9 @@ jobs:
       - name: Run size comparison
         run: |
           node .github/scripts/compare-packages-size.js > comment.md
+        env:
+          NODE_ENV: production
+          SKIP_GIT_TAG_RESOLUTION: true
 
       - name: Comment PR
         uses: actions/github-script@v7
