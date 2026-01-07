@@ -15,8 +15,6 @@ jobs:
     if: github.repository == 'rameel/ramstack.alpinegear.js'
 
     runs-on: ubuntu-latest
-    env:
-      SIZE_REPORT_OUTPUT: ${{ runner.temp }}/comment-${{ github.event.pull_request.number }}.md
 
     steps:
       - name: Setup Node.js
