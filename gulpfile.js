@@ -2,11 +2,11 @@ import gulp from "gulp";
 import gulp_json_transform from "gulp-json-transform";
 import logger from "gulplog";
 import path from "node:path";
-import { rollup } from "rollup";
-import { rimraf } from "rimraf";
+import { ConventionalGitClient } from "@conventional-changelog/git-client";
 import { gulpPlugin as gulp_plugin } from "gulp-plugin-extras";
 import { loadConfigFile as load_config_file } from "rollup/loadConfigFile";
-import { ConventionalGitClient } from "@conventional-changelog/git-client";
+import { rimraf } from "rimraf";
+import { rollup } from "rollup";
 
 const is_production = process.env.NODE_ENV === "production";
 
@@ -45,7 +45,10 @@ const task_bundle_scripts = create_task("bundle -> compile package scripts", asy
     for (let options of options_list) {
         const bundle = await rollup({ ...options,
             onLog(level, log) {
-                console.log(`\n\x1b[33m[${level}] ${log}\x1b[0m\n`);
+                const message = log.message.replace(/^\[[^]+]\s*/, "");
+                const level_fname = ["warn", "error"].includes(level) ? level : "info";
+
+                logger[level_fname](message);
             }
         });
 

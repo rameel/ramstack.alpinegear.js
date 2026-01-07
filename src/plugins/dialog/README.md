@@ -5,7 +5,7 @@
 
 `@ramstack/alpinegear-dialog` is a **headless dialog directive for Alpine.js**, built on top of the native HTML `<dialog>` element.
 
-It allows you to describe dialog behavior declaratively, without coupling logic to JavaScript code.
+It allows you to describe dialog behavior declaratively.
 This makes it especially suitable for **progressive enhancement** and **seamless integration with htmx**.
 
 The plugin provides a small set of composable directives that together form a dialog "component",
@@ -48,9 +48,9 @@ Initialize the plugin:
 
 ```js
 import Alpine from "alpinejs";
-import Dialog from "@ramstack/alpinegear-dialog";
+import dialog from "@ramstack/alpinegear-dialog";
 
-Alpine.plugin(Dialog);
+Alpine.plugin(dialog);
 Alpine.start();
 ```
 
@@ -193,7 +193,7 @@ Example:
 
 ## HTMX Integration
 
-Value-scoped close events make integration with **htmx** straightforward and JavaScript-free.
+Value-scoped close events make integration with **htmx** straightforward without a single line of script.
 
 ```html
 <div x-dialog:modal

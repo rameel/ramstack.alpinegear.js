@@ -1,19 +1,14 @@
-import path from "path";
 import alias from "@rollup/plugin-alias";
-import bundle_size from "rollup-plugin-bundle-size";
-import replace from "@rollup/plugin-replace";
+import color from "picocolors";
+import maxmin from "maxmin";
 import node_resolve from "@rollup/plugin-node-resolve";
+import path from "node:path";
+import replace from "@rollup/plugin-replace";
 import strip_comments from "strip-comments";
 import terser from "@rollup/plugin-terser";
 import virtual from "@rollup/plugin-virtual";
-
-import {
-    globSync as glob
-} from "glob";
-
-import {
-    fileURLToPath
-} from "url";
+import { fileURLToPath } from "node:url";
+import { globSync as glob } from "glob";
 
 const is_production = process.env.NODE_ENV === "production";
 
@@ -82,9 +77,12 @@ function create_configuration({ plugin_name, input, format, optimize }) {
             }),
             virtual({
                 [input]: format === "iife"
-                    ? `import __${plugin_name} from "src/plugins/${plugin_name}/index.js";
-                       document.addEventListener("alpine:init", () => { Alpine.plugin(__${plugin_name}); });`
-                    : `export * from "src/plugins/${plugin_name}/index.js";`
+                    ? `import { listen } from "src/utilities/utils.js";
+                       import __${plugin_name} from "src/plugins/${plugin_name}/index.js";
+                       listen(document, "alpine:init", () => { Alpine.plugin(__${plugin_name}); });`
+                    : `import plugin from "src/plugins/${plugin_name}/index.js";
+                       export default plugin;
+                       export * from "src/plugins/${plugin_name}/index.js";`
             })
         ]
     };
@@ -109,6 +107,17 @@ function trim_ws() {
                 const key = path.basename(options.file);
                 bundle[key].code = bundle[key].code.trim();
             }
+        }
+    };
+}
+
+function bundle_size() {
+    return {
+        name: "bundle_size",
+        generateBundle(options, bundle) {
+            const name = path.basename(options.file);
+            const size = maxmin(bundle[name].code, bundle[name].code, true);
+            this.info(`Produced '${color.cyan(name)}': ${size.slice(size.indexOf(' → ') + 3)}`);
         }
     };
 }
