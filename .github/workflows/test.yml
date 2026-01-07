@@ -30,8 +30,8 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Build (Debug version)
-        run: npm run build:debug
+      - name: Build
+        run: npm run build
 
       - name: "Test: Alpine.js plugins (playwright)"
         run: npm run test:playwright
@@ -40,3 +40,10 @@ jobs:
 
       - name: "Test: Alpine.js plugins (vitest)"
         run: npm run test:vitest
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
