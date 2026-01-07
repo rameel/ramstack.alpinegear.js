@@ -7,7 +7,7 @@ import replace from "@rollup/plugin-replace";
 import strip_comments from "strip-comments";
 import terser from "@rollup/plugin-terser";
 import virtual from "@rollup/plugin-virtual";
-import { fileURLToPath } from "url";
+import { fileURLToPath } from "node:url";
 import { globSync as glob } from "glob";
 
 const is_production = process.env.NODE_ENV === "production";
