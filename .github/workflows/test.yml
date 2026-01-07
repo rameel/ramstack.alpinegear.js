@@ -32,6 +32,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          SKIP_GIT_TAG_RESOLUTION: true
 
       - name: "Test: Alpine.js plugins (playwright)"
         run: npm run test:playwright

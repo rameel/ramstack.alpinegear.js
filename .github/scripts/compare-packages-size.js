@@ -48,7 +48,7 @@ exec("git checkout -", { stdio: "ignore" });
 let md = `
 ### 📦 Bundle size comparison
 
-| Файл | main | PR | Δ |
+| Name | main | PR | Δ |
 |------|------|----|---|
 `;
 
