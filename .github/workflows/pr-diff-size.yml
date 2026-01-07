@@ -15,6 +15,8 @@ jobs:
     if: github.repository == 'rameel/ramstack.alpinegear.js'
 
     runs-on: ubuntu-latest
+    env:
+      SIZE_REPORT_OUTPUT: ${{ runner.temp }}/comment-${{ github.event.issue.number }}.md
 
     steps:
       - name: Setup Node.js
@@ -34,7 +36,6 @@ jobs:
         env:
           NODE_ENV: production
           SKIP_GIT_TAG_RESOLUTION: true
-          SIZE_REPORT_OUTPUT: ${{ runner.temp }}/comment-${{ github.event.issue.number }}.md
 
       - name: Comment PR
         uses: actions/github-script@v7
