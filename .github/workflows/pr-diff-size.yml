@@ -27,16 +27,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci --include=dev
 
-      - name: Build
-        run: npm run build
-        env:
-          NODE_ENV: production
-          SKIP_GIT_TAG_RESOLUTION: true
+      - name: Prepate report path
+        run: echo "SIZE_REPORT_OUTPUT=$RUNNER_TEMP/comment-${{ github.event.pull_request.number }}.md" >> $GITHUB_ENV
 
       - name: Run size comparison
-        run: npm run size-diff-report > comment.md
+        run: npm run size-report
         env:
           NODE_ENV: production
           SKIP_GIT_TAG_RESOLUTION: true
@@ -46,8 +43,8 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const body = fs.readFileSync('./comment.md', 'utf8');
-            const pr_number = context.payload.workflow_run.pull_requests[0].number;
+            const body = fs.readFileSync(process.env.SIZE_REPORT_OUTPUT, 'utf8');
+            const pr_number = context.issue.number;
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
