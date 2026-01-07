@@ -32,7 +32,7 @@ jobs:
         run: npm ci --include=dev
 
       - name: Prepate report path
-        run: echo "${{ runner.temp }}/comment-${{ github.event.pull_request.number }}.md" >> $GITHUB_ENV
+        run: echo "SIZE_REPORT_OUTPUT=$RUNNER_TEMP/comment-${{ github.event.pull_request.number }}.md" >> $GITHUB_ENV
 
       - name: Run size comparison
         run: npm run size-report
