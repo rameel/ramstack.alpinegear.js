@@ -43,8 +43,6 @@ exec("npm run build", { stdio: "inherit" });
 
 const main_sizes = Object.fromEntries(pr_files.map(f => [f, size(f)]));
 
-exec("git checkout -", { stdio: "ignore" });
-
 let md = `
 ### 📦 Bundle size comparison
 

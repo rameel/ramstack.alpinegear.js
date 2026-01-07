@@ -30,10 +30,8 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
-        env:
-          SKIP_GIT_TAG_RESOLUTION: true
+      - name: Build (Debug version)
+        run: npm run build:debug
 
       - name: "Test: Alpine.js plugins (playwright)"
         run: npm run test:playwright
@@ -42,10 +40,3 @@ jobs:
 
       - name: "Test: Alpine.js plugins (vitest)"
         run: npm run test:vitest
-
-      - name: Upload dist artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-          retention-days: 1

@@ -1,9 +1,9 @@
 name: Packages size analysis
 
 on:
-  workflow_run:
-    workflows: ['Build & Test']
-    types: [completed]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
@@ -12,25 +12,28 @@ permissions:
 
 jobs:
   analyze:
-    if: >
-      github.repository == 'rameel/ramstack.alpinegear.js'
-      && github.event.workflow_run.conclusion == 'success'
-      && github.event.workflow_run.event == 'pull_request'
+    if: github.repository == 'rameel/ramstack.alpinegear.js'
 
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout PR head
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-          fetch-depth: 0
-
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          NODE_ENV: production
+          SKIP_GIT_TAG_RESOLUTION: true
 
       - name: Run size comparison
         run: |
