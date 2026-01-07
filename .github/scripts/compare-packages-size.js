@@ -3,6 +3,8 @@ import { execSync as exec } from "node:child_process";
 import { statSync as stat, existsSync as exists } from "node:fs";
 import { globSync as glob } from "glob";
 
+const MAIN_WORKTREE = ".worktrees/main";
+
 function size(file) {
     return exists(file) ? stat(file).size : null;
 }
@@ -17,44 +19,73 @@ function format(bytes) {
         : `${bytes} B`;
 }
 
-function delta(a, b) {
-    if (a == null || b == null) {
+function delta(pr, main) {
+    if (pr == null || main == null) {
         return null;
     }
-    return a - b;
+    return pr - main;
 }
 
-function icon(d) {
-    if (d == null) {
+function icon(delta) {
+    if (delta == null) {
         return "—";
     }
 
-    if (d > 0) return "⬆️";
-    if (d < 0) return "⬇️";
-    return "➡️";
+    if (delta > 0) return "🔴";
+    if (delta < 0) return "🟢";
+    return "";
 }
 
-const pr_files = glob("dist/**/*.min.js");
-const pr_sizes = Object.fromEntries(pr_files.map(f => [f, size(f)]));
+function has_local_origin_main() {
+    try {
+        exec('git show-ref --verify --quiet refs/remotes/origin/main', { stdio: ["pipe", "pipe", "pipe"] });
+        return true;
+    }
+    catch {
+        return false;
+    }
+}
 
-exec("git fetch origin main", { stdio: "inherit" });
-exec("git checkout origin/main", { stdio: "ignore" });
-exec("npm ci --include=dev", { stdio: "inherit" });
-exec("npm run build", { stdio: "inherit" });
-
-const main_sizes = Object.fromEntries(pr_files.map(f => [f, size(f)]));
-
-let md = `
+function generate_report(files, pr, main) {
+    let md = `
 ### 📦 Bundle size comparison
 
-| Name | main | PR | Δ |
-|------|------|----|---|
+| Name | main | PR | Δ | Delta  |
+|------|-----:|---:|---|-------:|
 `;
 
-for (const file of pr_files) {
-    const d = delta(pr_sizes[file], main_sizes[file]);
+    for (const file of files) {
+        const d = delta(pr[file], main[file]);
 
-    md += `| \`${path.basename(file)}\` | ${format(main_sizes[file])} | ${format(pr_sizes[file])} | ${icon(d)} ${format(d)} |\n`;
+        md += `| ${path.basename(file)} | ${format(main[file])} | ${format(pr[file])} | ${icon(d)} | ${format(d)} |\n`;
+    }
+
+    console.log(md);
+
 }
 
-console.log(md);
+try {
+    //
+    // PR build
+    //
+    exec("npm run build", { stdio: "inherit" });
+
+    const pr_files = glob("dist/**/*.min.js");
+    const pr_sizes = Object.fromEntries(pr_files.map(f => [f, size(f)]));
+
+    //
+    // Main build
+    //
+    has_local_origin_main() || exec("git fetch origin main", { stdio: "inherit" });
+    exec(`git worktree add ${MAIN_WORKTREE} origin/main`, { stdio: "ignore" });
+    exec("npm ci --include=dev", { cwd: MAIN_WORKTREE, stdio: "inherit" });
+    exec("npm run build", { cwd: MAIN_WORKTREE, stdio: "inherit" });
+
+    const main_sizes = Object.fromEntries(
+        pr_files.map(f => [f, size(path.join(MAIN_WORKTREE, f))]));
+
+    generate_report(pr_files, pr_sizes, main_sizes);
+}
+finally {
+    exec(`git worktree remove ${MAIN_WORKTREE}`, { stdio: "inherit" });
+}
