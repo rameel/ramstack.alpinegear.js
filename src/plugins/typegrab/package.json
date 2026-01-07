@@ -18,6 +18,12 @@
     "focus",
     "ux"
   ],
-  "main": "alpinegear-typegrab.js",
-  "module": "alpinegear-typegrab.esm.js"
+  "exports": {
+    ".": {
+      "import": {
+        "production": "./alpinegear-typegrab.esm.min.js",
+        "default": "./alpinegear-typegrab.esm.js"
+      }
+    }
+  }
 }

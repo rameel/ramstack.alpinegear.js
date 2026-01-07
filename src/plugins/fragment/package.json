@@ -18,6 +18,12 @@
     "alpinejs-plugin",
     "template"
   ],
-  "main": "alpinegear-fragment.js",
-  "module": "alpinegear-fragment.esm.js"
+  "exports": {
+    ".": {
+      "import": {
+        "production": "./alpinegear-fragment.esm.min.js",
+        "default": "./alpinegear-fragment.esm.js"
+      }
+    }
+  }
 }

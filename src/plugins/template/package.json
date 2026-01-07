@@ -17,6 +17,12 @@
     "alpinejs-directive",
     "alpinejs-plugin"
   ],
-  "main": "alpinegear-template.js",
-  "module": "alpinegear-template.esm.js"
+  "exports": {
+    ".": {
+      "import": {
+        "production": "./alpinegear-template.esm.min.js",
+        "default": "./alpinegear-template.esm.js"
+      }
+    }
+  }
 }

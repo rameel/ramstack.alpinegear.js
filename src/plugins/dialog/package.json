@@ -21,6 +21,12 @@
     "alpinejs-component",
     "htmx"
   ],
-  "main": "alpinegear-dialog.js",
-  "module": "alpinegear-dialog.esm.js"
+  "exports": {
+    ".": {
+      "import": {
+        "production": "./alpinegear-dialog.esm.min.js",
+        "default": "./alpinegear-dialog.esm.js"
+      }
+    }
+  }
 }

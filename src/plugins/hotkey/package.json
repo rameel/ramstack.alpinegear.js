@@ -19,6 +19,12 @@
     "alpinejs-directive",
     "alpinejs-plugin"
   ],
-  "main": "alpinegear-hotkey.js",
-  "module": "alpinegear-hotkey.esm.js"
+  "exports": {
+    ".": {
+      "import": {
+        "production": "./alpinegear-hotkey.esm.min.js",
+        "default": "./alpinegear-hotkey.esm.js"
+      }
+    }
+  }
 }

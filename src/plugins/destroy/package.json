@@ -15,6 +15,12 @@
     "alpinejs-directive",
     "alpinejs-plugin"
   ],
-  "main": "alpinegear-destroy.js",
-  "module": "alpinegear-destroy.esm.js"
+  "exports": {
+    ".": {
+      "import": {
+        "production": "./alpinegear-destroy.esm.min.js",
+        "default": "./alpinegear-destroy.esm.js"
+      }
+    }
+  }
 }
