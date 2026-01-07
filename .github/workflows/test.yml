@@ -5,14 +5,14 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - "**.js"
-      - "**.ts"
-      - "**.json"
+      - '**.js'
+      - '**.ts'
+      - '**.json'
 
 jobs:
   main:
     if: ${{ !github.event.pull_request.draft }}
-    name: "Build & Test"
+    name: 'Build & Test'
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.57.0-noble
@@ -22,21 +22,21 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
 
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci --include=dev
 
       - name: Build (Debug version)
         run: npm run build:debug
 
-      - name: "Test: Alpine.js plugins (playwright)"
+      - name: 'Test: Alpine.js plugins (playwright)'
         run: npm run test:playwright
         env:
           CI: true
 
-      - name: "Test: Alpine.js plugins (vitest)"
+      - name: 'Test: Alpine.js plugins (vitest)'
         run: npm run test:vitest
