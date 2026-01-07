@@ -36,8 +36,7 @@ jobs:
           SKIP_GIT_TAG_RESOLUTION: true
 
       - name: Run size comparison
-        run: |
-          node .github/scripts/compare-packages-size.js > comment.md
+        run: npm run size-diff-report > comment.md
         env:
           NODE_ENV: production
           SKIP_GIT_TAG_RESOLUTION: true
