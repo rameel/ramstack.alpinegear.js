@@ -25,7 +25,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production gulp build",
     "build:debug": "gulp build",
-    "size-report": "cross-env NODE_ENV=production SKIP_GIT_TAG_RESOLUTION=true node .github/scripts/compare-packages-size.js",
+    "size-report": "cross-env NODE_ENV=production SKIP_GIT_TAG_RESOLUTION=true node scripts/compare-packages-size.js",
     "test": "gulp build && vitest run && playwright test",
     "test:playwright": "playwright test",
     "test:vitest": "vitest run"
