@@ -31,7 +31,11 @@ function brotli_size(file) {
 }
 
 function gather_file_sizes(file) {
-    return { no: size(file), gz: gzip_size(file), br: brotli_size(file) };
+    return {
+        no: size(file),
+        gz: gzip_size(file),
+        br: brotli_size(file)
+    };
 }
 
 function format(length) {
