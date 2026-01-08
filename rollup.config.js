@@ -63,7 +63,7 @@ function create_configuration({ plugin_name, input, format, optimize }) {
                     arguments: true,
                     unsafe_comps: true,
                     unsafe_math: true,
-                    unsafe_methods: true
+                    unsafe_methods: false
                 }
             })]
         },
