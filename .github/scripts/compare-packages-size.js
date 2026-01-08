@@ -1,7 +1,16 @@
 import path from "node:path";
 import { execSync as exec } from "node:child_process";
-import { statSync as stat, existsSync as exists, writeFileSync as write_file } from "node:fs";
 import { globSync as glob } from "glob";
+import {
+    existsSync as exists,
+    readFileSync as read_file,
+    statSync as stat,
+    writeFileSync as write_file
+} from "node:fs";
+import {
+    brotliCompressSync as brotli,
+    gzipSync as gzip
+} from "node:zlib";
 
 const MAIN_WORKTREE = ".worktrees/main";
 
@@ -9,14 +18,30 @@ function size(file) {
     return exists(file) ? stat(file).size : null;
 }
 
-function format(bytes) {
-    if (bytes == null) {
+function gzip_size(file) {
+    return exists(file)
+        ? gzip(read_file(file)).length
+        : null;
+}
+
+function brotli_size(file) {
+    return exists(file)
+        ? brotli(read_file(file)).length
+        : null;
+}
+
+function gather_file_sizes(file) {
+    return { no: size(file), gz: gzip_size(file), br: brotli_size(file) };
+}
+
+function format(length) {
+    if (length == null) {
         return "—";
     }
 
-    return bytes >= 1024
-        ? `${(bytes / 1024).toFixed(2)} KB`
-        : `${bytes} B`;
+    return length >= 1024
+        ? `${(length / 1024).toFixed(2)} KiB`
+        : `${length} B`;
 }
 
 function delta(pr, main) {
@@ -26,19 +51,35 @@ function delta(pr, main) {
     return pr - main;
 }
 
-function icon(delta) {
-    if (delta == null) {
+function format_delta(pr, main) {
+    if (pr == null || main == null) {
+        return "-";
+    }
+
+    let s = format(pr);
+    let d = pr - main;
+
+    if (d !== 0) {
+        const sign = d > 0 ? "+" : "";
+        s += ` (${sign}${format(d)})`;
+    }
+
+    return s;
+}
+
+function icon(d) {
+    if (d == null) {
         return "—";
     }
 
-    if (delta > 0) return "🔴";
-    if (delta < 0) return "🟢";
+    if (d > 0) return "🔴";
+    if (d < 0) return "🟢";
     return "";
 }
 
 function has_local_origin_main() {
     try {
-        exec('git show-ref --verify --quiet refs/remotes/origin/main', { stdio: ["pipe", "pipe", "pipe"] });
+        exec('git show-ref --verify --quiet refs/remotes/origin/main', { stdio: "inherit" });
         return true;
     }
     catch {
@@ -50,14 +91,18 @@ function generate_report(files, pr, main) {
     let md = `
 ### 📦 Bundle size comparison
 
-| Name | main | PR | Δ | Delta  |
-|------|-----:|---:|---|-------:|
+| Name | Size | Gzip | Brotli | Δ |
+|------|-----:|-----:|-------:|---|
 `;
 
     for (const file of files) {
-        const d = delta(pr[file], main[file]);
+        const d = delta(pr[file].no, main[file].no);
 
-        md += `| ${path.basename(file)} | ${format(main[file])} | ${format(pr[file])} | ${icon(d)} | ${format(d)} |\n`;
+        const no_diff = format_delta(pr[file].no, main[file].no);
+        const gz_diff = format_delta(pr[file].gz, main[file].gz);
+        const br_diff = format_delta(pr[file].br, main[file].br);
+
+        md += `| ${path.basename(file)} | ${no_diff} | ${gz_diff} | ${br_diff} | ${icon(d)} |\n`;
     }
 
     console.log(md);
@@ -71,7 +116,7 @@ try {
     exec("npm run build", { stdio: "inherit" });
 
     const pr_files = glob("dist/**/*.min.js");
-    const pr_sizes = Object.fromEntries(pr_files.map(f => [f, size(f)]));
+    const pr_sizes = Object.fromEntries(pr_files.map(f => [f, gather_file_sizes(f)]));
 
     //
     // Main build
@@ -81,11 +126,14 @@ try {
     exec("npm ci --include=dev", { cwd: MAIN_WORKTREE, stdio: "inherit" });
     exec("npm run build", { cwd: MAIN_WORKTREE, stdio: "inherit" });
 
-    const main_sizes = Object.fromEntries(
-        pr_files.map(f => [f, size(path.join(MAIN_WORKTREE, f))]));
+    const release_sizes = Object.fromEntries(
+        pr_files.map(f => [f, gather_file_sizes(path.join(MAIN_WORKTREE, f))]));
 
-    generate_report(pr_files, pr_sizes, main_sizes);
+    generate_report(pr_files, pr_sizes, release_sizes);
+}
+catch (e) {
+    console.log(e);
 }
 finally {
-    exec(`git worktree remove ${MAIN_WORKTREE}`, { stdio: "inherit" });
+    exec(`git worktree remove -f ${MAIN_WORKTREE}`, { stdio: "inherit" });
 }
