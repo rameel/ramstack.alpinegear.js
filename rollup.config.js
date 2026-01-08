@@ -55,7 +55,7 @@ function create_configuration({ plugin_name, input, format, optimize }) {
                     comments: false
                 },
                 compress: {
-                    passes: 5,
+                    passes: 1,
                     ecma: 2020,
                     drop_console: false,
                     drop_debugger: true,
