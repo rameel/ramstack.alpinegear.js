@@ -18,23 +18,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Dependencies
-        run: npm ci --include=dev
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Prepate report path
         run: echo "SIZE_REPORT_OUTPUT=$RUNNER_TEMP/comment-${{ github.event.pull_request.number }}.md" >> $GITHUB_ENV
 
       - name: Run size comparison
-        run: npm run size-report
+        run: pnpm size-report
         env:
           NODE_ENV: production
           SKIP_GIT_TAG_RESOLUTION: true
