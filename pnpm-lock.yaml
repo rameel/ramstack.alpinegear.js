@@ -16,7 +16,7 @@ importers:
         specifier: ^2.6.0
         version: 2.6.0
       '@playwright/test':
-        specifier: ^1.57.0
+        specifier: ^1.58.2
         version: 1.58.2
       '@ramstack/hotkey':
         specifier: ^1.1.1

@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@conventional-changelog/git-client": "^2.6.0",
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.58.2",
     "@ramstack/hotkey": "^1.1.1",
     "@rollup/plugin-alias": "^6.0.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
