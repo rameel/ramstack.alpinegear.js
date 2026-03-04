@@ -117,7 +117,7 @@ try {
     //
     // PR build
     //
-    exec("npm run build", { stdio: "inherit" });
+    exec("pnpm run build", { stdio: "inherit" });
 
     const pr_files = glob("dist/**/*.min.js");
     const pr_sizes = Object.fromEntries(pr_files.map(f => [f, gather_file_sizes(f)]));
@@ -127,8 +127,8 @@ try {
     //
     has_local_origin_main() || exec("git fetch origin main", { stdio: "inherit" });
     exec(`git worktree add ${MAIN_WORKTREE} origin/main`, { stdio: "ignore" });
-    exec("npm ci --include=dev", { cwd: MAIN_WORKTREE, stdio: "inherit" });
-    exec("npm run build", { cwd: MAIN_WORKTREE, stdio: "inherit" });
+    exec("pnpm i", { cwd: MAIN_WORKTREE, stdio: "inherit" });
+    exec("pnpm run build", { cwd: MAIN_WORKTREE, stdio: "inherit" });
 
     const release_sizes = Object.fromEntries(
         pr_files.map(f => [f, gather_file_sizes(path.join(MAIN_WORKTREE, f))]));
