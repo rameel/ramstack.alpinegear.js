@@ -92,21 +92,50 @@ function has_local_origin_main() {
 }
 
 function generate_report(files, pr, main) {
-    let md = `
-### 📦 Bundle size comparison
-
-| Name | Size | Gzip | Brotli | Δ |
-|------|-----:|-----:|-------:|---|
-`;
-
-    for (const file of files) {
+    const rows = files.map(file => {
         const d = delta(pr[file].no, main[file].no);
 
-        const no_diff = format_delta(pr[file].no, main[file].no);
-        const gz_diff = format_delta(pr[file].gz, main[file].gz);
-        const br_diff = format_delta(pr[file].br, main[file].br);
+        return [
+            path.basename(file),
+            format_delta(pr[file].no, main[file].no),
+            format_delta(pr[file].gz, main[file].gz),
+            format_delta(pr[file].br, main[file].br),
+            icon(d)
+        ];
+    });
 
-        md += `| ${path.basename(file)} | ${no_diff} | ${gz_diff} | ${br_diff} | ${icon(d)} |\n`;
+    const headers = ["Name", "Size", "Gzip", "Brotli", "Δ"];
+    const all_rows = [headers, ...rows];
+    const column_widths = headers.map((_, i) => Math.max(...all_rows.map(r => r[i].length)));
+
+    function format_separator() {
+        return `|${column_widths.map(format_column).join("|")}|`;
+
+        function format_column(w, i)
+        {
+            const width = w + 2;
+            return i === 0
+                ? ":" + "-".repeat(width - 1)
+                : "-".repeat(width - 1) + ":";
+        }
+    }
+
+    function format_row(row) {
+        return `| ${row.map(format_column).join(" | ")} |`;
+
+        function format_column(cell, i) {
+            const width = column_widths[i];
+            return i === 0 ? cell.padEnd(width) : cell.padStart(width);
+        }
+    }
+
+    let md = "\n### 📦 Bundle size comparison\n\n";
+
+    md += format_row(headers) + "\n";
+    md += format_separator() + "\n";
+
+    for (const row of rows) {
+        md += format_row(row) + "\n";
     }
 
     console.log(md);
