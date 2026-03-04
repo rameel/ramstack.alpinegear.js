@@ -11,28 +11,34 @@ jobs:
     name: 'Build & Test'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.57.0-noble
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
       options: --user 1001:1001 # Run as non-root user for security
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+          cache: 'pnpm'
 
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Dependencies
-        run: npm ci --include=dev
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Build (Debug version)
-        run: npm run build:debug
+        run: pnpm build:debug
 
       - name: 'Test: Alpine.js plugins (playwright)'
-        run: npm run test:playwright
+        run: pnpm test:playwright
         env:
           CI: true
 
       - name: 'Test: Alpine.js plugins (vitest)'
-        run: npm run test:vitest
+        run: pnpm test:vitest
