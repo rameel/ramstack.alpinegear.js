@@ -30,6 +30,11 @@
     "test:playwright": "playwright test",
     "test:vitest": "vitest run"
   },
+  "pnpm": {
+    "overrides": {
+      "serialize-javascript": "7.0.4"
+    }
+  },
   "peerDependencies": {
     "alpinejs": "^3.13.0"
   },
