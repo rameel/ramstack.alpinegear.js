@@ -168,7 +168,7 @@ test("x-hotkey cleans up listener when element is removed", async ({ page }) => 
     await set_html(page, `
         <div x-data="{ count: 0, show: true }">
             <template x-if="show">
-                <div x-hotkey.window.ctrl+k="count++"></div>
+                <div id="id_1" x-hotkey.window.ctrl+k="count++"></div>
             </template>
             <button @click="show = false">Remove</button>
             <span x-text="count"></span>
@@ -177,7 +177,12 @@ test("x-hotkey cleans up listener when element is removed", async ({ page }) => 
     await page.keyboard.press("Control+k");
     await expect(page.locator("span")).toHaveText("1");
 
+    const hotkey_el = page.locator("#id_1");
+    await expect(hotkey_el).toBeAttached();
+
     await page.locator("button").click();
+    await hotkey_el.waitFor({ state: "detached" });
+
     await page.keyboard.press("Control+k");
     await expect(page.locator("span")).toHaveText("1");
 });
