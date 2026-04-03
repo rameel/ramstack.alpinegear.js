@@ -186,3 +186,20 @@ test("x-hotkey cleans up listener when element is removed", async ({ page }) => 
     await page.keyboard.press("Control+k");
     await expect(page.locator("span")).toHaveText("1");
 });
+
+test("x-hotkey .once modifier fires only once", async ({ page }) => {
+    await set_html(page, `
+        <div x-data="{ count: 0 }">
+            <div x-hotkey:keyup.window.once.ctrl+k="count++"></div>
+            <span x-text="count"></span>
+        </div>`);
+
+    await page.keyboard.press("Control+k");
+    await expect(page.locator("span")).toHaveText("1");
+
+    await page.keyboard.press("Control+k");
+    await expect(page.locator("span")).toHaveText("1");
+
+    await page.keyboard.press("Control+k");
+    await expect(page.locator("span")).toHaveText("1");
+});
