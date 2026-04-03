@@ -26,7 +26,7 @@ function plugin({ directive }) {
                 hotkey,
                 e => {
                     has_modifier(modifiers, "prevent") && e.preventDefault();
-                    has_modifier(modifiers, "stop") && e.stopPropogation();
+                    has_modifier(modifiers, "stop") && e.stopPropagation();
 
                     e.hotkey = hotkey;
                     listener(e);
