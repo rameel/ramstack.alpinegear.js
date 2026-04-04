@@ -3,7 +3,7 @@ import { has_modifier } from "@/utilities/utils";
 
 function plugin({ directive, evaluateLater, mutateDom }) {
     directive("format", (el, { modifiers }, { effect }) => {
-        const placeholder_regex = /{{(?<expr>.+?)}}/g;
+        const placeholder_regex = () => /{{(?<expr>.+?)}}/g;
         const is_once = has_modifier(modifiers, "once");
         const has_format_attr = el => el.hasAttribute("x-format");
 
@@ -55,7 +55,7 @@ function plugin({ directive, evaluateLater, mutateDom }) {
         }
 
         function process_text_node(node) {
-            const tokens = node.textContent.split(placeholder_regex);
+            const tokens = node.textContent.split(placeholder_regex());
 
             if (tokens.length > 1) {
                 const fragment = new DocumentFragment();
@@ -80,7 +80,7 @@ function plugin({ directive, evaluateLater, mutateDom }) {
 
         function process_attributes(node) {
             for (let attr of node.attributes) {
-                const matches = [...attr.value.matchAll(placeholder_regex)];
+                const matches = [...attr.value.matchAll(placeholder_regex())];
                 if (matches.length) {
                     const getters = new Map(
                         matches.map(m => [
@@ -92,7 +92,7 @@ function plugin({ directive, evaluateLater, mutateDom }) {
 
                     const template = attr.value;
 
-                    update(() => attr.value = template.replace(placeholder_regex, (_, expr) => getters.get(expr)()));
+                    update(() => attr.value = template.replace(placeholder_regex(), (_, expr) => getters.get(expr)()));
                 }
             }
         }
