@@ -9,7 +9,7 @@ function plugin(alpine) {
 
         const tpl = document.getElementById(expression);
 
-        if (!is_template(tpl)) {
+        if (!tpl || !is_template(tpl)) {
             warn("x-template directive can only reference the template tag");
             return;
         }
