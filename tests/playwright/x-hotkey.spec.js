@@ -190,7 +190,7 @@ test("x-hotkey cleans up listener when element is removed", async ({ page }) => 
 test("x-hotkey .once modifier fires only once", async ({ page }) => {
     await set_html(page, `
         <div x-data="{ count: 0 }">
-            <div x-hotkey:keyup.window.once.ctrl+k="count++"></div>
+            <div x-hotkey.window.once.ctrl+k="count++"></div>
             <span x-text="count"></span>
         </div>`);
 

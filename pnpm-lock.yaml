@@ -24,8 +24,8 @@ importers:
         specifier: ^1.59.1
         version: 1.59.1
       '@ramstack/hotkey':
-        specifier: ^1.1.1
-        version: 1.1.1
+        specifier: ^1.2.0
+        version: 1.2.0
       '@rollup/plugin-alias':
         specifier: ^6.0.0
         version: 6.0.0(rollup@4.60.1)
@@ -393,8 +393,8 @@ packages:
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
-  '@ramstack/hotkey@1.1.1':
-    resolution: {integrity: sha512-shk/4bze9A8jxfik6EzDOz5Xt/AIC4eDij9trZkLenKbmuHvoWFy5TrswlpadfH8iYu0hzOUf7b2hv6/U1HizA==}
+  '@ramstack/hotkey@1.2.0':
+    resolution: {integrity: sha512-OxwCwW12a60F/gXvfyc1tgh3UE/MjgrPP03Me7AeC1wLIbxgIRoj4PzkdEjxsiBOYp8fkYFFY1bboL+C6H/9aA==}
 
   '@rollup/plugin-alias@6.0.0':
     resolution: {integrity: sha512-tPCzJOtS7uuVZd+xPhoy5W4vThe6KWXNmsFCNktaAh5RTqcLiSfT4huPQIXkgJ6YCOjJHvecOAzQxLFhPxKr+g==}
@@ -2053,7 +2053,7 @@ snapshots:
 
   '@polka/url@1.0.0-next.29': {}
 
-  '@ramstack/hotkey@1.1.1': {}
+  '@ramstack/hotkey@1.2.0': {}
 
   '@rollup/plugin-alias@6.0.0(rollup@4.60.1)':
     optionalDependencies:
