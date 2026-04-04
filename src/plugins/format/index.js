@@ -82,8 +82,17 @@ function plugin({ directive, evaluateLater, mutateDom }) {
             for (let attr of node.attributes) {
                 const matches = [...attr.value.matchAll(placeholder_regex)];
                 if (matches.length) {
+                    const getters = new Map(
+                        matches.map(m => [
+                            m.groups.expr,
+                            create_getter(
+                                evaluateLater,
+                                node,
+                                m.groups.expr)]));
+
                     const template = attr.value;
-                    update(() => attr.value = template.replace(placeholder_regex, (_, expr) => create_getter(evaluateLater, node, expr)()));
+
+                    update(() => attr.value = template.replace(placeholder_regex, (_, expr) => getters.get(expr)()));
                 }
             }
         }
