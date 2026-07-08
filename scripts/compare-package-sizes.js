@@ -156,7 +156,7 @@ try {
     //
     has_local_origin_main() || exec("git fetch origin main", { stdio: "inherit" });
     exec(`git worktree add ${MAIN_WORKTREE} origin/main`, { stdio: "ignore" });
-    exec("pnpm i", { cwd: MAIN_WORKTREE, stdio: "inherit" });
+    exec("pnpm i --ignore-scripts", { cwd: MAIN_WORKTREE, stdio: "inherit" });
     exec("pnpm run build", { cwd: MAIN_WORKTREE, stdio: "inherit" });
 
     const release_sizes = Object.fromEntries(
