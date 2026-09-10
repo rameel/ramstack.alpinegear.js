@@ -47,6 +47,7 @@
     "@vitest/coverage-v8": "^5.0.0",
     "@vitest/ui": "^5.0.0",
     "cross-env": "^10.1.0",
+    "dompurify": "^3.4.15",
     "glob": "^13.0.6",
     "gulp": "^5.0.1",
     "gulp-json-transform": "^0.5.0",
