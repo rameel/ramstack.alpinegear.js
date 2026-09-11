@@ -1,0 +1,29 @@
+{
+  "name": "@ramstack/alpinegear-safehtml",
+  "version": "0.0.0",
+  "description": "@ramstack/alpinegear-safehtml provides the 'x-safehtml' Alpine.js directive for rendering HTML sanitized by DOMPurify.",
+  "author": "Rameel Burhan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rameel/ramstack.alpinegear.js.git",
+    "directory": "src/plugins/safehtml"
+  },
+  "keywords": [
+    "alpine.js",
+    "alpinejs",
+    "dompurify",
+    "html-sanitizer",
+    "xss",
+    "alpinejs-directive",
+    "alpinejs-plugin"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "production": "./alpinegear-safehtml.esm.min.js",
+        "default": "./alpinegear-safehtml.esm.js"
+      }
+    }
+  }
+}

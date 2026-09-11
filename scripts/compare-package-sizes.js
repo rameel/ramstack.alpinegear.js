@@ -15,19 +15,19 @@ import {
 const MAIN_WORKTREE = ".worktrees/main";
 
 function size(file) {
-    return exists(file) ? stat(file).size : null;
+    return exists(file) ? stat(file).size : 0;
 }
 
 function gzip_size(file) {
     return exists(file)
         ? gzip(read_file(file)).length
-        : null;
+        : 0;
 }
 
 function brotli_size(file) {
     return exists(file)
         ? brotli(read_file(file)).length
-        : null;
+        : 0;
 }
 
 function gather_file_sizes(file) {
@@ -149,7 +149,6 @@ try {
     exec("pnpm run build", { stdio: "inherit" });
 
     const pr_files = glob("dist/**/*.min.js");
-    const pr_sizes = Object.fromEntries(pr_files.map(f => [f, gather_file_sizes(f)]));
 
     //
     // Main build
@@ -159,10 +158,13 @@ try {
     exec("pnpm i --ignore-scripts", { cwd: MAIN_WORKTREE, stdio: "inherit" });
     exec("pnpm run build", { cwd: MAIN_WORKTREE, stdio: "inherit" });
 
+    const main_files = glob("dist/**/*.min.js", { cwd: MAIN_WORKTREE });
+    const files = [...new Set([...pr_files, ...main_files])].sort();
+    const pr_sizes = Object.fromEntries(files.map(f => [f, gather_file_sizes(f)]));
     const release_sizes = Object.fromEntries(
-        pr_files.map(f => [f, gather_file_sizes(path.join(MAIN_WORKTREE, f))]));
+        files.map(f => [f, gather_file_sizes(path.join(MAIN_WORKTREE, f))]));
 
-    generate_report(pr_files, pr_sizes, release_sizes);
+    generate_report(files, pr_sizes, release_sizes);
 }
 catch (e) {
     console.log(e);

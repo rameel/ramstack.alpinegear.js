@@ -104,6 +104,16 @@ Provides the `x-when` directive, which allows for conditional rendering of eleme
 ```
 
 
+**[@ramstack/alpinegear-safehtml](https://www.npmjs.com/package/@ramstack/alpinegear-safehtml)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/safehtml))<br>
+Provides the `x-safehtml` directive, which sanitizes reactive HTML with DOMPurify before rendering it.
+
+```html
+<div x-data="{ content: '<p>Hello <strong>world</strong></p>' }">
+  <div x-safehtml="content"></div>
+</div>
+```
+
+
 **[@ramstack/alpinegear-hotkey](https://www.npmjs.com/package/@ramstack/alpinegear-hotkey)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/hotkey))<br>
 Provides the `x-hotkey` directive, allowing easily handle keyboard shortcuts.
 
