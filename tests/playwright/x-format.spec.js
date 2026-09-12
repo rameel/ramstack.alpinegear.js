@@ -90,3 +90,21 @@ test("x-format: nested x-data with manually x-format", async ({ page }) => {
     await expect(page.locator("#d2")).toHaveAttribute("title", "math.e");
 });
 
+test("x-format: nested x-format.once is an independent boundary", async ({ page }) => {
+    await set_html(page, `
+      <div x-data="{ value: 'initial' }" x-format>
+        <span id="reactive">{{ value }}</span>
+        <span id="once" x-format.once title="{{ value }}">{{ value }}</span>
+        <button @click="value = 'changed'">Change</button>
+      </div>`);
+
+    await expect(page.locator("#reactive")).toHaveText("initial");
+    await expect(page.locator("#once")).toHaveText("initial");
+    await expect(page.locator("#once")).toHaveAttribute("title", "initial");
+
+    await page.locator("button").click();
+
+    await expect(page.locator("#reactive")).toHaveText("changed");
+    await expect(page.locator("#once")).toHaveText("initial");
+    await expect(page.locator("#once")).toHaveAttribute("title", "initial");
+});

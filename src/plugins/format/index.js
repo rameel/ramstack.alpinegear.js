@@ -4,7 +4,7 @@ import { has_modifier } from "@/utilities/utils";
 function plugin({ directive, evaluateLater, mutateDom }) {
     directive("format", (el, { modifiers }, { effect }) => {
         const is_once = has_modifier(modifiers, "once");
-        const has_format_attr = el => el.hasAttribute("x-format");
+        const has_format_attr = el => el.hasAttribute("x-format") || el.hasAttribute("x-format.once");
 
         process(el);
 
@@ -40,6 +40,7 @@ function plugin({ directive, evaluateLater, mutateDom }) {
                         //
                         if (node.hasAttribute("x-data") && !has_format_attr(node)) {
                             node.setAttribute("x-format", "");
+                            break;
                         }
 
                         if (has_format_attr(node)) {
