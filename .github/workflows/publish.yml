@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   publish:
@@ -42,12 +43,17 @@ jobs:
           for dir in dist/*; do
             if [ -d "$dir" ]; then
               cd "$dir"
-              npm publish --access public
+              package="$(node -p "const p = require('./package.json'); p.name + '@' + p.version")"
+
+              if npm view "$package" version --json > /dev/null 2>&1; then
+                echo "Skipping $package: version already exists."
+              else
+                npm publish --access public
+              fi
+
               cd - > /dev/null
             fi
           done
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Archive packages (.zip)
         run: zip -r ramstack.alpinegear-${{ github.ref_name }}.zip ./dist/*
