@@ -1,6 +1,6 @@
 import { is_element, is_template } from "@/utilities/utils";
 
-export function anchor_block(el, template, { addScopeToNode, cleanup, initTree, mutateDom, scope = {} }) {
+export function anchor_block(el, template, { addScopeToNode, cleanup, destroyTree, initTree, mutateDom, scope = {} }) {
     if (el._r_block) {
         return;
     }
@@ -30,9 +30,12 @@ export function anchor_block(el, template, { addScopeToNode, cleanup, initTree, 
         },
         delete() {
             el._r_block = null;
-            for (let node of nodes ?? []) {
-                node.remove();
-            }
+            mutateDom(() => {
+                for (let node of nodes ?? []) {
+                    is_element(node) && destroyTree(node);
+                    node.remove();
+                }
+            });
             nodes = null;
         }
     }
