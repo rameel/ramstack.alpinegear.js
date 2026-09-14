@@ -108,3 +108,85 @@ test("x-format: nested x-format.once is an independent boundary", async ({ page 
     await expect(page.locator("#once")).toHaveText("initial");
     await expect(page.locator("#once")).toHaveAttribute("title", "initial");
 });
+
+for (const modifier of ["", ".once"]) {
+    test(`x-format${modifier}: interpolated values remain literal`, async ({ page }) => {
+        await set_html(page, `
+          <div x-data="{
+            value: '{{ 1 + 1 }}',
+            markup: '<strong>Text</strong>',
+            expression: '{{ executed = true }}',
+            executed: false
+          }">
+            <p id="formatted" x-format${modifier}>{{ value }}</p>
+            <p id="markup" x-format${modifier}>{{ markup }}</p>
+            <p id="expression" x-format${modifier}>{{ expression }}</p>
+            <p id="text" x-text="value"></p>
+            <p id="executed" x-text="executed"></p>
+            <button @click="value = '{{ 2 + 2 }}'; markup = '<em>Updated</em>'; expression = 'next {{ executed = true }}'">Change</button>
+          </div>`);
+
+        await expect(page.locator("#formatted")).toHaveText("{{ 1 + 1 }}");
+        await expect(page.locator("#text")).toHaveText("{{ 1 + 1 }}");
+        await expect(page.locator("#markup")).toHaveText("<strong>Text</strong>");
+        await expect(page.locator("#markup *")).toHaveCount(0);
+        await expect(page.locator("#expression")).toHaveText("{{ executed = true }}");
+        await expect(page.locator("#executed")).toHaveText("false");
+
+        await page.locator("button").click();
+
+        await expect(page.locator("#text")).toHaveText("{{ 2 + 2 }}");
+        await expect(page.locator("#formatted")).toHaveText(modifier ? "{{ 1 + 1 }}" : "{{ 2 + 2 }}");
+        await expect(page.locator("#markup")).toHaveText(modifier ? "<strong>Text</strong>" : "<em>Updated</em>");
+        await expect(page.locator("#markup *")).toHaveCount(0);
+        await expect(page.locator("#expression")).toHaveText(modifier ? "{{ executed = true }}" : "next {{ executed = true }}");
+        await expect(page.locator("#executed")).toHaveText("false");
+    });
+}
+
+test("x-format: preserves interpolations in following original nodes", async ({ page }) => {
+    await set_html(page, `
+      <div x-data="{ value: '{{ 1 + 1 }}', name: 'Foo' }">
+        <p x-format title="{{ value }}/{{ name }}">[{{ value }},{{ name }}]<!-- separate text nodes -->{{ name }}<span>{{ value }}</span>{{ name }}</p>
+        <button @click="value = '{{ 2 + 2 }}'; name = 'Bar'">Change</button>
+      </div>`);
+
+    await expect(page.locator("p")).toHaveText("[{{ 1 + 1 }},Foo]Foo{{ 1 + 1 }}Foo");
+    await expect(page.locator("p")).toHaveAttribute("title", "{{ 1 + 1 }}/Foo");
+
+    await page.locator("button").click();
+
+    await expect(page.locator("p")).toHaveText("[{{ 2 + 2 }},Bar]Bar{{ 2 + 2 }}Bar");
+    await expect(page.locator("p")).toHaveAttribute("title", "{{ 2 + 2 }}/Bar");
+});
+
+test("x-format: nested boundaries preserve literal values", async ({ page }) => {
+    await set_html(page, `
+      <div x-data="{ value: '{{ 1 + 1 }}', next: '{{ 2 + 2 }}' }">
+        <section x-format.once>
+          <p id="outer" title="{{ value }}">{{ value }}</p>
+          <div x-data="{ local: value }">
+            <p id="automatic" title="{{ local }}">{{ local }}</p>
+            <p id="explicit" x-format title="{{ local }}">{{ local }}</p>
+            <p id="once" x-format.once title="{{ local }}">{{ local }}</p>
+            <button @click="local = next">Change</button>
+          </div>
+        </section>
+      </div>`);
+
+    for (const id of ["outer", "automatic", "explicit", "once"]) {
+        await expect(page.locator(`#${id}`)).toHaveText("{{ 1 + 1 }}");
+        await expect(page.locator(`#${id}`)).toHaveAttribute("title", "{{ 1 + 1 }}");
+    }
+
+    await page.locator("button").click();
+
+    for (const id of ["automatic", "explicit"]) {
+        await expect(page.locator(`#${id}`)).toHaveText("{{ 2 + 2 }}");
+        await expect(page.locator(`#${id}`)).toHaveAttribute("title", "{{ 2 + 2 }}");
+    }
+    for (const id of ["outer", "once"]) {
+        await expect(page.locator(`#${id}`)).toHaveText("{{ 1 + 1 }}");
+        await expect(page.locator(`#${id}`)).toHaveAttribute("title", "{{ 1 + 1 }}");
+    }
+});
