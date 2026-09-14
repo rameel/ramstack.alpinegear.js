@@ -2,7 +2,7 @@ import { anchor_block } from "@/utilities/anchor_block";
 import { create_getter } from "@/utilities/evaluator";
 import { is_template, warn } from "@/utilities/utils";
 
-function plugin({ addScopeToNode, directive, initTree, mutateDom }) {
+function plugin({ addScopeToNode, directive, destroyTree, initTree, mutateDom }) {
     directive("match", (el, { }, { cleanup, effect, evaluateLater }) => {
         if (!is_template(el)) {
             warn("x-match can only be used on a 'template' tag");
@@ -33,6 +33,7 @@ function plugin({ addScopeToNode, directive, initTree, mutateDom }) {
                 anchor_block(el, branch.el, {
                     addScopeToNode,
                     cleanup,
+                    destroyTree,
                     initTree,
                     mutateDom
                 });

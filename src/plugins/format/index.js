@@ -98,7 +98,7 @@ function plugin({ directive, evaluateLater, mutateDom }) {
         }
 
         function process_nodes(node) {
-            for (let child of node.childNodes) {
+            for (let child of [...node.childNodes]) {
                 process(child);
             }
         }

@@ -10,6 +10,22 @@ test("x-format", async ({ page }) => {
     await expect(page.locator("div")).toContainText("[Foo,Bar]");
 });
 
+test("x-format: renders HTML strings as text", async ({ page }) => {
+    await set_html(page, `
+      <div x-data="{ value: '<strong>Text</strong>' }">
+        <p x-format>{{ value }}</p>
+        <button @click="value = '<em>Updated</em>'">Change</button>
+      </div>`);
+
+    await expect(page.locator("p")).toHaveText("<strong>Text</strong>");
+    await expect(page.locator("p *")).toHaveCount(0);
+
+    await page.locator("button").click();
+
+    await expect(page.locator("p")).toHaveText("<em>Updated</em>");
+    await expect(page.locator("p *")).toHaveCount(0);
+});
+
 test("x-format: recursively", async ({ page }) => {
     await set_html(page, `
         <div x-data="{ name: 'Foo', title: 'Bar' }" x-format>
@@ -107,4 +123,50 @@ test("x-format: nested x-format.once is an independent boundary", async ({ page 
     await expect(page.locator("#reactive")).toHaveText("changed");
     await expect(page.locator("#once")).toHaveText("initial");
     await expect(page.locator("#once")).toHaveAttribute("title", "initial");
+});
+
+for (const modifier of ["", ".once"]) {
+    test(`x-format${modifier}: does not re-evaluate interpolated values`, async ({ page }) => {
+        await set_html(page, `
+          <div x-data="{ value: '{{ executed = true }}', executed: false }">
+            <p id="formatted" x-format${modifier}>{{ value }}</p>
+            <p id="executed" x-text="executed"></p>
+            <button @click="value = '{{ executed = 12345 }}'">Change</button>
+          </div>`);
+
+        await expect(page.locator("#formatted")).toHaveText("{{ executed = true }}");
+        await expect(page.locator("#executed")).toHaveText("false");
+
+        await page.locator("button").click();
+
+        await expect(page.locator("#formatted")).toHaveText(modifier ? "{{ executed = true }}" : "{{ executed = 12345 }}");
+        await expect(page.locator("#executed")).toHaveText("false");
+    });
+}
+
+test("x-format: preserves interpolations in following original nodes", async ({ page }) => {
+    await set_html(page, `
+      <div x-data="{ value: '{{ 1 + 1 }}', name: 'Foo' }">
+        <p x-format title="{{ value }}/{{ name }}">[{{ value }},{{ name }}]<!-- separate text nodes -->{{ name }}<span>{{ value }}</span>{{ name }}</p>
+        <button @click="value = '{{ 2 + 2 }}'; name = 'Bar'">Change</button>
+      </div>`);
+
+    await expect(page.locator("p")).toHaveText("[{{ 1 + 1 }},Foo]Foo{{ 1 + 1 }}Foo");
+    await expect(page.locator("p")).toHaveAttribute("title", "{{ 1 + 1 }}/Foo");
+
+    await page.locator("button").click();
+
+    await expect(page.locator("p")).toHaveText("[{{ 2 + 2 }},Bar]Bar{{ 2 + 2 }}Bar");
+    await expect(page.locator("p")).toHaveAttribute("title", "{{ 2 + 2 }}/Bar");
+});
+
+test("x-format: nested x-format does not re-evaluate interpolated values", async ({ page }) => {
+    await set_html(page, `
+      <div x-data="{ value: '{{ 1 + 1 }}' }">
+        <section x-format>
+          <p x-format>{{ value }}</p>
+        </section>
+      </div>`);
+
+    await expect(page.locator("p")).toHaveText("{{ 1 + 1 }}");
 });
