@@ -6,7 +6,13 @@ const directive_name = "markdown";
 const meta_options_selectors = "meta[name='alpinegear-markdown-options']";
 const data_options_attribute = "data-markdown-options";
 const content_modifiers = ["content", "static"];
-const supported_options = ["allowHtml", "frontmatter", "headingIds", "headingAnchors", "codeLineNumbers"];
+const supported_options = [
+    "allowHtml",
+    "codeLineNumbers",
+    "frontmatter",
+    "headingAnchors",
+    "headingIds"
+];
 
 function plugin({ bind, directive, mutateDom: mutate_dom, prefixed }) {
     let global_options;

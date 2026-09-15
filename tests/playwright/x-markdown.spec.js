@@ -91,11 +91,11 @@ test("x-markdown.content strips common indentation", async ({ page }) => {
     await expect(content.locator("h2")).toHaveText("Second");
 });
 
-test("x-markdown forwards supported render options and ignores unknown ones", async ({ page }) => {
+test("x-markdown forwards supported render options", async ({ page }) => {
     await set_html(page, `
-        <div x-data="{ content: '# Title' }">
+        <div x-data="{ content: '# Title\\n\\n~~~js\\nconst value = 1;\\n~~~' }">
             <div id="content" x-markdown="content"
-                 data-markdown-options='{ "headingAnchors": true, "codeLineNumbers": true, "unknownOption": true }'
+                 data-markdown-options='{ "headingAnchors": true, "codeLineNumbers": true }'
             ></div>
         </div>`);
 
@@ -103,6 +103,18 @@ test("x-markdown forwards supported render options and ignores unknown ones", as
 
     await expect(content.locator("h1 a")).toHaveAttribute("href", "#title");
     await expect(content.locator("h1 a")).toHaveClass(/anchor-heading/);
+    await expect(content.locator("pre")).toHaveClass("tm-code tm-code--line-numbers");
+});
+
+test("x-markdown ignores unsupported render options", async ({ page }) => {
+    await set_html(page, `
+        <div x-data="{ content: '~~~js\\nconst value = 1;\\n~~~' }">
+            <div id="content" x-markdown="content"
+                 data-markdown-options='{ "highlighter": true }'
+            ></div>
+        </div>`);
+
+    await expect(page.locator("#content code")).toHaveText("const value = 1;");
 });
 
 test("x-markdown merges global and local options", async ({ page }) => {
