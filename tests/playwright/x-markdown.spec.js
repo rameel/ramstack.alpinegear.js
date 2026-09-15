@@ -20,6 +20,17 @@ test("x-markdown renders reactive Markdown", async ({ page }) => {
     await expect(content.locator("em")).toHaveText("text");
 });
 
+for (const [value, expected] of [[0, "0"], [false, "false"]]) {
+    test(`x-markdown renders the reactive '${expected}' value`, async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ content: ${value} }">
+                <div id="content" x-markdown="content"></div>
+            </div>`);
+
+        await expect(page.locator("#content")).toHaveText(expected);
+    });
+}
+
 test("x-markdown escapes raw HTML and removes unsafe URLs by default", async ({ page }) => {
     await set_html(page, `
         <div x-data="{ content: '<img src=x onerror=window.injected=true><script>window.injected=true</script> [link](javascript:window.injected=true)' }">

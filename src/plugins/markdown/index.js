@@ -59,7 +59,7 @@ function plugin({ bind, directive, mutateDom: mutate_dom, prefixed }) {
 
         if (expression) {
             const evaluate = evaluate_later(expression);
-            effect(() => evaluate(value => render(String(value || ""))));
+            effect(() => evaluate(value => render(String(value ?? ""))));
         }
         else {
             render(el.textContent.trim());
