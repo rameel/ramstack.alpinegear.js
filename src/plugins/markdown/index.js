@@ -43,11 +43,10 @@ function plugin({ bind, directive, mutateDom: mutate_dom, prefixed }) {
         };
 
         const render = value => {
-            const html = render_html(value, options);
+            const html = render_html(strip_indent(value), options);
 
             mutate_dom(() => {
                 el.innerHTML = html;
-
 
                 const ignore = prefixed("ignore");
                 for (let child of el.children) {
@@ -62,7 +61,7 @@ function plugin({ bind, directive, mutateDom: mutate_dom, prefixed }) {
             effect(() => evaluate(value => render(String(value ?? ""))));
         }
         else {
-            render(el.textContent.trim());
+            render(el.textContent);
         }
     });
 }
@@ -73,6 +72,20 @@ function pick_options(options) {
             .filter(k => k in options)
             .map(k => [k, options[k]])
     );
+}
+
+function strip_indent(text) {
+    let indent = min_indent(text);
+    if (indent) {
+        const regex = new RegExp(`^[ \\t\\r\\f\\v]{${indent}}`, "gm");
+        text = text.replace(regex, "");
+    }
+
+    return text.trim();
+}
+
+function min_indent(v) {
+    return v.match(/^[ \t\r\f\v]*(?=\S)/gm)?.reduce((r, s) => Math.min(r, s.length), Number.MAX_SAFE_INTEGER) ?? 0;
 }
 
 export default plugin;

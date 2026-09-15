@@ -77,6 +77,20 @@ test("x-markdown.content and x-markdown.static render the element content", asyn
     await expect(page.locator("#static h2")).toHaveText("Alias");
 });
 
+test("x-markdown.content strips common indentation", async ({ page }) => {
+    await set_html(page, `
+        <div id="content" x-markdown.content>
+            # First
+
+            ## Second
+        </div>`);
+
+    const content = page.locator("#content");
+
+    await expect(content.locator("h1")).toHaveText("First");
+    await expect(content.locator("h2")).toHaveText("Second");
+});
+
 test("x-markdown forwards supported render options and ignores unknown ones", async ({ page }) => {
     await set_html(page, `
         <div x-data="{ content: '# Title' }">
