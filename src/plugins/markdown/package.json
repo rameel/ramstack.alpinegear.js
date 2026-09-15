@@ -1,7 +1,7 @@
 {
   "name": "@ramstack/alpinegear-markdown",
   "version": "0.0.0",
-  "description": "@ramstack/alpinegear-markdown provides the 'x-markdown' Alpine.js directive",
+  "description": "@ramstack/alpinegear-markdown provides the 'x-markdown' Alpine.js directive for rendering Markdown with TanStack Markdown.",
   "author": "Rameel Burhan",
   "license": "MIT",
   "repository": {

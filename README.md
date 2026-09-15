@@ -114,6 +114,20 @@ Provides the `x-safehtml` directive, which sanitizes reactive HTML with DOMPurif
 ```
 
 
+**[@ramstack/alpinegear-markdown](https://www.npmjs.com/package/@ramstack/alpinegear-markdown)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/markdown))<br>
+Provides the `x-markdown` directive, which renders reactive Markdown with TanStack Markdown.
+
+```html
+<div x-data="{ content: '# Hello **world**' }">
+  <div x-markdown="content"></div>
+
+  <div x-markdown.content>
+    ## Rendered from the element content
+  </div>
+</div>
+```
+
+
 **[@ramstack/alpinegear-hotkey](https://www.npmjs.com/package/@ramstack/alpinegear-hotkey)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/hotkey))<br>
 Provides the `x-hotkey` directive, allowing easily handle keyboard shortcuts.
 
