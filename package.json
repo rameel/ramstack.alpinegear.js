@@ -42,6 +42,7 @@
     "@rollup/plugin-replace": "^6.0.3",
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-virtual": "^3.0.2",
+    "@tanstack/markdown": "^0.0.14",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@vitest/coverage-v8": "^5.0.0",

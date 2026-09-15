@@ -91,7 +91,11 @@ function create_configuration({ plugin_name, input, format, optimize }) {
 function remove_comments() {
     return {
         name: "remove_comments",
-        transform(source) {
+        transform(source, id) {
+            if (id.includes("node_modules")) {
+                return;
+            }
+
             return {
                 code: strip_comments(source, {})
             };

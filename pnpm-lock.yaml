@@ -36,6 +36,9 @@ importers:
       '@rollup/plugin-virtual':
         specifier: ^3.0.2
         version: 3.0.2(rollup@4.63.1)
+      '@tanstack/markdown':
+        specifier: ^0.0.14
+        version: 0.0.14
       '@testing-library/dom':
         specifier: ^10.4.1
         version: 10.4.1
@@ -543,6 +546,17 @@ packages:
   '@simple-libs/stream-utils@2.0.0':
     resolution: {integrity: sha512-fCTuZK4QBa+39Oz9l4OGfJfz+GpwCp3AqO7Zch3to99xHPgstVsRFpeQ8LNd2o1Gv8raL2mCFwiaHh7bFSp5DQ==}
     engines: {node: '>=22'}
+
+  '@tanstack/markdown@0.0.14':
+    resolution: {integrity: sha512-NNjOoA7Zbmh3LG6MTxTBX3zM8sGe5bMfH3xxX5oCt1zh75TiCiaQFoQ4FKSNNhVKqpD0zzNd+qNdmA+sXR5XTw==}
+    peerDependencies:
+      octane: '>=0.1.12'
+      react: '>=18'
+    peerDependenciesMeta:
+      octane:
+        optional: true
+      react:
+        optional: true
 
   '@testing-library/dom@10.4.1':
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
@@ -2188,6 +2202,8 @@ snapshots:
       '@simple-libs/stream-utils': 2.0.0
 
   '@simple-libs/stream-utils@2.0.0': {}
+
+  '@tanstack/markdown@0.0.14': {}
 
   '@testing-library/dom@10.4.1':
     dependencies:
