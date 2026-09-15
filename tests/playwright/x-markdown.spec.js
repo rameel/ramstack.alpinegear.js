@@ -152,7 +152,7 @@ test("x-markdown cannot be used on a 'template' tag", async ({ page }) => {
         <template id="content" x-markdown.content># Hello</template>`);
 
     expect(await page.evaluate(() => document.getElementById("content").innerHTML)).toBe("# Hello");
-    expect(page.locator("h1")).not.toBeAttached();
+    await expect(page.locator("h1")).not.toBeAttached();
 
     expect(warnings).toEqual([
         "alpinegear.js: x-markdown cannot be used on a 'template' tag"
