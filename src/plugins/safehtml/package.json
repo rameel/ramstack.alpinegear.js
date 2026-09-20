@@ -18,6 +18,9 @@
     "alpinejs-directive",
     "alpinejs-plugin"
   ],
+  "peerDependencies": {
+    "dompurify": "^3.4.15"
+  },
   "exports": {
     ".": {
       "import": {

@@ -46,10 +46,14 @@ function create_configuration({ plugin_name, input, format, optimize }) {
 
     return {
         input,
+        external: ["dompurify"],
         treeshake: "smallest",
         output: {
             file: `dist/${plugin_name}/alpinegear-${plugin_name}${ext_format}${ext_min}.js`,
             format: format,
+            globals: {
+                dompurify: "DOMPurify"
+            },
             plugins: optimize && [terser({
                 output: {
                     comments: false
