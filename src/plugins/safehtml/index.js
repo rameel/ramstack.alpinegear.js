@@ -1,4 +1,4 @@
-import DOMPurify from "dompurify";
+import create_dompurify from "dompurify";
 import { parse_options } from "@/utilities/options";
 
 const directive_name = "safehtml";
@@ -6,6 +6,7 @@ const meta_options_selectors = "meta[name='alpinegear-safehtml-options']";
 const data_options_attribute = "data-safehtml-options";
 
 function plugin({ bind, directive, mutateDom: mutate_dom, prefixed }) {
+    const purifier = create_dompurify(window);
     let global_options;
 
     directive(directive_name, (el, { expression }, { effect, evaluateLater: evaluate_later }) => {
@@ -24,7 +25,7 @@ function plugin({ bind, directive, mutateDom: mutate_dom, prefixed }) {
         };
 
         effect(() => evaluate(value => {
-            const html = DOMPurify.sanitize(value, options);
+            const html = purifier.sanitize(value, options);
 
             mutate_dom(() => {
                 el.innerHTML = html;

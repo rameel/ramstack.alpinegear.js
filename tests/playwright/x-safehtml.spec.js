@@ -54,6 +54,40 @@ test("x-safehtml merges global and local options", async ({ page }) => {
     await expect(content.locator("em")).toHaveText("Local");
 });
 
+test("x-safehtml isolates DOMPurify configuration and hooks", async ({ page }) => {
+    await page.addInitScript(() => {
+        document.addEventListener("alpine:init", () => {
+            DOMPurify.setConfig({ ALLOWED_TAGS: ["strong"], RETURN_DOM: true });
+            DOMPurify.addHook("afterSanitizeAttributes", node => {
+                if (node.nodeName === "STRONG") {
+                    node.setAttribute("data-shared", "yes");
+                }
+            });
+        });
+    });
+
+    await set_html(page, `
+        <div x-data="{ content: '<p title=removed><strong>Shared</strong><em>Local</em></p>' }">
+            <div id="content" x-safehtml="content" data-safehtml-options='{ "FORBID_ATTR": ["title"] }'></div>
+        </div>`);
+
+    const content = page.locator("#content");
+
+    await expect(content.locator("p")).toHaveText("SharedLocal");
+    await expect(content.locator("p")).not.toHaveAttribute("title");
+    await expect(content.locator("strong")).toHaveText("Shared");
+    await expect(content.locator("strong")).not.toHaveAttribute("data-shared");
+    await expect(content.locator("em")).toHaveText("Local");
+
+    expect(await page.evaluate(() => {
+        const result = DOMPurify.sanitize("<p><strong>Shared</strong><em>Local</em></p>");
+        return { nodeType: result.nodeType, html: result.innerHTML };
+    })).toEqual({
+        nodeType: 1,
+        html: '<strong data-shared="yes">Shared</strong>Local'
+    });
+});
+
 test("x-safehtml ignores invalid local options", async ({ page }) => {
     const warnings = [];
     page.on("console", message => message.type() === "warning" && warnings.push(message.text()));
