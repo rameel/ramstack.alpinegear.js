@@ -228,11 +228,11 @@ test("anchor block: block containing keyed x-for of blocks", async ({ page }) =>
     }
 });
 
-for (const [name, block, { ends = false, removes = true } = {}] of [
+for (const [name, block, { ends = false } = {}] of [
     ["containing keyed x-for of elements", list => `<h2 x-text="o"></h2>${list(`<b x-text="'[' + o + '-' + n + ']'"></b>`)}<footer>F</footer>`],
     ["containing keyed x-for of blocks", list => `<h2 x-text="o"></h2>${list(`<template x-fragment>[<dt x-text="o"></dt>-<dd x-text="n"></dd>]</template>`)}<footer>F</footer>`],
-    // Alpine before 3.14.2 leaves the x-for items behind when the block is removed
-    ["containing x-if of keyed x-for", list => `<h2 x-text="o"></h2><template x-if="true">${list(`<b x-text="'[' + o + '-' + n + ']'"></b>`)}</template><footer>F</footer>`, { removes: false }],
+    ["containing keyed x-for of x-if", list => `<h2 x-text="o"></h2>${list(`<template x-if="true"><b x-text="'[' + o + '-' + n + ']'"></b></template>`)}<footer>F</footer>`],
+    ["containing x-if of keyed x-for", list => `<h2 x-text="o"></h2><template x-if="true">${list(`<b x-text="'[' + o + '-' + n + ']'"></b>`)}</template><footer>F</footer>`],
     ["ending with keyed x-for of elements", list => `<h2 x-text="o"></h2><footer>F</footer>${list(`<b x-text="'[' + o + '-' + n + ']'"></b>`)}`, { ends: true }],
     ["ending with keyed x-for of blocks", list => `<h2 x-text="o"></h2><footer>F</footer>${list(`<template x-fragment>[<dt x-text="o"></dt>-<dd x-text="n"></dd>]</template>`)}`, { ends: true }],
     ["ending with x-if", () => `<h2 x-text="o"></h2><footer>F</footer><template x-if="true"><i x-text="inner[o].map(n => '[' + o + '-' + n + ']').join('')"></i></template>`, { ends: true }]
@@ -274,17 +274,15 @@ for (const [name, block, { ends = false, removes = true } = {}] of [
             { outer: [2, 1, 3, 4], inner: inner([[9, 0, 3], [1, 7, 4], [6, 2, 5, 1], [8, 3, 2, 1]]) },
 
             // Adding and removing the blocks
-            ...removes ? [
-                { outer: [3, 5, 1] },
-                { inner: inner([[1, 3], [], [0, 6, 1], [], [4, 3, 5]]), outer: [5, 1, 3, 2] },
-                { outer: [2, 3] },
-                { outer: [] },
-                { outer: [4, 2, 5] },
+            { outer: [3, 5, 1] },
+            { inner: inner([[1, 3], [], [0, 6, 1], [], [4, 3, 5]]), outer: [5, 1, 3, 2] },
+            { outer: [2, 3] },
+            { outer: [] },
+            { outer: [4, 2, 5] },
 
-                // With a single block, moving its last node after the template may be all x-for does
-                { outer: [5] },
-                { outer: [5] }
-            ] : []
+            // With a single block, moving its last node after the template may be all x-for does
+            { outer: [5] },
+            { outer: [5] }
         ]) {
             state = { ...state, ...change };
 

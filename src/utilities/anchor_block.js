@@ -46,19 +46,19 @@ export function anchor_block(el, template, { addScopeToNode, cleanup, destroyTre
             return last;
         },
         delete() {
-            mutateDom(() => {
-                el._r_block = null;
-                delete el._x_currentIfEl;
-                delete el._x_lastRenderedEl;
+            // Not in mutateDom: Alpine before 3.14.2 removes nested x-if content
+            // and x-for items without destroying them, leaving that to its observer
+            el._r_block = null;
+            delete el._x_currentIfEl;
+            delete el._x_lastRenderedEl;
 
-                for (let node of nodes) {
-                    node._r_anchor = null;
-                    is_element(node) && destroyTree(node);
-                    node.remove();
-                }
+            for (let node of nodes) {
+                node._r_anchor = null;
+                is_element(node) && destroyTree(node);
+                node.remove();
+            }
 
-                nodes = null;
-            });
+            nodes = null;
         }
     }
 
@@ -203,30 +203,21 @@ function initialize() {
             const lists = new Set();
             const inserted = new Map();
 
-            // Deleting a block can remove nested ones, so the records it produces are processed too
-            for (; mutations.length; mutations = observer.takeRecords()) {
-                for (let mutation of mutations) {
-                    // x-for moves the last node of the block right after its template, which
-                    // may be all it does when the order stays the same. That node can belong
-                    // to a nested x-for or x-if, rather than the block itself.
-                    mutation.previousSibling?._r_block && parents.add(mutation.target);
+            for (let mutation of mutations) {
+                // x-for moves the last node of the block right after its template, which
+                // may be all it does when the order stays the same. That node can belong
+                // to a nested x-for or x-if, rather than the block itself.
+                mutation.previousSibling?._r_block && parents.add(mutation.target);
 
-                    for (let list of [mutation.addedNodes, mutation.removedNodes]) {
-                        for (let node of list) {
-                            (node._r_block || node._r_anchor) && parents.add(mutation.target);
-                            node._x_refreshXForScope && lists.add(mutation.target);
-                        }
+                for (let list of [mutation.addedNodes, mutation.removedNodes]) {
+                    for (let node of list) {
+                        (node._r_block || node._r_anchor) && parents.add(mutation.target);
+                        node._x_refreshXForScope && lists.add(mutation.target);
                     }
+                }
 
-                    for (let node of mutation.addedNodes) {
-                        node._x_refreshXForScope && (inserted.has(node) || inserted.set(node, mutation.previousSibling));
-                    }
-
-                    for (let node of mutation.removedNodes) {
-                        // Alpine before 3.14.2 removes x-if content without destroying it
-                        // while its observer is paused, so the block would be left behind
-                        node.isConnected || node._r_block?.delete();
-                    }
+                for (let node of mutation.addedNodes) {
+                    node._x_refreshXForScope && (inserted.has(node) || inserted.set(node, mutation.previousSibling));
                 }
             }
 
