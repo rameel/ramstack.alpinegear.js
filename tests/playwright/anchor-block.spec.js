@@ -222,11 +222,79 @@ test("anchor block: block containing keyed x-for of blocks", async ({ page }) =>
     await set_html(page, `<div id="block" x-data="{ items: [1, 2, 3, 4] }"><template x-fragment><h2>Title</h2><template x-for="n in items" :key="n"><template x-fragment>[<dt x-text="n"></dt><dd x-text="n"></dd>]</template></template><footer>Footer</footer></template></div>`);
     await expect(page.locator("#block")).toHaveText("Title[11][22][33][44]Footer");
 
-    for (const items of [...permutations([1, 2, 3, 4]), [3, 2, 1], [2, 3, 1, 4], [4, 1], [], [1, 2, 3]]) {
+    for (const items of [...permutations([1, 2, 3, 4]), [3, 2, 1], [2, 3, 1, 4], [4, 1], [], [1, 2, 3], [5, 1, 6, 2, 3], [2, 6, 7, 3]]) {
         await page.evaluate(items => Alpine.$data(document.querySelector("#block")).items = items, items);
         await expect(page.locator("#block")).toHaveText(`Title${items.map(n => `[${n}${n}]`).join("")}Footer`);
     }
 });
+
+for (const [name, block, { ends = false, removes = true } = {}] of [
+    ["containing keyed x-for of elements", list => `<h2 x-text="o"></h2>${list(`<b x-text="'[' + o + '-' + n + ']'"></b>`)}<footer>F</footer>`],
+    ["containing keyed x-for of blocks", list => `<h2 x-text="o"></h2>${list(`<template x-fragment>[<dt x-text="o"></dt>-<dd x-text="n"></dd>]</template>`)}<footer>F</footer>`],
+    // Alpine before 3.14.2 leaves the x-for items behind when the block is removed
+    ["containing x-if of keyed x-for", list => `<h2 x-text="o"></h2><template x-if="true">${list(`<b x-text="'[' + o + '-' + n + ']'"></b>`)}</template><footer>F</footer>`, { removes: false }],
+    ["ending with keyed x-for of elements", list => `<h2 x-text="o"></h2><footer>F</footer>${list(`<b x-text="'[' + o + '-' + n + ']'"></b>`)}`, { ends: true }],
+    ["ending with keyed x-for of blocks", list => `<h2 x-text="o"></h2><footer>F</footer>${list(`<template x-fragment>[<dt x-text="o"></dt>-<dd x-text="n"></dd>]</template>`)}`, { ends: true }],
+    ["ending with x-if", () => `<h2 x-text="o"></h2><footer>F</footer><template x-if="true"><i x-text="inner[o].map(n => '[' + o + '-' + n + ']').join('')"></i></template>`, { ends: true }]
+]) {
+    test(`anchor block: keyed x-for of blocks ${name}`, async ({ page }) => {
+        const errors = [];
+        page.on("pageerror", e => errors.push(e.message));
+
+        const inner = lists => Object.fromEntries([1, 2, 3, 4, 5].map((o, i) => [o, lists[i] ?? [1, 2]]));
+        const text = ({ outer, inner }) => outer.map(o => {
+            const items = inner[o].map(n => `[${o}-${n}]`).join("");
+            return ends ? `${o}F${items}` : `${o}${items}F`;
+        }).join("");
+
+        let state = { outer: [1, 2, 3, 4], inner: inner([]) };
+        await set_html(page, `
+            <div id="block" x-data='${JSON.stringify(state)}'>
+                <template x-for="o in outer" :key="o">
+                    <template x-fragment>${block(item => `<template x-for="n in inner[o]" :key="n">${item}</template>`)}</template>
+                </template><p>After</p>
+            </div>`);
+        await expect(page.locator("#block")).toHaveText(text(state) + "After");
+
+        for (const change of [
+            // Alpine 3.15+ moves the nested items apart even when the order stays the same
+            ...permutations([1, 2, 3, 4]).map(outer => ({ outer })),
+
+            // Alpine 3.15+ lists the added items last in x-for lookup
+            { inner: inner([[0, 1, 2], [1, 0, 2], [1, 2, 0], [2, 1]]) },
+            { outer: [4, 3, 2, 1] },
+            { outer: [2, 4, 1, 3] },
+
+            // Nested x-for runs together with the outer one. Alpine 3.15 runs them in the order
+            // of the changes, 3.16+ always runs the outer one first, which leaves the blocks
+            // scattered for the nested one.
+            { inner: inner([[3, 0, 1, 2], [1, 4, 0], [5, 2, 6, 1, 0], [2, 1]]), outer: [3, 1, 4, 2] },
+            { inner: inner([[2, 3, 0], [1, 4, 7, 0], [6, 1, 0, 2], [8, 2, 1]]), outer: [1, 3, 2, 4] },
+            { outer: [4, 2, 1, 3], inner: inner([[0, 2, 9, 3], [4, 1], [6, 5, 1, 2], [2, 3, 1, 8]]) },
+            { outer: [2, 1, 3, 4], inner: inner([[9, 0, 3], [1, 7, 4], [6, 2, 5, 1], [8, 3, 2, 1]]) },
+
+            // Adding and removing the blocks
+            ...removes ? [
+                { outer: [3, 5, 1] },
+                { inner: inner([[1, 3], [], [0, 6, 1], [], [4, 3, 5]]), outer: [5, 1, 3, 2] },
+                { outer: [2, 3] },
+                { outer: [] },
+                { outer: [4, 2, 5] },
+
+                // With a single block, moving its last node after the template may be all x-for does
+                { outer: [5] },
+                { outer: [5] }
+            ] : []
+        ]) {
+            state = { ...state, ...change };
+
+            await page.evaluate(change => Object.assign(Alpine.$data(document.querySelector("#block")), change), change);
+            await expect(page.locator("#block"), JSON.stringify(change)).toHaveText(text(state) + "After");
+        }
+
+        expect(errors).toEqual([]);
+    });
+}
 
 for (const type of ["element", "text", "comment"]) {
     test(`anchor block: restores moved ${type} with a stationary anchor`, async ({ page }) => {

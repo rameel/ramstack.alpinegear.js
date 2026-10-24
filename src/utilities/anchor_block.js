@@ -39,7 +39,7 @@ export function anchor_block(el, template, { addScopeToNode, cleanup, destroyTre
                 for (let node of nodes) {
                     // Do not bring back nodes that were removed rather than moved
                     if (node.parentNode) {
-                        last = restore(node, skip_rendered(last, el));
+                        last = restore(node, last);
                     }
                 }
             });
@@ -80,31 +80,82 @@ export function anchor_block(el, template, { addScopeToNode, cleanup, destroyTre
 }
 
 // Places the node right after "prev", followed by the content rendered for it
-// by a nested block or x-if, and returns the last placed node
+// by a nested block, x-if or x-for, and returns the last placed node
 function restore(node, prev) {
     prev.nextSibling === node || prev.after(node);
 
-    return node._r_block
-        ? node._r_block.update()
-        : node._x_currentIfEl
-            ? restore(node._x_currentIfEl, node)
-            : node;
-}
+    if (node._r_block) {
+        return node._r_block.update();
+    }
 
-// x-for renders its items after its template and keeps them in order itself,
-// so step over them up to the next node owned by the block
-function skip_rendered(node, anchor) {
+    if (node._x_currentIfEl) {
+        return restore(node._x_currentIfEl, node);
+    }
+
+    let last = node;
+
     if (node._x_lookup) {
-        // Alpine below 3.16 does not expose the last item
-        const end = last_node(node);
-        const known = end !== node;
-
-        while (node.nextSibling && node.nextSibling._r_anchor !== anchor && !(known && node === end)) {
-            node = node.nextSibling;
+        for (let item of x_for_items(node)) {
+            last = restore(item, last);
         }
     }
 
-    return node;
+    return last;
+}
+
+// Returns the items rendered by x-for in their order. "inserted" maps the items
+// added since the last call to the node each one was first inserted after.
+function x_for_items(node, inserted) {
+    const lookup = node._x_lookup;
+
+    // Alpine before 3.15 keeps the keys in order
+    if (!(lookup instanceof Map)) {
+        return node._x_prevKeys.map(key => lookup[key]);
+    }
+
+    // Alpine 3.15+ creates the lookup on each run, with the items it already had
+    // in order, followed by the added ones. Their order in the DOM can be broken
+    // by the outer x-for, or by another nested one moving its own scattered items,
+    // so each added item is placed after the node x-for inserted it after: the template,
+    // the previous item or its content.
+    if (node._r_lookup !== lookup) {
+        const known = new Set(node._r_items);
+        const items = [...lookup.values()];
+        const next = new Map();
+
+        for (let item of items) {
+            known.has(item) || !inserted?.has(item) || next.set(inserted.get(item), item);
+        }
+
+        let order = items;
+
+        if (next.size) {
+            order = [];
+            const follow = prev => {
+                for (let item; (item = next.get(prev)); prev = item) {
+                    order.push(item);
+                }
+            };
+
+            follow(node);
+            for (let item of items) {
+                if (known.has(item)) {
+                    order.push(item);
+                    follow(item);
+                    item._x_currentIfEl && follow(item._x_currentIfEl);
+                }
+            }
+
+            // Not expected, but the items with an unknown position must not get lost
+            const placed = new Set(order);
+            order.push(...items.filter(item => !placed.has(item)));
+        }
+
+        node._r_lookup = lookup;
+        node._r_items = order;
+    }
+
+    return node._r_items;
 }
 
 // Follows nested x-if, x-for and blocks to the last node rendered for the node
@@ -122,24 +173,76 @@ function last_node(node) {
     }
 }
 
+// Alpine 3.15+ x-for puts each item after the previous one, swapping it with the node
+// found there. Run in the same tick after the outer x-for, which leaves the blocks scattered,
+// it would swap in nodes of other blocks or outside of them. So the pending mutations
+// are processed, putting the blocks back in order, when x-for replaces the lookup
+// at the start of each run, before it moves anything.
+function watch(node, flush) {
+    let lookup = Object.getOwnPropertyDescriptor(node, "_x_lookup")?.value;
+
+    lookup instanceof Map && Object.defineProperty(node, "_x_lookup", {
+        configurable: true,
+        get: () => lookup,
+        set(value) {
+            flush();
+            lookup = value;
+        }
+    });
+}
+
 function initialize() {
     document.body._r_block ??= (() => {
-        const observer = new MutationObserver(mutations => {
+        const observer = new MutationObserver(process);
+
+        // Processes the mutations made so far, without waiting for the observer
+        const flush = () => process(observer.takeRecords());
+
+        function process(mutations) {
             const parents = new Set();
+            const lists = new Set();
+            const inserted = new Map();
 
             // Deleting a block can remove nested ones, so the records it produces are processed too
             for (; mutations.length; mutations = observer.takeRecords()) {
                 for (let mutation of mutations) {
+                    // x-for moves the last node of the block right after its template, which
+                    // may be all it does when the order stays the same. That node can belong
+                    // to a nested x-for or x-if, rather than the block itself.
+                    mutation.previousSibling?._r_block && parents.add(mutation.target);
+
                     for (let list of [mutation.addedNodes, mutation.removedNodes]) {
                         for (let node of list) {
                             (node._r_block || node._r_anchor) && parents.add(mutation.target);
+                            node._x_refreshXForScope && lists.add(mutation.target);
                         }
+                    }
+
+                    for (let node of mutation.addedNodes) {
+                        node._x_refreshXForScope && (inserted.has(node) || inserted.set(node, mutation.previousSibling));
                     }
 
                     for (let node of mutation.removedNodes) {
                         // Alpine before 3.14.2 removes x-if content without destroying it
                         // while its observer is paused, so the block would be left behind
                         node.isConnected || node._r_block?.delete();
+                    }
+                }
+            }
+
+            // Record the order of the items just added by x-for, while the records of their
+            // insertion are at hand. Since blocks render their content next to their templates,
+            // x-for of the blocks, including the ones rendered by x-if, share the parent with them.
+            // Updating the order after removals as well releases the removed items.
+            for (let parent of lists) {
+                const nodes = [...parent.childNodes];
+
+                if (nodes.some(node => node._r_block)) {
+                    for (let node of nodes) {
+                        if (node._x_lookup) {
+                            x_for_items(node, inserted);
+                            watch(node, flush);
+                        }
                     }
                 }
             }
@@ -155,10 +258,10 @@ function initialize() {
                 }
             }
 
-            // Restoring only moves the nodes of the blocks themselves,
+            // Restoring only puts the existing nodes back in place,
             // so the records it produces need no further handling
             observer.takeRecords();
-        });
+        }
 
         observer.observe(document.body, { childList: true, subtree: true });
         return observer;
