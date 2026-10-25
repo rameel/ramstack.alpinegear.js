@@ -4,8 +4,13 @@ import {
     RoutePattern
 } from "@/plugins/router/RoutePattern";
 
-function plugin(alpine) {
+// the CDN (IIFE) build has no module exports,
+// so the class is made available globally there
+if (__IIFE__) {
     window.RoutePattern = RoutePattern;
+}
+
+function plugin(alpine) {
     alpine.plugin([router, route]);
 }
 

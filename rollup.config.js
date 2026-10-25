@@ -76,7 +76,8 @@ function create_configuration({ plugin_name, input, format, optimize }) {
             replace({
                 preventAssignment: true,
                 values: {
-                    "__DEV__": !optimize
+                    "__DEV__": !optimize,
+                    "__IIFE__": format === "iife"
                 }
             }),
             virtual({
