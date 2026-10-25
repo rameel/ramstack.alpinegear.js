@@ -330,6 +330,23 @@ If no value is provided in the URL, the default is used.
 | `maxlength(value)` | `{name:maxlength(50)}`        | Requires no more than `50` characters.            |
 | `regex(expr)`      | `{id:regex(^\\d{3}-\\d{5}$)}` | Must match a specific regex pattern.              |
 
+### Using `RoutePattern` directly
+The `RoutePattern` class that the router uses to match routes can also be used on its own,
+for example, to build a URL from route parameters:
+
+```js
+const pattern = new RoutePattern("blog/{id:int}/{slug?}");
+
+pattern.match("/blog/42/hello");             // { id: 42, slug: "hello" }
+pattern.resolve({ id: 42, slug: "hello" });  // "/blog/42/hello"
+```
+
+With the CDN version, the class is available as `window.RoutePattern`. With NPM, import it from the package:
+
+```js
+import { RoutePattern } from "@ramstack/alpinegear-router";
+```
+
 
 ## Source Code
 You can find the source code for this plugin on GitHub:

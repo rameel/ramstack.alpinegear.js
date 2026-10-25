@@ -9,7 +9,8 @@ import {
 
 export default defineConfig({
     define: {
-        __DEV__: true
+        __DEV__: true,
+        __IIFE__: false
     },
     test: {
         globals: true,
