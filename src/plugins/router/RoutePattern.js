@@ -52,7 +52,7 @@ const default_constraints = Object.freeze({
     "length"(value) {
         let values = value.split(",").map(v => v.trim());
         return {
-            test: values.length == 2
+            test: values.length === 2
                 ? v => v.length >=  +values[0] && v.length <= +values[1]
                 : v => v.length === +values[0]
         };
@@ -174,8 +174,11 @@ export class RoutePattern {
                     }
 
                     if (part.catch_all) {
-                        value = as_array(value);
-                        parts.push(...value.map(v => encodeURIComponent(v)).join("/"));
+                        value = as_array(value).map(v => encodeURIComponent(v)).join("/");
+
+                        // an empty catch-all value adds nothing,
+                        // so a segment consisting of it alone is omitted
+                        value && parts.push(value);
                     }
                     else {
                         parts.push(encodeURIComponent(value));

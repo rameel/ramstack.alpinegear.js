@@ -412,6 +412,13 @@ describe("RoutePattern", () => {
         expect(route.match("/abcdef")).toBeNull();
     });
 
+    test("resolve: /files/{path*}", () => {
+        const route = new RoutePattern("/files/{path*}");
+        expect(route.resolve({ path: ["a", "b c", "d/e"] })).toBe("/files/a/b%20c/d%2Fe");
+        expect(route.resolve({ path: [] })).toBe("/files");
+        expect(route.resolve({})).toBe("/files");
+    });
+
     test("error: unclosed brace parameter", () => {
         assert.throws(() => new RoutePattern("/{id"), "Invalid pattern: /{id");
         assert.throws(() => new RoutePattern("/{id}/{"), "Invalid pattern: /{");
