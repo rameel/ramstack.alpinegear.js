@@ -174,8 +174,11 @@ export class RoutePattern {
                     }
 
                     if (part.catch_all) {
-                        value = as_array(value);
-                        parts.push(...value.map(v => encodeURIComponent(v)).join("/"));
+                        value = as_array(value).map(v => encodeURIComponent(v)).join("/");
+
+                        // an empty catch-all value adds nothing,
+                        // so a segment consisting of it alone is omitted
+                        value && parts.push(value);
                     }
                     else {
                         parts.push(encodeURIComponent(value));
