@@ -93,6 +93,26 @@ multiple sibling elements for each iteration without wrapping them:
 ```
 🚀 [Live demo | Alpine.js x-fragment: Multiple root elements with x-for](https://jsfiddle.net/rameel/201rmntc/)
 
+> [!NOTE]
+> Alpine's `x-for` does not keep in order the content rendered by templates nested in its items,
+> such as `x-for` directly in `x-for` or a template directly in `x-if`
+> ([alpinejs/alpine#4911](https://github.com/alpinejs/alpine/issues/4911)).
+> Inside `x-for`, the same applies to `x-if`, `x-for` or `x-fragment` placed directly in `x-fragment`,
+> and to `x-fragment` placed directly in `x-if`. Put the nested templates inside an element,
+> and use `x-when` instead of `x-if` with `x-fragment`:
+> ```html
+> <template x-for="group in groups" :key="group.id">
+>   <template x-fragment>
+>     <h2 x-text="group.name"></h2>
+>     <ul>
+>       <template x-for="item in group.items" :key="item.id">
+>         <li x-text="item.name"></li>
+>       </template>
+>     </ul>
+>   </template>
+> </template>
+> ```
+
 ## Source code
 You can find the source code for this plugin on GitHub:
 

@@ -1,217 +1,180 @@
 import { expect, test } from "@playwright/test";
-import { set_html } from "./assets/utils";
+import { set_data, set_html } from "./assets/utils";
 
-for (const directive of ["fragment", "when", "match"]) {
-    test(`anchor block: nested cleanup (${directive})`, async ({ page }) => {
-        const errors = [];
-        page.on("pageerror", e => errors.push(e.message));
-
-        const content = `
-            Before
-            <dt x-data="{
-                destroy() {
-                    window.trace.destroy.push('dt')
-                }
-            }">Term</dt>
-            <template x-fragment>
-                <dd x-data="{ destroy() { window.trace.destroy.push('dd') } }"
-                    x-effect="window.trace.effects.push(tick)"
-                    @cleanup-probe.window="window.trace.events++">
-                    Description
-                </dd>
-                <!-- Nested comment -->
-                After
-            </template>`;
-
-        const block = directive === "match"
-            ? `<template id="block" x-match><template x-case="true">${content}</template></template>`
-            : `<template id="block" x-${directive}="true">${content}</template>`;
-
-        await set_html(page, `
-            <div x-data="{ tick: 0 }" id="app"
-                 x-init="window.trace = { destroy: [], effects: [], events: 0 }">
-                <dl id="content">${block}</dl>
-            </div>`);
-
-        await expect(page.locator("dt, dd")).toHaveText(["Term", "Description"]);
-
-        await page.evaluate(async () => {
-            Alpine.$data(document.querySelector("#app")).tick = 1;
-            window.dispatchEvent(new Event("cleanup-probe"));
-            await Alpine.nextTick();
-        });
-
-        expect(await page.evaluate(() => window.trace)).toEqual({
-            destroy: [],
-            effects: [0, 1],
-            events: 1
-        });
-
-        // Alpine 3.14.2+ cleans x-if/x-for clones with its observer disconnected
-        await page.evaluate(async () => {
-            const anchor = document.querySelector("#block");
-
-            Alpine.mutateDom(() => {
-                Alpine.destroyTree(anchor);
-                anchor.remove();
-            });
-
-            await Alpine.nextTick();
-        });
-
-        // Include text, comments and nested anchors, not just visible elements
-        expect(await page.locator("#content").evaluate(el => el.childNodes.length)).toBe(0);
-        expect(await page.evaluate(() => window.trace.destroy.toSorted())).toEqual(["dd", "dt"]);
-
-        await page.evaluate(async () => {
-            Alpine.$data(document.querySelector("#app")).tick = 2;
-            window.dispatchEvent(new Event("cleanup-probe"));
-            await Alpine.nextTick();
-        });
-
-        expect(await page.evaluate(() => ({ ...window.trace, destroy: window.trace.destroy.toSorted() }))).toEqual({
-            destroy: ["dd", "dt"],
-            effects: [0, 1],
-            events: 1
-        });
-
-        expect(errors).toEqual([]);
-    });
-}
+// Wraps the content in each directive built on anchor_block
+const blocks = {
+    "x-fragment": content => `<template x-fragment>${content}</template>`,
+    "x-when": content => `<template x-when="show">${content}</template>`,
+    "x-match": content => `<template x-match><template x-case="show">${content}</template></template>`
+};
 
 const permutations = items => items.length
     ? items.flatMap((item, i) => permutations(items.filter((_, j) => i !== j)).map(rest => [item, ...rest]))
     : [[]];
 
-// Child nodes of the element, including templates, text and comments
-const layout = locator => locator.evaluate(el => [...el.childNodes]
-    .filter(node => node.nodeType !== Node.TEXT_NODE || node.textContent.trim())
-    .map(node => node.nodeName + ":" + (node.nodeName === "TEMPLATE" ? "" : node.textContent.trim())));
+// Child nodes of the element as HTML, including templates, text and comments.
+// Templates are shown without their content and elements with their text only.
+const layout = locator => locator.evaluate(el => [...el.childNodes].map(node => {
+    const tag = node.nodeName.toLowerCase();
 
-for (const directive of ["fragment", "when", "match"]) {
-    test(`anchor block: keyed x-for reordering (${directive})`, async ({ page }) => {
-        const errors = [];
-        page.on("pageerror", e => errors.push(e.message));
+    return node.nodeType === Node.TEXT_NODE ? node.data
+        : node.nodeType === Node.COMMENT_NODE ? `<!--${node.data}-->`
+        : tag === "template" ? "<template>"
+        : `<${tag}>${node.textContent}</${tag}>`;
+}).join(""));
 
-        const content = `[<dt x-text="n"></dt><!--pair--><dd x-text="n"></dd>]`;
-        const block = {
-            fragment: `<template x-fragment>${content}</template>`,
-            when: `<template x-when="show">${content}</template>`,
-            match: `<template x-match><template x-case="show">${content}</template></template>`
-        }[directive];
-
-        await set_html(page, `<dl id="block" x-data="{ items: [1, 2, 3, 4], show: true }"><template x-for="n in items" :key="n">${block}</template></dl>`);
-        await expect(page.locator("dt")).toHaveCount(4);
-
-        const orders = permutations([1, 2, 3, 4]);
-        const states = [
-            // Adding, removing and toggling the content
-            ...[[1, 2, 3], [3, 2, 1], [3, 2, 1, 4], [3, 5, 2, 1, 4], [5, 1], [], [2, 5, 3, 1]].map(items => ({ items, show: true })),
-            ...(directive === "fragment" ? [] : [false, true, false, true].map(show => ({ items: [1, 3, 5, 2], show })))
-        ];
-
-        const result = await page.locator("#block").evaluate(async (block, { orders, states, transitions }) => {
-            const data = Alpine.$data(block);
-            const terms = new Map([...block.querySelectorAll("dt")].map(dt => [dt.textContent, dt]));
-
-            const check = async ({ items, show = true }, same_nodes) => {
-                data.items = items;
-                data.show = show;
-                await Alpine.nextTick();
-
-                // Like x-if, a block renders its content right after its template
-                const actual = [...block.childNodes].map(node => node.nodeName + ":" + (node.nodeName === "TEMPLATE" ? "" : node.textContent));
-                const expected = ["TEMPLATE:", ...items.flatMap(n => show
-                    ? ["TEMPLATE:", "#text:[", `DT:${n}`, "#comment:pair", `DD:${n}`, "#text:]"]
-                    : ["TEMPLATE:"])];
-
-                if (JSON.stringify(actual) !== JSON.stringify(expected)) {
-                    throw new Error(JSON.stringify({ items, show, actual, expected }));
-                }
-
-                if (same_nodes && [...block.querySelectorAll("dt")].some(dt => terms.get(dt.textContent) !== dt)) {
-                    throw new Error(`Reordering must move the existing nodes: ${items}`);
-                }
-            };
-
-            let count = 0;
-            for (const from of orders) {
-                for (const to of transitions ? orders : [from]) {
-                    await check({ items: from }, true);
-                    await check({ items: to }, true);
-                    count++;
-                }
-            }
-
-            for (const state of states) {
-                await check(state, null);
-            }
-
-            // Restoring the order must settle rather than trigger an observer feedback loop
-            let mutations = 0;
-            const observer = new MutationObserver(records => mutations += records.length);
-            observer.observe(block, { childList: true });
-            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-            observer.disconnect();
-
-            return { count, mutations };
-        }, { orders, states, transitions: directive === "fragment" });
-
-        // All transitions between the orders of four items for x-fragment
-        expect(result).toEqual({ count: directive === "fragment" ? 576 : 24, mutations: 0 });
-        expect(errors).toEqual([]);
-    });
-}
-
-for (const [name, html, item] of [
-    [
-        "nested blocks",
-        `<template x-fragment>[<span x-text="n"></span><template x-fragment>(<i x-text="n"></i><template x-when="show">{<b x-text="n"></b>}</template>)</template>]</template>`,
-        (n, show) => ["[", `SPAN:${n}`, "(", `I:${n}`, ...(show ? ["{", `B:${n}`, "}"] : []), ")", "]"]
-    ],
-    [
-        "x-if inside a block",
-        `<template x-fragment>[<dt x-text="n"></dt><template x-if="show"><dd x-text="n"></dd></template>]</template>`,
-        (n, show) => ["[", `DT:${n}`, ...(show ? [`DD:${n}`] : []), "]"]
-    ],
-    [
-        "block inside x-if inside a block",
-        `<template x-fragment>[<template x-if="show"><template x-fragment><b x-text="n"></b>-<i x-text="n"></i></template></template>]</template>`,
-        (n, show) => ["[", ...(show ? [`B:${n}`, "-", `I:${n}`] : []), "]"]
-    ],
-    [
-        "block inside x-if",
-        `<template x-if="show"><template x-fragment>[<dt x-text="n"></dt><dd x-text="n"></dd>]</template></template>`,
-        (n, show) => show ? ["[", `DT:${n}`, `DD:${n}`, "]"] : []
-    ]
-]) {
-    test(`anchor block: keyed x-for reordering with ${name}`, async ({ page }) => {
+for (const [directive, block] of Object.entries(blocks)) {
+    test(`anchor block: nested cleanup (${directive})`, async ({ page }) => {
         const errors = [];
         page.on("pageerror", e => errors.push(e.message));
 
         await set_html(page, `
-            <div id="block" x-data="{ items: [1, 2, 3, 4], show: true }">
-                <p>Before</p>
-                <template x-for="n in items" :key="n">
-                    ${html}
+            <div x-data="{ show: true, tick: 0 }" x-init="window.trace = { destroyed: [], effects: [], events: 0 }">
+                <dl>
+                    ${block(`
+                        Before
+                        <dt x-data="{ destroy() { trace.destroyed.push('dt') } }">Term</dt>
+                        <template x-fragment>
+                            <dd x-data="{ destroy() { trace.destroyed.push('dd') } }"
+                                x-effect="trace.effects.push(tick)"
+                                @probe.window="trace.events++">Description</dd>
+                            <!--comment-->
+                            After
+                        </template>`)}
+                </dl>
+            </div>`, { trim: true });
+
+        // Triggers the effect and the event listener
+        const probe = tick => page.evaluate(async tick => {
+            Alpine.$data(document.querySelector("div")).tick = tick;
+            window.dispatchEvent(new Event("probe"));
+            await Alpine.nextTick();
+
+            return { ...trace, destroyed: trace.destroyed.toSorted() };
+        }, tick);
+
+        await expect(page.locator("dt, dd")).toHaveText(["Term", "Description"]);
+        expect(await probe(1)).toEqual({ destroyed: [], effects: [0, 1], events: 1 });
+
+        // Alpine 3.14.2+ removes x-if and x-for clones this way, with its observer paused
+        await page.evaluate(() => Alpine.mutateDom(() => {
+            const anchor = document.querySelector("dl > template");
+            Alpine.destroyTree(anchor);
+            anchor.remove();
+        }));
+
+        // Including the text, comments and nested anchors
+        expect(await layout(page.locator("dl"))).toBe("");
+        expect(await probe(2)).toEqual({ destroyed: ["dd", "dt"], effects: [0, 1], events: 1 });
+        expect(errors).toEqual([]);
+    });
+}
+
+test("anchor block: removes nested x-if and x-for content", async ({ page }) => {
+    await set_html(page, `
+        <div x-data="{ show: true }">
+            <template x-when="show">
+                <template x-if="true">
+                    <template x-for="n in [1, 2]"><b x-text="n"></b></template>
                 </template>
-                <p>After</p>
-            </div>`);
+                <template x-for="n in [3, 4]">
+                    <template x-if="true"><i x-text="n"></i></template>
+                </template>
+            </template>
+        </div>`);
 
-        const states = [
-            ...permutations([1, 2, 3, 4]).map(items => ({ items, show: true })),
-            ...[[1, 2, 3], [3, 2, 1, 4], [3, 5, 2, 1, 4], [5, 1], [], [2, 5, 3, 1]].map(items => ({ items, show: true })),
-            ...[[1, 3, 5, 2], [2, 5, 3, 1], [2, 5, 3, 1], [5, 1, 2, 3]].map((items, i) => ({ items, show: i % 2 === 1 }))
-        ];
+    await expect(page.locator("b, i")).toHaveText(["1", "2", "3", "4"]);
 
-        for (const { items, show } of [{ items: [1, 2, 3, 4], show: true }, ...states]) {
-            await page.locator("#block").evaluate(async (block, { items, show }) => {
-                Object.assign(Alpine.$data(block), { items, show });
-                await Alpine.nextTick();
-            }, { items, show });
+    // Alpine before 3.14.2 leaves destroying the removed clones to its observer
+    await set_data(page.locator("div"), { show: false });
+    await expect(page.locator("b, i")).toHaveCount(0);
+});
 
-            const actual = (await layout(page.locator("#block"))).filter(token => token !== "TEMPLATE:").map(token => token.replace(/^#text:/, ""));
-            expect(actual, JSON.stringify({ items, show })).toEqual(["P:Before", ...items.flatMap(n => item(n, show)), "P:After"]);
+test("anchor block: keyed x-for reordering (x-fragment)", async ({ page }) => {
+    const errors = [];
+    page.on("pageerror", e => errors.push(e.message));
+
+    await set_html(page, `
+        <dl x-data="{ items: [1, 2, 3, 4] }">
+            <template x-for="n in items" :key="n">
+                <template x-fragment>[<dt x-text="n"></dt><!--pair--><dd x-text="n"></dd>]</template>
+            </template>
+        </dl>`, { trim: true });
+
+    // Like x-if, a block renders its content right after its template
+    const expected = items => "<template>" + items
+        .map(n => `<template>[<dt>${n}</dt><!--pair--><dd>${n}</dd>]`)
+        .join("");
+
+    const dl = page.locator("dl");
+
+    // Marks the nodes to tell later whether reordering moved or recreated them
+    await dl.evaluate(dl => dl.childNodes.forEach(node => node.original = true));
+
+    // All transitions between the orders of four items
+    for (const from of permutations([1, 2, 3, 4])) {
+        for (const to of permutations([1, 2, 3, 4])) {
+            await set_data(dl, { items: from });
+            await set_data(dl, { items: to });
+            expect(await layout(dl), `${from} → ${to}`).toBe(expected(to));
+        }
+    }
+
+    expect(await dl.evaluate(dl => [...dl.childNodes].every(node => node.original))).toBe(true);
+
+    // Adding and removing the items
+    for (const items of [[1, 2, 3], [3, 2, 1], [3, 2, 1, 4], [3, 5, 2, 1, 4], [5, 1], [], [2, 5, 3, 1]]) {
+        await set_data(dl, { items });
+        expect(await layout(dl), `${items}`).toBe(expected(items));
+    }
+
+    // Restoring the order settles rather than triggers an observer feedback loop
+    const mutations = await dl.evaluate(dl => new Promise(resolve => {
+        let count = 0;
+        const observer = new MutationObserver(records => count += records.length);
+        observer.observe(dl, { childList: true });
+
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            observer.disconnect();
+            resolve(count);
+        }));
+    }));
+
+    expect(mutations).toBe(0);
+    expect(errors).toEqual([]);
+});
+
+// x-when and x-match render the same block as x-fragment, so a single pass
+// over the orders is enough here, along with hiding and showing the content
+for (const directive of ["x-when", "x-match"]) {
+    test(`anchor block: keyed x-for reordering (${directive})`, async ({ page }) => {
+        const errors = [];
+        page.on("pageerror", e => errors.push(e.message));
+
+        await set_html(page, `
+            <dl x-data="{ items: [1, 2, 3, 4], show: true }">
+                <template x-for="n in items" :key="n">
+                    ${blocks[directive](`[<dt x-text="n"></dt><!--pair--><dd x-text="n"></dd>]`)}
+                </template>
+            </dl>`, { trim: true });
+
+        const expected = (items, show) => "<template>" + items
+            .map(n => show ? `<template>[<dt>${n}</dt><!--pair--><dd>${n}</dd>]` : "<template>")
+            .join("");
+
+        const dl = page.locator("dl");
+
+        for (const [items, show] of [
+            ...permutations([1, 2, 3, 4]).map(items => [items, true]),
+
+            // Adding and removing the items
+            ...[[1, 2, 3], [3, 2, 1], [3, 2, 1, 4], [3, 5, 2, 1, 4], [5, 1], [], [2, 5, 3, 1]].map(items => [items, true]),
+
+            // Hiding and showing the content
+            ...[false, true, false, true].map(show => [[1, 3, 5, 2], show])
+        ]) {
+            await set_data(dl, { items, show });
+            expect(await layout(dl), `${items}, show: ${show}`).toBe(expected(items, show));
         }
 
         expect(errors).toEqual([]);
@@ -219,106 +182,98 @@ for (const [name, html, item] of [
 }
 
 test("anchor block: block containing keyed x-for of blocks", async ({ page }) => {
-    await set_html(page, `<div id="block" x-data="{ items: [1, 2, 3, 4] }"><template x-fragment><h2>Title</h2><template x-for="n in items" :key="n"><template x-fragment>[<dt x-text="n"></dt><dd x-text="n"></dd>]</template></template><footer>Footer</footer></template></div>`);
-    await expect(page.locator("#block")).toHaveText("Title[11][22][33][44]Footer");
+    await set_html(page, `
+        <div x-data="{ items: [1, 2, 3, 4] }">
+            <template x-fragment>
+                <h2>Title</h2>
+                <template x-for="n in items" :key="n">
+                    <template x-fragment>[<dt x-text="n"></dt><dd x-text="n"></dd>]</template>
+                </template>
+                <footer>Footer</footer>
+            </template>
+        </div>`, { trim: true });
+
+    await expect(page.locator("div")).toHaveText("Title[11][22][33][44]Footer");
 
     for (const items of [...permutations([1, 2, 3, 4]), [3, 2, 1], [2, 3, 1, 4], [4, 1], [], [1, 2, 3], [5, 1, 6, 2, 3], [2, 6, 7, 3]]) {
-        await page.evaluate(items => Alpine.$data(document.querySelector("#block")).items = items, items);
-        await expect(page.locator("#block")).toHaveText(`Title${items.map(n => `[${n}${n}]`).join("")}Footer`);
+        await set_data(page.locator("div"), { items });
+        await expect(page.locator("div")).toHaveText(`Title${items.map(n => `[${n}${n}]`).join("")}Footer`);
     }
 });
 
-for (const [name, block, { ends = false } = {}] of [
-    ["containing keyed x-for of elements", list => `<h2 x-text="o"></h2>${list(`<b x-text="'[' + o + '-' + n + ']'"></b>`)}<footer>F</footer>`],
-    ["containing keyed x-for of blocks", list => `<h2 x-text="o"></h2>${list(`<template x-fragment>[<dt x-text="o"></dt>-<dd x-text="n"></dd>]</template>`)}<footer>F</footer>`],
-    ["containing keyed x-for of x-if", list => `<h2 x-text="o"></h2>${list(`<template x-if="true"><b x-text="'[' + o + '-' + n + ']'"></b></template>`)}<footer>F</footer>`],
-    ["containing x-if of keyed x-for", list => `<h2 x-text="o"></h2><template x-if="true">${list(`<b x-text="'[' + o + '-' + n + ']'"></b>`)}</template><footer>F</footer>`],
-    ["ending with keyed x-for of elements", list => `<h2 x-text="o"></h2><footer>F</footer>${list(`<b x-text="'[' + o + '-' + n + ']'"></b>`)}`, { ends: true }],
-    ["ending with keyed x-for of blocks", list => `<h2 x-text="o"></h2><footer>F</footer>${list(`<template x-fragment>[<dt x-text="o"></dt>-<dd x-text="n"></dd>]</template>`)}`, { ends: true }],
-    ["ending with x-if", () => `<h2 x-text="o"></h2><footer>F</footer><template x-if="true"><i x-text="inner[o].map(n => '[' + o + '-' + n + ']').join('')"></i></template>`, { ends: true }]
+test("anchor block: restores moved nodes with a stationary anchor", async ({ page }) => {
+    await set_html(page, `
+        <dl x-data>
+            <template x-fragment>
+                before
+                <!--marker-->
+                <dt>Term</dt>
+                between
+                <dd>Description</dd>
+                after
+            </template>
+        </dl>`, { trim: true });
+
+    const dl = page.locator("dl");
+    const expected = "<template>before<!--marker--><dt>Term</dt>between<dd>Description</dd>after";
+    await expect.poll(() => layout(dl)).toBe(expected);
+
+    // An element, a text and a comment moved to the end are brought back
+    for (const text of ["Term", "between", "marker"]) {
+        await dl.evaluate((dl, text) => dl.append([...dl.childNodes].find(node => node.textContent === text)), text);
+        await expect.poll(() => layout(dl), text).toBe(expected);
+    }
+});
+
+test("anchor block: preserves initial x-if and x-for content", async ({ page }) => {
+    await set_html(page, `
+        <div x-data>
+            <template x-fragment>
+                [
+                <template x-if="true"><b>Content</b></template>
+                |
+                <template x-for="n in [1, 2, 3]"><i x-text="n"></i></template>
+                ]
+            </template>
+        </div>`, { trim: true });
+
+    await expect(page.locator("div")).toHaveText("[Content|123]");
+});
+
+// Like Alpine with nested templates in x-for items (alpinejs/alpine#4911), keyed x-for
+// does not keep in order the content of the templates placed directly in a block,
+// or of a block in x-if. Expected to pass once Alpine includes alpinejs/alpine#4912.
+for (const [name, item] of [
+    ["a block in a block", `
+        <template x-fragment>
+            [<b x-text="n"></b>
+            <template x-fragment><i x-text="n"></i></template>]
+        </template>`],
+    ["x-if in a block", `
+        <template x-fragment>
+            [<b x-text="n"></b>
+            <template x-if="true"><i x-text="n"></i></template>]
+        </template>`],
+    ["x-for in a block", `
+        <template x-fragment>
+            [<b x-text="n"></b>
+            <template x-for="i in [n]"><i x-text="i"></i></template>]
+        </template>`],
+    ["a block in x-if", `
+        <template x-if="true">
+            <template x-fragment>[<b x-text="n"></b><i x-text="n"></i>]</template>
+        </template>`]
 ]) {
-    test(`anchor block: keyed x-for of blocks ${name}`, async ({ page }) => {
-        const errors = [];
-        page.on("pageerror", e => errors.push(e.message));
-
-        const inner = lists => Object.fromEntries([1, 2, 3, 4, 5].map((o, i) => [o, lists[i] ?? [1, 2]]));
-        const text = ({ outer, inner }) => outer.map(o => {
-            const items = inner[o].map(n => `[${o}-${n}]`).join("");
-            return ends ? `${o}F${items}` : `${o}${items}F`;
-        }).join("");
-
-        let state = { outer: [1, 2, 3, 4], inner: inner([]) };
+    test.fail(`anchor block: keyed x-for reordering with ${name}`, async ({ page }) => {
         await set_html(page, `
-            <div id="block" x-data='${JSON.stringify(state)}'>
-                <template x-for="o in outer" :key="o">
-                    <template x-fragment>${block(item => `<template x-for="n in inner[o]" :key="n">${item}</template>`)}</template>
-                </template><p>After</p>
-            </div>`);
-        await expect(page.locator("#block")).toHaveText(text(state) + "After");
+            <div x-data="{ items: [1, 2, 3] }">
+                <template x-for="n in items" :key="n">${item}</template>
+            </div>`, { trim: true });
 
-        for (const change of [
-            // Alpine 3.15+ moves the nested items apart even when the order stays the same
-            ...permutations([1, 2, 3, 4]).map(outer => ({ outer })),
+        await set_data(page.locator("div"), { items: [3, 2, 1] });
+        expect(await page.locator("div").textContent()).toBe("[33][22][11]");
 
-            // Alpine 3.15+ lists the added items last in x-for lookup
-            { inner: inner([[0, 1, 2], [1, 0, 2], [1, 2, 0], [2, 1]]) },
-            { outer: [4, 3, 2, 1] },
-            { outer: [2, 4, 1, 3] },
-
-            // Nested x-for runs together with the outer one. Alpine 3.15 runs them in the order
-            // of the changes, 3.16+ always runs the outer one first, which leaves the blocks
-            // scattered for the nested one.
-            { inner: inner([[3, 0, 1, 2], [1, 4, 0], [5, 2, 6, 1, 0], [2, 1]]), outer: [3, 1, 4, 2] },
-            { inner: inner([[2, 3, 0], [1, 4, 7, 0], [6, 1, 0, 2], [8, 2, 1]]), outer: [1, 3, 2, 4] },
-            { outer: [4, 2, 1, 3], inner: inner([[0, 2, 9, 3], [4, 1], [6, 5, 1, 2], [2, 3, 1, 8]]) },
-            { outer: [2, 1, 3, 4], inner: inner([[9, 0, 3], [1, 7, 4], [6, 2, 5, 1], [8, 3, 2, 1]]) },
-
-            // Adding and removing the blocks
-            { outer: [3, 5, 1] },
-            { inner: inner([[1, 3], [], [0, 6, 1], [], [4, 3, 5]]), outer: [5, 1, 3, 2] },
-            { outer: [2, 3] },
-            { outer: [] },
-            { outer: [4, 2, 5] },
-
-            // With a single block, moving its last node after the template may be all x-for does
-            { outer: [5] },
-            { outer: [5] }
-        ]) {
-            state = { ...state, ...change };
-
-            await page.evaluate(change => Object.assign(Alpine.$data(document.querySelector("#block")), change), change);
-            await expect(page.locator("#block"), JSON.stringify(change)).toHaveText(text(state) + "After");
-        }
-
-        expect(errors).toEqual([]);
-    });
-}
-
-for (const type of ["element", "text", "comment"]) {
-    test(`anchor block: restores moved ${type} with a stationary anchor`, async ({ page }) => {
-        await set_html(page, `<dl id="block" x-data><template x-fragment>before<!--marker--><dt>Term</dt>between<dd>Description</dd>after</template></dl>`);
-        await expect(page.locator("dt")).toHaveText("Term");
-
-        const moved = await page.locator("#block").evaluateHandle((block, type) => {
-            const nodeType = { element: Node.ELEMENT_NODE, text: Node.TEXT_NODE, comment: Node.COMMENT_NODE }[type];
-            const node = [...block.childNodes].find(node => node.nodeType === nodeType && node.nodeName !== "TEMPLATE");
-            block.append(node);
-            return node;
-        }, type);
-
-        await expect.poll(() => layout(page.locator("#block"))).toEqual([
-            "TEMPLATE:", "#text:before", "#comment:marker", "DT:Term", "#text:between", "DD:Description", "#text:after"
-        ]);
-        expect(await moved.evaluate(node => node.parentNode.id)).toBe("block");
-    });
-}
-
-for (const [directive, content, expected] of [
-    ["x-if", `<template x-if="true"><b>Content</b></template>`, "[Content]"],
-    ["x-for", `<template x-for="n in [1, 2, 3]"><b x-text="n"></b></template>`, "[123]"]
-]) {
-    test(`anchor block: preserves initial ${directive} content`, async ({ page }) => {
-        await set_html(page, `<div id="block" x-data><template x-fragment>[${content}]</template></div>`);
-        await expect(page.locator("#block")).toHaveText(expected);
+        await set_data(page.locator("div"), { items: [3, 4, 2, 1] });
+        expect(await page.locator("div").textContent()).toBe("[33][44][22][11]");
     });
 }

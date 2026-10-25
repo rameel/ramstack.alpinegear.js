@@ -104,6 +104,14 @@ Here's an example demonstrating the use of `<template>` with `x-case` to render 
 In this example, the `x-match` directive with `<template>` tags allows rendering multiple root elements
 (e.g., `<h2>`, `<p>`, `<a>`, and `<button>`) without needing an extra wrapper like a `<div>`.
 
+> [!NOTE]
+> Alpine's `x-for` does not keep in order the content rendered by templates nested in its items,
+> such as `x-for` directly in `x-for` or a template directly in `x-if`
+> ([alpinejs/alpine#4911](https://github.com/alpinejs/alpine/issues/4911)).
+> Inside `x-for`, the same applies to `x-if`, `x-for` or `x-match` placed directly in an `x-case`
+> or `x-default` template, and to `x-match` placed directly in `x-if`. Put the nested templates
+> inside an element instead.
+
 ## Source code
 You can find the source code for this plugin on GitHub:
 
