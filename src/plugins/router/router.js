@@ -137,7 +137,8 @@ export default function({ $data, addScopeToNode, directive, magic, reactive }) {
                         || e.shiftKey
                         || e.defaultPrevented
                         || e.button > 0
-                        || is_blank) {
+                        || is_blank
+                        || is_external(link)) {
                         return;
                     }
 
@@ -191,7 +192,7 @@ export default function({ $data, addScopeToNode, directive, magic, reactive }) {
         //
 
         if (link) {
-            return router.history.resolve(link.href) === router.values.path;
+            return !is_external(link) && router.history.resolve(link.href) === router.values.path;
         }
 
         if (el._r_routerlink_init) {
@@ -213,6 +214,16 @@ export default function({ $data, addScopeToNode, directive, magic, reactive }) {
 
 function is_anchor_element(el) {
     return el.tagName.toUpperCase() === "A";
+}
+
+//
+// A link to another origin or a non-HTTP scheme, such as "mailto:" or "tel:",
+// leads outside the application and is left to the browser.
+// The protocol and host are compared instead of the origin,
+// which browsers report differently for file: URLs ("null" or "file://").
+//
+function is_external(link) {
+    return link.protocol !== location.protocol || link.host !== location.host;
 }
 
 function get_anchor_element(el) {
