@@ -170,24 +170,29 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
                     break;
 
                 case "SELECT":
-                    // WORKAROUND:
-                    // For the "select" element, there might be a situation
-                    // where options are generated dynamically using the "x-for" directive,
-                    // and in this case, attempting to set the "value" property
-                    // will have no effect since there are no options yet.
-                    // Therefore, we use a small trick to set the value a bit later
-                    // when the "x-for" directive has finished its work.
+                    // Alpine initializes the options after this directive runs:
+                    // "x-for" renders them and ":value" binds their values.
+                    // The value read from the element before that would be wrong,
+                    // so the binding starts a bit later.
                     const timer_id = setTimeout(() => {
+                        const apply = () => apply_select_values(el, as_array(get_value() ?? []));
+
                         // if the value of the bound property is "null" or "undefined",
                         // we initialize it with the value from the element.
                         is_nullish(get_value()) && update_variable();
 
-                        effect(() => apply_select_values(el, as_array(get_value() ?? [])));
+                        effect(apply);
                         cleanup(listen(el, "change", () => set_value(collect_selected_values(el))));
+
+                        // the options and their values can change later, e.g. when
+                        // the "x-for" items do, so the selection is applied again
+                        const observer = new MutationObserver(apply);
+                        observer.observe(el, { childList: true, subtree: true, characterData: true, attributeFilter: ["value"] });
+                        cleanup(() => observer.disconnect());
                     });
 
-                    // the element can be destroyed before the timer fires,
-                    // and the effect and listener created after that would never be released.
+                    // the element can be destroyed before the timer fires, and the effect,
+                    // listener and observer created after that would never be released.
                     cleanup(() => clearTimeout(timer_id));
 
                     processed = true;

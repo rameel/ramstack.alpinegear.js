@@ -331,6 +331,72 @@ test.describe("x-bound: select", () => {
         await expect(page.locator("span")).toHaveText("1");
     });
 
+    test("select (options rendered later)", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ value: '2', options: [] }">
+                <select &value>
+                    <template x-for="v in options" :key="v">
+                        <option :value="v" x-text="v"></option>
+                    </template>
+                </select>
+            </div>`);
+
+        const root = page.locator("div");
+
+        await set_data(root, { options: ["1", "2", "3"] });
+        await expect(page.locator("select")).toHaveValue("2");
+
+        // Without its option the select shows the first one,
+        // while the property keeps its value until the option is back
+        await set_data(root, { options: ["1", "3"] });
+        await expect(page.locator("select")).toHaveValue("1");
+
+        await set_data(root, { options: ["1", "2", "3"] });
+        await expect(page.locator("select")).toHaveValue("2");
+        expect(await root.evaluate(el => Alpine.$data(el).value)).toBe("2");
+    });
+
+    test("select (option values change)", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ value: '2', options: [{ id: '1' }, { id: '2' }] }">
+                <select &value>
+                    <template x-for="option in options">
+                        <option :value="option.id" x-text="option.id"></option>
+                    </template>
+                </select>
+            </div>`);
+
+        await expect(page.locator("select")).toHaveValue("2");
+
+        // The selected option gets the value "1", and the first option
+        // gets the value "2", which becomes selected instead
+        await page.locator("div").evaluate(async el => {
+            const { options } = Alpine.$data(el);
+            [options[0].id, options[1].id] = ["2", "1"];
+            await Alpine.nextTick();
+        });
+
+        await expect(page.locator("select")).toHaveValue("2");
+    });
+
+    test("select multiple (options rendered later)", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ value: ['2', '3'], options: ['1', '2'] }">
+                <select &value multiple>
+                    <optgroup label="Options">
+                        <template x-for="v in options" :key="v">
+                            <option :value="v" x-text="v"></option>
+                        </template>
+                    </optgroup>
+                </select>
+            </div>`);
+
+        await expect(page.locator("select")).toHaveValues(["2"]);
+
+        await set_data(page.locator("div"), { options: ["1", "2", "3"] });
+        await expect(page.locator("select")).toHaveValues(["2", "3"]);
+    });
+
     test("initialize from element when property is null", async ({ page }) => {
         await set_html(page, `
             <div x-data="{ value: null }">
