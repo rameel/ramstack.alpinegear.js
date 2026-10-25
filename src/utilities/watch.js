@@ -22,6 +22,10 @@ export function watch(get_value, callback, options = null) {
         }
 
         if (initialized || (options?.immediate ?? true)) {
+            // Keep a single pending callback: it reports the latest value anyway,
+            // and the disposer cancels only the timer it knows about.
+            clearTimeout(timer_id);
+
             // Prevent the watcher from detecting its own dependencies.
             timer_id = setTimeout(() => {
                 callback(new_value, old_value);
