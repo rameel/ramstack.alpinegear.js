@@ -53,7 +53,7 @@ export function anchor_block(el, template, { addScopeToNode, cleanup, destroyTre
             delete el._x_lastRenderedEl;
 
             for (let node of nodes) {
-                node._r_anchor = null;
+                node._r_owner = null;
                 is_element(node) && destroyTree(node);
                 node.remove();
             }
@@ -64,7 +64,7 @@ export function anchor_block(el, template, { addScopeToNode, cleanup, destroyTre
 
     mutateDom(() => {
         for (let node of nodes) {
-            node._r_anchor = el;
+            node._r_owner = el;
             is_element(node) && addScopeToNode(node, scope, el);
         }
 
@@ -106,7 +106,7 @@ function initialize() {
             // or block at the top level of the block is not kept in order.
             for (let mutation of mutations) {
                 for (let node of mutation.addedNodes) {
-                    anchors.add(node._r_block ? node : node._r_anchor);
+                    anchors.add(node._r_block ? node : node._r_owner);
                 }
             }
 
