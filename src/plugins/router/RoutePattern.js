@@ -52,7 +52,7 @@ const default_constraints = Object.freeze({
     "length"(value) {
         let values = value.split(",").map(v => v.trim());
         return {
-            test: values.length == 2
+            test: values.length === 2
                 ? v => v.length >=  +values[0] && v.length <= +values[1]
                 : v => v.length === +values[0]
         };
