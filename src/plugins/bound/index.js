@@ -177,7 +177,7 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
                     // will have no effect since there are no options yet.
                     // Therefore, we use a small trick to set the value a bit later
                     // when the "x-for" directive has finished its work.
-                    setTimeout(() => {
+                    const timer_id = setTimeout(() => {
                         // if the value of the bound property is "null" or "undefined",
                         // we initialize it with the value from the element.
                         is_nullish(get_value()) && update_variable();
@@ -185,6 +185,10 @@ function plugin({ directive, entangle, evaluateLater, mapAttributes, mutateDom, 
                         effect(() => apply_select_values(el, as_array(get_value() ?? [])));
                         cleanup(listen(el, "change", () => set_value(collect_selected_values(el))));
                     });
+
+                    // the element can be destroyed before the timer fires,
+                    // and the effect and listener created after that would never be released.
+                    cleanup(() => clearTimeout(timer_id));
 
                     processed = true;
                     break;

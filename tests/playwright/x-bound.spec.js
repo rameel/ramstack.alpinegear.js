@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { set_html } from "./assets/utils";
+import { set_data, set_html } from "./assets/utils";
 import { fileURLToPath } from "url";
 import path from "path";
 
@@ -405,6 +405,49 @@ test.describe("x-bound: select", () => {
         await page.locator("select").selectOption(["Two", "Three"]);
         await expect(page.locator("select")).toHaveValues(["Two", "Three"]);
         await expect(page.locator("span")).toHaveText(`["Two","Three"]`);
+    });
+
+    test("removed before the deferred binding", async ({ page }) => {
+        await set_html(page, `
+            <div x-data="{ show: false, value: '2' }">
+                <template x-if="show">
+                    <select &value>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </template>
+            </div>`);
+
+        const root = page.locator("div");
+
+        // Render and remove the select within microtasks, before the binding's timer fires
+        const select = await root.evaluateHandle(async el => {
+            const data = Alpine.$data(el);
+
+            data.show = true;
+            await new Promise(queueMicrotask);
+
+            const select = el.querySelector("select");
+            data.show = false;
+            await new Promise(resolve => setTimeout(resolve));
+
+            return select;
+        });
+
+        // A leaked effect would keep the removed select in sync with the property;
+        // without it, the select keeps its default value, the first option
+        await set_data(root, { value: "3" });
+        expect(await select.evaluate(el => el.value)).toBe("1");
+
+        // A leaked listener would write the select's value back to the property.
+        // The value differs from "3", which a leaked effect would have already applied,
+        // so the check cannot pass just because the values match
+        await select.evaluate(el => {
+            el.value = "2";
+            el.dispatchEvent(new Event("change"));
+        });
+        expect(await root.evaluate(el => Alpine.$data(el).value)).toBe("3");
     });
 });
 
