@@ -8,6 +8,9 @@ import {
 } from "url";
 
 export default defineConfig({
+    define: {
+        __DEV__: true
+    },
     test: {
         globals: true,
         environment: "jsdom",
