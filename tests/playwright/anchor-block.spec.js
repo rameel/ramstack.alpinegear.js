@@ -56,7 +56,7 @@ for (const [directive, block] of Object.entries(blocks)) {
         await expect(page.locator("dt, dd")).toHaveText(["Term", "Description"]);
         expect(await probe(1)).toEqual({ destroyed: [], effects: [0, 1], events: 1 });
 
-        // Alpine 3.14.2+ removes x-if and x-for clones this way, with its observer paused
+        // Alpine removes x-if and x-for clones this way, with its observer paused
         await page.evaluate(() => Alpine.mutateDom(() => {
             const anchor = document.querySelector("dl > template");
             Alpine.destroyTree(anchor);
@@ -85,7 +85,6 @@ test("anchor block: removes nested x-if and x-for content", async ({ page }) => 
 
     await expect(page.locator("b, i")).toHaveText(["1", "2", "3", "4"]);
 
-    // Alpine before 3.14.2 leaves destroying the removed clones to its observer
     await set_data(page.locator("div"), { show: false });
     await expect(page.locator("b, i")).toHaveCount(0);
 });
