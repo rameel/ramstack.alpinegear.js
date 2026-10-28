@@ -31,7 +31,7 @@
     "test:vitest": "vitest run"
   },
   "peerDependencies": {
-    "alpinejs": "^3.13.0"
+    "alpinejs": "^3.15.12"
   },
   "devDependencies": {
     "@conventional-changelog/git-client": "^3.2.0",

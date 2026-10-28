@@ -46,8 +46,6 @@ export function anchor_block(el, template, { addScopeToNode, cleanup, destroyTre
             }
         },
         delete() {
-            // Not in mutateDom: Alpine before 3.14.2 removes nested x-if content
-            // and x-for items without destroying them, leaving that to its observer
             el._r_block = null;
             delete el._x_currentIfEl;
             delete el._x_lastRenderedEl;

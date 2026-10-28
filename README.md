@@ -5,6 +5,8 @@
 
 **`Ramstack.AlpineGear.js`** provides useful and convenient plugins for [Alpine.js](https://alpinejs.dev/).
 
+The plugins require Alpine.js 3.15.12 or later.
+
 ## Included Plugins
 
 **[@ramstack/alpinegear-bound](https://www.npmjs.com/package/@ramstack/alpinegear-bound)** ([README](https://github.com/rameel/ramstack.alpinegear.js/tree/main/src/plugins/bound))<br>
